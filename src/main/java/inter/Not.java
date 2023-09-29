@@ -12,6 +12,6 @@ public class Not extends Logical {
     }
 
     public String toString() {
-        return op.toString() + " " + expr2.toString();
+        return op + " " + expr2;
     }
 }

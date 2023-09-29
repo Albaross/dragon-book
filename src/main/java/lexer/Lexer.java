@@ -7,14 +7,17 @@ import symbols.*;
 
 public class Lexer {
     public static int line = 1;
-    char peek = ' ';
-    HashMap<String, Word> words = new HashMap<>();
+
+    private InputStream in;
+    private char peek = ' ';
+    private HashMap<String, Word> words = new HashMap<>();
 
     void reserve(Word w) {
         words.put(w.lexeme, w);
     }
 
-    public Lexer() {
+    public Lexer(InputStream in) {
+        this.in = in;
         reserve(new Word("if", Tag.IF));
         reserve(new Word("else", Tag.ELSE));
         reserve(new Word("while", Tag.WHILE));
@@ -29,7 +32,7 @@ public class Lexer {
     }
 
     void readch() throws IOException {
-        peek = (char) System.in.read();
+        peek = (char) in.read();
     }
 
     boolean readch(char c) throws IOException {

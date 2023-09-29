@@ -18,7 +18,7 @@ public class Rel extends Logical {
         Expr a = expr1.reduce();
         Expr b = expr2.reduce();
 
-        String test = a.toString() + " " + op.toString() + " " + b.toString();
+        String test = a + " " + op + " " + b;
         emitjumps(test, t, f);
     }
 }

@@ -151,7 +151,7 @@ public class Parser {
         Token t = look;
         match(Tag.ID);
         Id id = top.get(t);
-        if (id == null) error(t.toString() + " undeclared");
+        if (id == null) error(t + " undeclared");
         if (look.tag == '=') { // S -> id = E ;
             move();
             stmt = new Set(id, bool());
@@ -274,7 +274,7 @@ public class Parser {
             }
             case Tag.ID -> {
                 Id id = top.get(look);
-                if (id == null) error(look.toString() + " undeclared");
+                if (id == null) error(look + " undeclared");
                 move();
                 if (look.tag != '[') return id;
                 else return offset(id);

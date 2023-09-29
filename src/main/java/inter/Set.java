@@ -19,6 +19,6 @@ public class Set extends Stmt {
     }
 
     public void gen(int b, int a) {
-        emit(id.toString() + " = " + expr.gen().toString());
+        emit(id + " = " + expr.gen());
     }
 }

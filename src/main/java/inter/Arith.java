@@ -19,6 +19,6 @@ public class Arith extends Op {
     }
 
     public String toString() {
-        return expr1.toString() + " " + op.toString() + " " + expr2.toString();
+        return expr1 + " " + op + " " + expr2;
     }
 }
