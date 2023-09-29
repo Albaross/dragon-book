@@ -30,7 +30,7 @@ public class Expr extends Node {
             emit("goto L" + f);
         } else if (t != 0) emit("if " + test + " goto L" + t);
         else if (f != 0) emit("iffalse " + test + " goto L" + f);
-        else ; // nothing since both t and f fall through
+        // nothing since both t and f fall through
     }
 
     public String toString() {
