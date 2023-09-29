@@ -83,7 +83,7 @@ public class Lexer {
             return new Real(x);
         }
         if (Character.isLetter(peek)) {
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
             do {
                 b.append(peek);
                 readch();
