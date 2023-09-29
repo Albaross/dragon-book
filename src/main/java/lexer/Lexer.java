@@ -8,7 +8,7 @@ import symbols.*;
 public class Lexer {
     public static int line = 1;
     char peek = ' ';
-    Hashtable words = new Hashtable();
+    HashMap<String, Word> words = new HashMap<>();
 
     void reserve(Word w) {
         words.put(w.lexeme, w);
@@ -89,7 +89,7 @@ public class Lexer {
                 readch();
             } while (Character.isLetterOrDigit(peek));
             String s = b.toString();
-            Word w = (Word) words.get(s);
+            Word w = words.get(s);
             if (w != null) return w;
             w = new Word(s, Tag.ID);
             words.put(s, w);
