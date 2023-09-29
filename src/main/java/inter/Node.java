@@ -3,7 +3,7 @@ package inter;
 import lexer.*;
 
 public class Node {
-    int lexline = 0;
+    int lexline;
 
     Node() {
         lexline = Lexer.line;

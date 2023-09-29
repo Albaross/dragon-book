@@ -3,7 +3,7 @@ package symbols;
 import lexer.*;
 
 public class Type extends Word {
-    public int width = 0; // width is used for storage allocation
+    public int width; // width is used for storage allocation
 
     public Type(String s, int tag, int w) {
         super(s, tag);
