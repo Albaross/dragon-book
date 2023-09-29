@@ -1,4 +1,4 @@
-package inter; // File Temp.java
+package inter;
 
 import lexer.*;
 import symbols.*;

@@ -1,4 +1,4 @@
-package inter; // File Not.java
+package inter;
 
 import lexer.*;
 import symbols.*;

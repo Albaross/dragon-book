@@ -1,4 +1,4 @@
-package lexer; // File Num.java
+package lexer;
 
 public class Num extends Token {
     public final int value;

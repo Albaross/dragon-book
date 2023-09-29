@@ -1,4 +1,4 @@
-package inter; // File Op.java
+package inter;
 
 import lexer.*;
 import symbols.*;

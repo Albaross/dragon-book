@@ -1,4 +1,4 @@
-package inter; // File SetElem.java
+package inter;
 
 import lexer.*;
 import symbols.*;

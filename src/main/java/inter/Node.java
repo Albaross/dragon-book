@@ -1,4 +1,4 @@
-package inter; // File Node.java
+package inter;
 
 import lexer.*;
 

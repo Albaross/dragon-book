@@ -1,4 +1,4 @@
-package inter; // File Unary.java
+package inter;
 
 import lexer.*;
 import symbols.*;

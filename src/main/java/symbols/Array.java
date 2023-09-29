@@ -1,4 +1,4 @@
-package symbols; // File Array.java
+package symbols;
 
 import lexer.*;
 

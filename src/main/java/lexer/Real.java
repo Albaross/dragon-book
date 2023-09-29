@@ -1,4 +1,4 @@
-package lexer; // File Real.java
+package lexer;
 
 public class Real extends Token {
     public final float value;

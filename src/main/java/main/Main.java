@@ -1,4 +1,4 @@
-package main; // File Main.java
+package main;
 
 import java.io.*;
 

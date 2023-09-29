@@ -1,4 +1,4 @@
-package lexer; // File Lexer.java
+package lexer;
 
 import java.io.*;
 import java.util.*;

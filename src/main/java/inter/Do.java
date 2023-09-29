@@ -1,4 +1,4 @@
-package inter; // File Do.java
+package inter;
 
 import symbols.*;
 

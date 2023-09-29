@@ -1,4 +1,4 @@
-package parser; // File Parser.java
+package parser;
 
 import java.io.*;
 

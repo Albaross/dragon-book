@@ -1,4 +1,4 @@
-package inter; // File Logical.java
+package inter;
 
 import lexer.*;
 import symbols.*;

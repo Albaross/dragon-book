@@ -1,4 +1,4 @@
-package inter; // File Access.java
+package inter;
 
 import lexer.*;
 import symbols.*;

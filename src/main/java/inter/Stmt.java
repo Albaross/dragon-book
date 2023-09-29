@@ -1,4 +1,4 @@
-package inter; // File Stmt.java
+package inter;
 
 public class Stmt extends Node {
     public Stmt() {}

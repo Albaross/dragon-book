@@ -1,4 +1,4 @@
-package inter; // File Break.java
+package inter;
 
 public class Break extends Stmt {
     Stmt stmt;

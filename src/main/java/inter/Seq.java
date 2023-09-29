@@ -1,4 +1,4 @@
-package inter; // File Seq.java
+package inter;
 
 public class Seq extends Stmt {
     Stmt stmt1;

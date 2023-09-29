@@ -1,4 +1,4 @@
-package inter; // File While.java
+package inter;
 
 import symbols.*;
 

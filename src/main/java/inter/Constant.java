@@ -1,4 +1,4 @@
-package inter; // File Constant.java
+package inter;
 
 import lexer.*;
 import symbols.*;

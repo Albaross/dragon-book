@@ -1,4 +1,4 @@
-package inter; // File Else.java
+package inter;
 
 import symbols.*;
 

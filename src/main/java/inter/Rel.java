@@ -1,4 +1,4 @@
-package inter; // File Rel.java
+package inter;
 
 import lexer.*;
 import symbols.*;

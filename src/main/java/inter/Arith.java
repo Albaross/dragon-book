@@ -1,4 +1,4 @@
-package inter; // File Arith.java
+package inter;
 
 import lexer.*;
 import symbols.*;

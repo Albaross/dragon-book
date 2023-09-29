@@ -1,4 +1,4 @@
-package symbols; // File Env.java
+package symbols;
 
 import java.util.*;
 
