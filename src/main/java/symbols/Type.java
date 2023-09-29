@@ -17,8 +17,7 @@ public class Type extends Word {
             Bool = new Type("bool", Tag.BASIC, 1);
 
     public static boolean numeric(Type p) {
-        if (p == Type.Char || p == Type.Int || p == Type.Float) return true;
-        else return false;
+        return p == Type.Char || p == Type.Int || p == Type.Float;
     }
 
     public static Type max(Type p1, Type p2) {
