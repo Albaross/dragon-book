@@ -89,10 +89,11 @@ public class Parser {
         Stmt s1, s2;
         Stmt savedStmt; // save enclosing loop for breaks
         switch (look.tag) {
-            case ';':
+            case ';' -> {
                 move();
                 return Stmt.Null;
-            case Tag.IF:
+            }
+            case Tag.IF -> {
                 match(Tag.IF);
                 match('(');
                 x = bool();
@@ -102,7 +103,8 @@ public class Parser {
                 match(Tag.ELSE);
                 s2 = stmt();
                 return new Else(x, s1, s2);
-            case Tag.WHILE:
+            }
+            case Tag.WHILE -> {
                 While whilenode = new While();
                 savedStmt = Stmt.Enclosing;
                 Stmt.Enclosing = whilenode;
@@ -114,7 +116,8 @@ public class Parser {
                 whilenode.init(x, s1);
                 Stmt.Enclosing = savedStmt; // reset Stmt.Enclosing
                 return whilenode;
-            case Tag.DO:
+            }
+            case Tag.DO -> {
                 Do donode = new Do();
                 savedStmt = Stmt.Enclosing;
                 Stmt.Enclosing = donode;
@@ -128,14 +131,18 @@ public class Parser {
                 donode.init(s1, x);
                 Stmt.Enclosing = savedStmt; // reset Stmt.Enclosing
                 return donode;
-            case Tag.BREAK:
+            }
+            case Tag.BREAK -> {
                 match(Tag.BREAK);
                 match(';');
                 return new Break();
-            case '{':
+            }
+            case '{' -> {
                 return block();
-            default:
+            }
+            default -> {
                 return assign();
+            }
         }
     }
 
@@ -190,15 +197,14 @@ public class Parser {
     Expr rel() throws IOException {
         Expr x = expr();
         switch (look.tag) {
-            case '<':
-            case Tag.LE:
-            case Tag.GE:
-            case '>':
+            case '<', Tag.LE, Tag.GE, '>' -> {
                 Token tok = look;
                 move();
                 return new Rel(tok, x, expr());
-            default:
+            }
+            default -> {
                 return x;
+            }
         }
     }
 
@@ -236,36 +242,43 @@ public class Parser {
     Expr factor() throws IOException {
         Expr x = null;
         switch (look.tag) {
-            case '(':
+            case '(' -> {
                 move();
                 x = bool();
                 match(')');
                 return x;
-            case Tag.NUM:
+            }
+            case Tag.NUM -> {
                 x = new Constant(look, Type.Int);
                 move();
                 return x;
-            case Tag.REAL:
+            }
+            case Tag.REAL -> {
                 x = new Constant(look, Type.Float);
                 move();
                 return x;
-            case Tag.TRUE:
+            }
+            case Tag.TRUE -> {
                 x = Constant.True;
                 move();
                 return x;
-            case Tag.FALSE:
+            }
+            case Tag.FALSE -> {
                 x = Constant.False;
                 move();
                 return x;
-            default:
+            }
+            default -> {
                 error("syntax error");
                 return x;
-            case Tag.ID:
+            }
+            case Tag.ID -> {
                 Id id = top.get(look);
                 if (id == null) error(look.toString() + " undeclared");
                 move();
                 if (look.tag != '[') return id;
                 else return offset(id);
+            }
         }
     }
 
