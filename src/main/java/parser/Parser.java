@@ -22,7 +22,7 @@ public class Parser {
     }
 
     void error(String s) {
-        throw new Error("near line " + Lexer.line + ": " + s);
+        throw new RuntimeException("near line " + Lexer.line + ": " + s);
     }
 
     void match(int t) throws IOException {
