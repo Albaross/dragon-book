@@ -9,12 +9,18 @@ public class Unary extends Op {
     public Unary(Token tok, Expr x) { // handles minus, for ! see Not
         super(tok, null);
         expr = x;
-        type = Type.max(Type.Int, expr.type);
-        if (type == null) error("type error");
+        type = max(expr.type);
     }
 
     public Expr gen() {
         return new Unary(op, expr.reduce());
+    }
+
+    public Type max(Type type) {
+        if (!type.isNumeric()) error("type error");
+        else if (type == Type.Float) return Type.Float;
+        else return Type.Int;
+        return null;
     }
 
     public String toString() {

@@ -19,11 +19,4 @@ public class Type extends Word {
     public boolean isNumeric() {
         return this == Type.Char || this == Type.Int || this == Type.Float;
     }
-
-    public static Type max(Type p1, Type p2) {
-        if (!p1.isNumeric() || !p2.isNumeric()) return null;
-        else if (p1 == Type.Float || p2 == Type.Float) return Type.Float;
-        else if (p1 == Type.Int || p2 == Type.Int) return Type.Int;
-        else return Type.Char;
-    }
 }
