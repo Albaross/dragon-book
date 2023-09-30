@@ -13,7 +13,7 @@ public class Set extends Stmt {
     }
 
     public Type check(Type p1, Type p2) {
-        if (Type.numeric(p1) && Type.numeric(p2)) return p2;
+        if (p1.isNumeric() && p2.isNumeric()) return p2;
         else if (p1 == Type.Bool && p2 == Type.Bool) return p2;
         else return null;
     }
