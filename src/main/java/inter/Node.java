@@ -2,7 +2,10 @@ package inter; // File Node.java
 
 import lexer.*;
 
+import java.io.PrintStream;
+
 public class Node {
+    public static PrintStream out = System.out;
     int lexline = 0;
 
     Node() {
@@ -20,10 +23,10 @@ public class Node {
     }
 
     public void emitlabel(int i) {
-        System.out.print("L" + i + ":");
+        out.print("L" + i + ":");
     }
 
     public void emit(String s) {
-        System.out.println("\t" + s);
+        out.println("\t" + s);
     }
 }
