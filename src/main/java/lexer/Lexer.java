@@ -8,11 +8,11 @@ import symbols.*;
 public class Lexer {
     public static int line = 1;
 
-    private final InputStream in;
-    private char peek = ' ';
-    private final HashMap<String, Word> words = new HashMap<>();
+    InputStream in;
+    char peek = ' ';
+    HashMap<String, Word> words = new HashMap<>();
 
-    private void reserve(Word w) {
+    void reserve(Word w) {
         words.put(w.lexeme, w);
     }
 

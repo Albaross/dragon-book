@@ -9,8 +9,8 @@ import inter.*;
 public class Parser {
     private final Lexer lex; // lexical analyzer for this parser
     private Token look; // lookahead token
-    private Env top = null; // current or top symbol table
-    private int used = 0; // storage used for declarations
+    Env top = null; // current or top symbol table
+    int used = 0; // storage used for declarations
 
     public Parser(Lexer l) throws IOException {
         lex = l;
