@@ -5,18 +5,19 @@ import lexer.Lexer;
 import java.io.PrintStream;
 
 public class Node {
+
     public static PrintStream out = System.out;
     private final int lexline;
 
-    Node() {
+    public Node() {
         lexline = Lexer.line;
     }
 
     void error(String s) {
-        throw new Error("near line " + lexline + ": " + s);
+        throw new RuntimeException("near line " + lexline + ": " + s);
     }
 
-    static int labels = 0;
+    private static int labels = 0;
 
     public int newlabel() {
         return ++labels;
