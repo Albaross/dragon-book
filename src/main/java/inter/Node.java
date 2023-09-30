@@ -1,12 +1,12 @@
 package inter;
 
-import lexer.*;
+import lexer.Lexer;
 
 import java.io.PrintStream;
 
 public class Node {
     public static PrintStream out = System.out;
-    int lexline;
+    private final int lexline;
 
     Node() {
         lexline = Lexer.line;

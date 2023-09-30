@@ -4,7 +4,7 @@ import lexer.*;
 import symbols.*;
 
 public class Arith extends Op {
-    public Expr expr1, expr2;
+    private final Expr expr1, expr2;
 
     public Arith(Token tok, Expr x1, Expr x2) {
         super(tok, null);

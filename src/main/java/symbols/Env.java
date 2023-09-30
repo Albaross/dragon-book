@@ -7,7 +7,7 @@ import inter.*;
 
 public class Env {
     private final HashMap<Token, Id> table;
-    protected Env prev;
+    private final Env prev;
 
     public Env(Env n) {
         table = new HashMap<>();

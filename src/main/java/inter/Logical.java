@@ -4,7 +4,7 @@ import lexer.*;
 import symbols.*;
 
 public class Logical extends Expr {
-    public Expr expr1, expr2;
+    protected final Expr expr1, expr2;
 
     Logical(Token tok, Expr x1, Expr x2) {
         super(tok, null); // null type to start

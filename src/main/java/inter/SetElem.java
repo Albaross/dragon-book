@@ -3,9 +3,9 @@ package inter;
 import symbols.*;
 
 public class SetElem extends Stmt {
-    public Id array;
-    public Expr index;
-    public Expr expr;
+    private final Id array;
+    private final Expr index;
+    private final Expr expr;
 
     public SetElem(Access x, Expr y) {
         array = x.array;

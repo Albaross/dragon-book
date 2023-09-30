@@ -3,8 +3,8 @@ package inter;
 import symbols.*;
 
 public class Do extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    private Expr expr;
+    private Stmt stmt;
 
     public Do() {
         expr = null;

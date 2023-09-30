@@ -4,8 +4,8 @@ import lexer.*;
 import symbols.*;
 
 public class Temp extends Expr {
-    static int count = 0;
-    int number;
+    private static int count = 0;
+    private final int number;
 
     public Temp(Type p) {
         super(Word.temp, p);

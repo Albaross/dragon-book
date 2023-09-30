@@ -1,8 +1,8 @@
 package inter;
 
 public class Seq extends Stmt {
-    Stmt stmt1;
-    Stmt stmt2;
+    private final Stmt stmt1;
+    private final Stmt stmt2;
 
     public Seq(Stmt s1, Stmt s2) {
         stmt1 = s1;

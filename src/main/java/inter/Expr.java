@@ -4,7 +4,7 @@ import lexer.*;
 import symbols.*;
 
 public class Expr extends Node {
-    public Token op;
+    protected final Token op;
     public Type type;
 
     Expr(Token tok, Type p) {

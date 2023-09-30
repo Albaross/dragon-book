@@ -3,8 +3,8 @@ package inter;
 import symbols.*;
 
 public class Set extends Stmt {
-    public Id id;
-    public Expr expr;
+    private final Id id;
+    private final Expr expr;
 
     public Set(Id i, Expr x) {
         id = i;

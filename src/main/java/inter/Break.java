@@ -1,7 +1,7 @@
 package inter;
 
 public class Break extends Stmt {
-    Stmt stmt;
+    private final Stmt stmt;
 
     public Break() {
         if (Stmt.Enclosing == Stmt.Null) error("unenclosed break");

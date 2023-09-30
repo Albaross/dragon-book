@@ -4,8 +4,8 @@ import lexer.*;
 import symbols.*;
 
 public class Access extends Op {
-    public Id array;
-    public Expr index;
+    public final Id array;
+    public final Expr index;
 
     public Access(Id a, Expr i, Type p) { // p is element type after
         super(new Word("[]", Tag.INDEX), p); // flattening the array

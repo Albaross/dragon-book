@@ -3,8 +3,8 @@ package inter;
 import symbols.*;
 
 public class While extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    private Expr expr;
+    private Stmt stmt;
 
     public While() {
         expr = null;

@@ -3,8 +3,8 @@ package inter;
 import symbols.*;
 
 public class Else extends Stmt {
-    Expr expr;
-    Stmt stmt1, stmt2;
+    private final Expr expr;
+    private final Stmt stmt1, stmt2;
 
     public Else(Expr x, Stmt s1, Stmt s2) {
         expr = x;

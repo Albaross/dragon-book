@@ -4,7 +4,7 @@ import lexer.*;
 import symbols.*;
 
 public class Unary extends Op {
-    public Expr expr;
+    private final Expr expr;
 
     public Unary(Token tok, Expr x) { // handles minus, for ! see Not
         super(tok, null);

@@ -1,10 +1,10 @@
 package inter;
 
-import symbols.*;
+import symbols.Type;
 
 public class If extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    private final Expr expr;
+    private final Stmt stmt;
 
     public If(Expr x, Stmt s) {
         expr = x;

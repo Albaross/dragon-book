@@ -8,9 +8,9 @@ import symbols.*;
 public class Lexer {
     public static int line = 1;
 
-    InputStream in;
-    char peek = ' ';
-    HashMap<String, Word> words = new HashMap<>();
+    private final InputStream in;
+    private char peek = ' ';
+    private final HashMap<String, Word> words = new HashMap<>();
 
     void reserve(Word w) {
         words.put(w.lexeme, w);
