@@ -7,6 +7,8 @@ import symbols.*;
 
 public class Lexer {
     public static int line = 1;
+
+    InputStream in;
     char peek = ' ';
     Hashtable words = new Hashtable();
 
@@ -14,7 +16,8 @@ public class Lexer {
         words.put(w.lexeme, w);
     }
 
-    public Lexer() {
+    public Lexer(InputStream in) {
+        this.in = in;
         reserve(new Word("if", Tag.IF));
         reserve(new Word("else", Tag.ELSE));
         reserve(new Word("while", Tag.WHILE));
@@ -29,7 +32,7 @@ public class Lexer {
     }
 
     void readch() throws IOException {
-        peek = (char) System.in.read();
+        peek = (char) in.read();
     }
 
     boolean readch(char c) throws IOException {
@@ -41,7 +44,7 @@ public class Lexer {
 
     public Token scan() throws IOException {
         for (; ; readch()) {
-            if (peek == ' ' || peek == '\t') continue;
+            if (peek == ' ' || peek == '\t' || peek == '\r') continue;
             else if (peek == '\n') line = line + 1;
             else break;
         }
