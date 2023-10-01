@@ -6,12 +6,11 @@ import lexer.*;
 import inter.*;
 
 public class Env {
-    private final HashMap<Token, Id> table;
+    private final HashMap<Token, Id> table = new HashMap<>();
     private final Env prev;
 
-    public Env(Env n) {
-        table = new HashMap<>();
-        prev = n;
+    public Env(Env prev) {
+        this.prev = prev;
     }
 
     public void put(Token w, Id i) {
@@ -20,7 +19,7 @@ public class Env {
 
     public Id get(Token w) {
         for (Env e = this; e != null; e = e.prev) {
-            Id found = e.table.get(w);
+            final Id found = e.table.get(w);
             if (found != null) return found;
         }
         return null;

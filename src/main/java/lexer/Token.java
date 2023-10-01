@@ -7,6 +7,7 @@ public class Token {
         tag = t;
     }
 
+    @Override
     public String toString() {
         return String.valueOf((char) tag);
     }

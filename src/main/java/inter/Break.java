@@ -5,10 +5,11 @@ public class Break extends Stmt {
 
     public Break() {
         if (Stmt.Enclosing == Stmt.Null) error("unenclosed break");
-        stmt = Stmt.Enclosing;
+        this.stmt = Stmt.Enclosing;
     }
 
-    public void gen(int b, int a) {
+    @Override
+    public void gen(int begin, int after) {
         emit("goto L" + stmt.after);
     }
 }

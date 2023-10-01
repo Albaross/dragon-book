@@ -7,9 +7,9 @@ public class Expr extends Node {
     protected final Token op;
     public Type type;
 
-    Expr(Token tok, Type p) {
-        op = tok;
-        type = p;
+    Expr(Token tok, Type type) {
+        this.op = tok;
+        this.type = type;
     }
 
     public Expr gen() {
@@ -21,10 +21,10 @@ public class Expr extends Node {
     }
 
     public void jumping(int t, int f) {
-        emitjumps(toString(), t, f);
+        emitJumps(toString(), t, f);
     }
 
-    public void emitjumps(String test, int t, int f) {
+    public void emitJumps(String test, int t, int f) {
         if (t != 0 && f != 0) {
             emit("if " + test + " goto L" + t);
             emit("goto L" + f);
@@ -33,6 +33,7 @@ public class Expr extends Node {
         // nothing since both t and f fall through
     }
 
+    @Override
     public String toString() {
         return op.toString();
     }

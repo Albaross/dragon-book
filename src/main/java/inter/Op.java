@@ -8,6 +8,7 @@ public class Op extends Expr {
         super(tok, type);
     }
 
+    @Override
     public Expr reduce() {
         final Expr expr = gen();
         final Temp temp = new Temp(type);

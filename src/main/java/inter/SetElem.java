@@ -7,11 +7,11 @@ public class SetElem extends Stmt {
     private final Expr index;
     private final Expr expr;
 
-    public SetElem(Access x, Expr y) {
-        array = x.array;
-        index = x.index;
-        expr = y;
-        if (check(x.type, expr.type) == null) error("type error");
+    public SetElem(Access access, Expr expr) {
+        this.array = access.array;
+        this.index = access.index;
+        this.expr = expr;
+        if (check(access.type, expr.type) == null) error("type error");
     }
 
     public Type check(Type p1, Type p2) {
@@ -21,9 +21,10 @@ public class SetElem extends Stmt {
         else return null;
     }
 
-    public void gen(int b, int a) {
-        String s1 = index.reduce().toString();
-        String s2 = expr.reduce().toString();
+    @Override
+    public void gen(int begin, int after) {
+        final String s1 = index.reduce().toString();
+        final String s2 = expr.reduce().toString();
         emit(array + "[" + s1 + "] = " + s2);
     }
 }

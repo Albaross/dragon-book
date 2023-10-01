@@ -6,19 +6,20 @@ import symbols.*;
 public class Logical extends Expr {
     protected final Expr expr1, expr2;
 
-    Logical(Token tok, Expr x1, Expr x2) {
+    Logical(Token tok, Expr expr1, Expr expr2) {
         super(tok, null); // null type to start
-        expr1 = x1;
-        expr2 = x2;
+        this.expr1 = expr1;
+        this.expr2 = expr2;
         type = check(expr1.type, expr2.type);
-        if (type == null) error("type error");
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 == Type.Bool && p2 == Type.Bool) return Type.Bool;
-        else return null;
+    protected Type check(Type type1, Type type2) {
+        if (type1 == Type.BOOL && type2 == Type.BOOL) return Type.BOOL;
+        error("type error");
+        return null; // not reachable
     }
 
+    @Override
     public Expr gen() {
         int f = newlabel();
         int a = newlabel();
@@ -32,6 +33,7 @@ public class Logical extends Expr {
         return temp;
     }
 
+    @Override
     public String toString() {
         return expr1 + " " + op + " " + expr2;
     }

@@ -4,7 +4,6 @@ import lexer.*;
 import symbols.*;
 
 public class Arith extends Op {
-
     private final Expr expr1;
     private final Expr expr2;
 
@@ -14,18 +13,20 @@ public class Arith extends Op {
         this.expr2 = expr2;
     }
 
+    @Override
     public Expr gen() {
         return new Arith(op, expr1.reduce(), expr2.reduce());
     }
 
-    private static Type max(Type type1, Type type2) {
-        if (!type1.isNumeric() || !type2.isNumeric()) error("type error");
-        else if (type1 == Type.Float || type2 == Type.Float) return Type.Float;
-        else if (type1 == Type.Int || type2 == Type.Int) return Type.Int;
-        return Type.Char;
-    }
-
+    @Override
     public String toString() {
         return expr1 + " " + op + " " + expr2;
+    }
+
+    private static Type max(Type type1, Type type2) {
+        if (!type1.isNumeric() || !type2.isNumeric()) error("type error");
+        else if (type1 == Type.FLOAT || type2 == Type.FLOAT) return Type.FLOAT;
+        else if (type1 == Type.INT || type2 == Type.INT) return Type.INT;
+        return Type.CHAR;
     }
 }

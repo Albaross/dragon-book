@@ -18,59 +18,59 @@ public class Lexer {
 
     public Lexer(InputStream in) {
         this.in = in;
-        reserve(new Word("if", Tag.IF));
-        reserve(new Word("else", Tag.ELSE));
-        reserve(new Word("while", Tag.WHILE));
-        reserve(new Word("do", Tag.DO));
-        reserve(new Word("break", Tag.BREAK));
-        reserve(Word.True);
-        reserve(Word.False);
-        reserve(Type.Int);
-        reserve(Type.Char);
-        reserve(Type.Bool);
-        reserve(Type.Float);
+        reserve(Word.IF);
+        reserve(Word.ELSE);
+        reserve(Word.WHILE);
+        reserve(Word.DO);
+        reserve(Word.BREAK);
+        reserve(Word.TRUE);
+        reserve(Word.FALSE);
+        reserve(Type.INT);
+        reserve(Type.CHAR);
+        reserve(Type.BOOL);
+        reserve(Type.FLOAT);
     }
 
-    void readch() throws IOException {
+    void readChar() throws IOException {
         peek = (char) in.read();
     }
 
-    boolean readch(char c) throws IOException {
-        readch();
+    boolean readChar(char c) throws IOException {
+        readChar();
         if (peek != c) return false;
         peek = ' ';
         return true;
     }
 
     public Token scan() throws IOException {
-        for (; ; readch()) {
+        for (; ; readChar()) {
             if (peek == ' ' || peek == '\t' || peek == '\r') continue;
             else if (peek == '\n') line = line + 1;
             else break;
         }
         switch (peek) {
             case '&' -> {
-                if (readch('&')) return Word.and;
+                if (readChar('&')) return Word.AND;
                 else return new Token('&');
             }
             case '|' -> {
-                if (readch('|')) return Word.or;
+                if (readChar('|')) return Word.OR;
                 else return new Token('|');
             }
             case '=' -> {
-                if (readch('=')) return Word.eq;
+                if (readChar('=')) return Word.EQ;
                 else return new Token('=');
             }
             case '!' -> {
-                if (readch('=')) return Word.ne;
+                if (readChar('=')) return Word.NE;
                 else return new Token('!');
             }
             case '<' -> {
-                if (readch('=')) return Word.le;
+                if (readChar('=')) return Word.LE;
                 else return new Token('<');
             }
             case '>' -> {
-                if (readch('=')) return Word.ge;
+                if (readChar('=')) return Word.GE;
                 else return new Token('>');
             }
         }
@@ -78,13 +78,13 @@ public class Lexer {
             int v = 0;
             do {
                 v = 10 * v + Character.digit(peek, 10);
-                readch();
+                readChar();
             } while (Character.isDigit(peek));
             if (peek != '.') return new Num(v);
             float x = v;
             float d = 10;
             for (; ; ) {
-                readch();
+                readChar();
                 if (!Character.isDigit(peek)) break;
                 x = x + Character.digit(peek, 10) / d;
                 d = d * 10;
@@ -95,7 +95,7 @@ public class Lexer {
             StringBuilder b = new StringBuilder();
             do {
                 b.append(peek);
-                readch();
+                readChar();
             } while (Character.isLetterOrDigit(peek));
             String s = b.toString();
             Word w = words.get(s);

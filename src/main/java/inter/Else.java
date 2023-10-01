@@ -4,23 +4,25 @@ import symbols.*;
 
 public class Else extends Stmt {
     private final Expr expr;
-    private final Stmt stmt1, stmt2;
+    private final Stmt stmt1;
+    private final Stmt stmt2;
 
-    public Else(Expr x, Stmt s1, Stmt s2) {
-        expr = x;
-        stmt1 = s1;
-        stmt2 = s2;
-        if (expr.type != Type.Bool) expr.error("boolean required in if");
+    public Else(Expr expr, Stmt stmt1, Stmt stmt2) {
+        if (expr.type != Type.BOOL) error("boolean required in if");
+        this.expr = expr;
+        this.stmt1 = stmt1;
+        this.stmt2 = stmt2;
     }
 
-    public void gen(int b, int a) {
-        int label1 = newlabel(); // label1 for stmt1
-        int label2 = newlabel(); // label2 for stmt2
+    @Override
+    public void gen(int begin, int after) {
+        final int label1 = newlabel(); // label1 for stmt1
+        final int label2 = newlabel(); // label2 for stmt2
         expr.jumping(0, label2); // fall through to stmt1 on true
         emitlabel(label1);
-        stmt1.gen(label1, a);
-        emit("goto L" + a);
+        stmt1.gen(label1, after);
+        emit("goto L" + after);
         emitlabel(label2);
-        stmt2.gen(label2, a);
+        stmt2.gen(label2, after);
     }
 }

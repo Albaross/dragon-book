@@ -4,19 +4,20 @@ public class Seq extends Stmt {
     private final Stmt stmt1;
     private final Stmt stmt2;
 
-    public Seq(Stmt s1, Stmt s2) {
-        stmt1 = s1;
-        stmt2 = s2;
+    public Seq(Stmt stmt1, Stmt stmt2) {
+        this.stmt1 = stmt1;
+        this.stmt2 = stmt2;
     }
 
-    public void gen(int b, int a) {
-        if (stmt1 == Stmt.Null) stmt2.gen(b, a);
-        else if (stmt2 == Stmt.Null) stmt1.gen(b, a);
+    @Override
+    public void gen(int begin, int after) {
+        if (stmt1 == Stmt.Null) stmt2.gen(begin, after);
+        else if (stmt2 == Stmt.Null) stmt1.gen(begin, after);
         else {
-            int label = newlabel();
-            stmt1.gen(b, label);
+            final int label = newlabel();
+            stmt1.gen(begin, label);
             emitlabel(label);
-            stmt2.gen(label, a);
+            stmt2.gen(label, after);
         }
     }
 }

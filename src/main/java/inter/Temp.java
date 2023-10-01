@@ -8,10 +8,11 @@ public class Temp extends Expr {
     private final int number;
 
     public Temp(Type p) {
-        super(Word.temp, p);
-        number = ++count;
+        super(Word.TEMP, p);
+        this.number = ++count;
     }
 
+    @Override
     public String toString() {
         return "t" + number;
     }

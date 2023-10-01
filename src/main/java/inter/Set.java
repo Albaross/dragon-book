@@ -6,19 +6,20 @@ public class Set extends Stmt {
     private final Id id;
     private final Expr expr;
 
-    public Set(Id i, Expr x) {
-        id = i;
-        expr = x;
+    public Set(Id id, Expr expr) {
+        this.id = id;
+        this.expr = expr;
         if (check(id.type, expr.type) == null) error("type error");
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1.isNumeric() && p2.isNumeric()) return p2;
-        else if (p1 == Type.Bool && p2 == Type.Bool) return p2;
+    public Type check(Type type1, Type type2) {
+        if (type1.isNumeric() && type2.isNumeric()) return type2;
+        else if (type1 == Type.BOOL && type2 == Type.BOOL) return type2;
         else return null;
     }
 
-    public void gen(int b, int a) {
+    @Override
+    public void gen(int begin, int after) {
         emit(id + " = " + expr.gen());
     }
 }

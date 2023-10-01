@@ -21,6 +21,8 @@ public class Node {
         out.println("\t" + s);
     }
 
+    public void gen(int begin, int after) {} // called with labels begin and after
+
     public static void error(String s) {
         throw new RuntimeException("near line " + Lexer.line + ": " + s);
     }
