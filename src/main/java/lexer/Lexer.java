@@ -6,7 +6,7 @@ import java.util.*;
 import symbols.*;
 
 public class Lexer {
-    public static int line = 1;
+    private int line = 1;
 
     private final InputStream in;
     private char peek = ' ';
@@ -107,5 +107,9 @@ public class Lexer {
         Token tok = new Token(peek);
         peek = ' ';
         return tok;
+    }
+
+    public int getLine() {
+        return line;
     }
 }

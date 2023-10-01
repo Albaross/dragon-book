@@ -1,5 +1,6 @@
 package parser;
 
+import error.ParseException;
 import java.io.*;
 
 import lexer.*;
@@ -21,22 +22,22 @@ public class Parser {
         look = lex.scan();
     }
 
-    void error(String s) {
-        throw new RuntimeException("near line " + Lexer.line + ": " + s);
-    }
-
     void match(int t) throws IOException {
         if (look.tag == t) move();
-        else error("syntax error");
+        else throw new ParseException("syntax error");
     }
 
     public void program() throws IOException { // program -> block
-        Stmt s = block();
-        int begin = s.newlabel();
-        int after = s.newlabel();
-        s.emitlabel(begin);
-        s.gen(begin, after);
-        s.emitlabel(after);
+        try {
+            Stmt s = block();
+            int begin = s.newlabel();
+            int after = s.newlabel();
+            s.emitlabel(begin);
+            s.gen(begin, after);
+            s.emitlabel(after);
+        } catch (ParseException e) {
+            throw new ParseException(e, lex.getLine());
+        }
     }
 
     Stmt block() throws IOException { // block -> { decls stmts }
@@ -151,7 +152,7 @@ public class Parser {
         Token t = look;
         match(Tag.ID);
         Id id = top.get(t);
-        if (id == null) error(t + " undeclared");
+        if (id == null) throw new ParseException(t + " undeclared");
         if (look.tag == '=') { // S -> id = E ;
             move();
             stmt = new Set(id, bool());
@@ -240,7 +241,7 @@ public class Parser {
     }
 
     Expr factor() throws IOException {
-        Expr x = null;
+        Expr x;
         switch (look.tag) {
             case '(' -> {
                 move();
@@ -268,13 +269,10 @@ public class Parser {
                 move();
                 return x;
             }
-            default -> {
-                error("syntax error");
-                return x;
-            }
+            default -> throw new ParseException("syntax error");
             case Tag.ID -> {
-                Id id = top.get(look);
-                if (id == null) error(look + " undeclared");
+                final Id id = top.get(look);
+                if (id == null) throw new ParseException(look + " undeclared");
                 move();
                 if (look.tag != '[') return id;
                 else return offset(id);

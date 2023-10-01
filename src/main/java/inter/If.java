@@ -1,13 +1,14 @@
 package inter;
 
-import symbols.Type;
+import error.ParseException;
+import symbols.*;
 
 public class If extends Stmt {
     private final Expr expr;
     private final Stmt stmt;
 
     public If(Expr expr, Stmt stmt) {
-        if (expr.type != Type.BOOL) error("boolean required in if");
+        if (expr.type != Type.BOOL) throw new ParseException("boolean required in if");
         this.expr = expr;
         this.stmt = stmt;
     }

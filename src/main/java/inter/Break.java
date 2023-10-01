@@ -1,10 +1,12 @@
 package inter;
 
+import error.ParseException;
+
 public class Break extends Stmt {
     private final Stmt stmt;
 
     public Break() {
-        if (Stmt.Enclosing == Stmt.Null) error("unenclosed break");
+        if (Stmt.Enclosing == Stmt.Null) throw new ParseException("unenclosed break");
         this.stmt = Stmt.Enclosing;
     }
 

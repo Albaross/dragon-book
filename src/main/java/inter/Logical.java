@@ -1,5 +1,6 @@
 package inter;
 
+import error.ParseException;
 import lexer.*;
 import symbols.*;
 
@@ -10,13 +11,12 @@ public class Logical extends Expr {
         super(tok, null); // null type to start
         this.expr1 = expr1;
         this.expr2 = expr2;
-        type = check(expr1.type, expr2.type);
+        this.type = check(expr1.type, expr2.type);
     }
 
     protected Type check(Type type1, Type type2) {
         if (type1 == Type.BOOL && type2 == Type.BOOL) return Type.BOOL;
-        error("type error");
-        return null; // not reachable
+        throw new ParseException("type error");
     }
 
     @Override

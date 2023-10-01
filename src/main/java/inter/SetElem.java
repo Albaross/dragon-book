@@ -1,5 +1,6 @@
 package inter;
 
+import error.ParseException;
 import symbols.*;
 
 public class SetElem extends Stmt {
@@ -8,17 +9,17 @@ public class SetElem extends Stmt {
     private final Expr expr;
 
     public SetElem(Access access, Expr expr) {
+        checkTypes(access.type, expr.type);
         this.array = access.array;
         this.index = access.index;
         this.expr = expr;
-        if (check(access.type, expr.type) == null) error("type error");
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 instanceof Array || p2 instanceof Array) return null;
-        else if (p1 == p2) return p2;
-        else if (p1.isNumeric() && p2.isNumeric()) return p2;
-        else return null;
+    private void checkTypes(Type type1, Type type2) {
+        if (type1 instanceof Array || type2 instanceof Array) throw new ParseException("type error");
+        else if (type1 == type2) return;
+        else if (type1.isNumeric() && type2.isNumeric()) return;
+        throw new ParseException("type error");
     }
 
     @Override

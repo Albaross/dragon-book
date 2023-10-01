@@ -1,5 +1,6 @@
 package inter;
 
+import error.ParseException;
 import symbols.*;
 
 public class Else extends Stmt {
@@ -8,7 +9,7 @@ public class Else extends Stmt {
     private final Stmt stmt2;
 
     public Else(Expr expr, Stmt stmt1, Stmt stmt2) {
-        if (expr.type != Type.BOOL) error("boolean required in if");
+        if (expr.type != Type.BOOL) throw new ParseException("boolean required in if");
         this.expr = expr;
         this.stmt1 = stmt1;
         this.stmt2 = stmt2;

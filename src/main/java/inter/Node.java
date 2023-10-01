@@ -1,7 +1,5 @@
 package inter;
 
-import lexer.Lexer;
-
 import java.io.PrintStream;
 
 public class Node {
@@ -22,8 +20,4 @@ public class Node {
     }
 
     public void gen(int begin, int after) {} // called with labels begin and after
-
-    public static void error(String s) {
-        throw new RuntimeException("near line " + Lexer.line + ": " + s);
-    }
 }
