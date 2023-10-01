@@ -25,6 +25,6 @@ public class Access extends Op {
 
     @Override
     public String toString() {
-        return array + "[" + index + "]";
+        return array + " [ " + index + " ]";
     }
 }

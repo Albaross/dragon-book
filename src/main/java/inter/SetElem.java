@@ -26,6 +26,6 @@ public class SetElem extends Stmt {
     public void gen(int begin, int after) {
         final String s1 = index.reduce().toString();
         final String s2 = expr.reduce().toString();
-        emit(array + "[" + s1 + "] = " + s2);
+        emit(array + " [ " + s1 + " ] = " + s2);
     }
 }
