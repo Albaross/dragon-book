@@ -1,31 +1,22 @@
-package parser;
+package gen;
 
-import inter.Node;
 import lexer.Lexer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import parser.Parser;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
-public class ParserTest {
+public class GeneratorTest {
 
     @Test
     public void codeIsGeneratedCorrectly() throws IOException {
-        final var buffer = new ByteArrayOutputStream();
-        Node.out = new PrintStream(buffer);
-
-        try (InputStream in = new FileInputStream("src/test/resources/test")) {
-            Lexer lex = new Lexer(in);
-            Parser parse = new Parser(lex);
-            parse.program();
+        try (final var in = new FileInputStream("src/test/resources/test")) {
+            Generator gen = new Generator(new Parser(new Lexer(in)));
+            Assertions.assertEquals(LINES, gen.generate());
         }
-
-        final var lines = Arrays.asList(buffer.toString().split("\r?\n"));
-        Assertions.assertEquals(LINES, lines);
-
-        lines.forEach(System.out::println);
     }
 
     private static final List<String> LINES = List.of(
