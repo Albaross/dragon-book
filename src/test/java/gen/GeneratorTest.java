@@ -14,8 +14,11 @@ public class GeneratorTest {
     @Test
     public void codeIsGeneratedCorrectly() throws IOException {
         try (final var in = new FileInputStream("src/test/resources/test")) {
-            Generator gen = new Generator(new Parser(new Lexer(in)));
-            Assertions.assertEquals(LINES, gen.generate());
+            Lexer lex = new Lexer(in);
+            Parser parse = new Parser(lex);
+            Generator gen = new Generator(parse);
+
+            Assertions.assertEquals(LINES, gen.gen());
         }
     }
 
