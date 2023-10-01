@@ -2,6 +2,7 @@ package parser; // File Parser.java
 
 import java.io.*;
 
+import error.*;
 import lexer.*;
 import symbols.*;
 import inter.*;
@@ -22,7 +23,7 @@ public class Parser {
     }
 
     void error(String s) {
-        throw new Error("near line " + lex.line + ": " + s);
+        throw new ParseError("near line " + lex.line + ": " + s);
     }
 
     void match(int t) throws IOException {

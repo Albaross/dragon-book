@@ -1,5 +1,6 @@
 package inter; // File Node.java
 
+import error.*;
 import lexer.*;
 
 import java.io.PrintStream;
@@ -13,7 +14,7 @@ public class Node {
     }
 
     void error(String s) {
-        throw new Error("near line " + lexline + ": " + s);
+        throw new ParseError("near line " + lexline + ": " + s);
     }
 
     static int labels = 0;
