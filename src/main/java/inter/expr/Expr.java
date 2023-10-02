@@ -8,8 +8,8 @@ public class Expr extends Node {
     protected final Token op;
     public Type type;
 
-    public Expr(Token tok, Type type) {
-        this.op = tok;
+    public Expr(Token op, Type type) {
+        this.op = op;
         this.type = type;
     }
 
