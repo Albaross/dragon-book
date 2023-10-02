@@ -8,11 +8,11 @@ import symbols.*;
 public class Lexer {
     private int line = 1;
 
+    private final HashMap<String, Word> words = new HashMap<>();
     private final InputStream in;
     private char peek = ' ';
-    private final HashMap<String, Word> words = new HashMap<>();
 
-    void reserve(Word w) {
+    private void reserve(Word w) {
         words.put(w.lexeme, w);
     }
 
@@ -31,18 +31,22 @@ public class Lexer {
         reserve(Type.FLOAT);
     }
 
-    void readChar() throws IOException {
-        peek = (char) in.read();
+    private void readChar() {
+        try {
+            peek = (char) in.read();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
-    boolean readChar(char c) throws IOException {
+    private boolean readChar(char c) {
         readChar();
         if (peek != c) return false;
         peek = ' ';
         return true;
     }
 
-    public Token scan() throws IOException {
+    public Token scan() {
         for (; ; readChar()) {
             if (peek == ' ' || peek == '\t' || peek == '\r') continue;
             else if (peek == '\n') line = line + 1;
@@ -75,36 +79,36 @@ public class Lexer {
             }
         }
         if (Character.isDigit(peek)) {
-            int v = 0;
+            int value = 0;
             do {
-                v = 10 * v + Character.digit(peek, 10);
+                value = 10 * value + Character.digit(peek, 10);
                 readChar();
             } while (Character.isDigit(peek));
-            if (peek != '.') return new Num(v);
-            float x = v;
-            float d = 10;
+            if (peek != '.') return new Num(value);
+            float realValue = value;
+            float div = 10;
             for (; ; ) {
                 readChar();
                 if (!Character.isDigit(peek)) break;
-                x = x + Character.digit(peek, 10) / d;
-                d = d * 10;
+                realValue += (Character.digit(peek, 10) / div);
+                div *= 10;
             }
-            return new Real(x);
+            return new Real(realValue);
         }
         if (Character.isLetter(peek)) {
-            StringBuilder b = new StringBuilder();
+            final var builder = new StringBuilder();
             do {
-                b.append(peek);
+                builder.append(peek);
                 readChar();
             } while (Character.isLetterOrDigit(peek));
-            String s = b.toString();
-            Word w = words.get(s);
-            if (w != null) return w;
-            w = new Word(s, Tag.ID);
-            words.put(s, w);
-            return w;
+            String key = builder.toString();
+            Word word = words.get(key);
+            if (word != null) return word;
+            word = new Word(key, Tag.ID);
+            words.put(key, word);
+            return word;
         }
-        Token tok = new Token(peek);
+        final Token tok = new Token(peek);
         peek = ' ';
         return tok;
     }
