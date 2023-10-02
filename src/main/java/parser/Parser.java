@@ -1,8 +1,8 @@
 package parser;
 
-import error.ParseException;
 import java.io.*;
 
+import error.*;
 import lexer.*;
 import symbols.*;
 import inter.*;
@@ -24,10 +24,10 @@ public class Parser {
 
     void match(int t) throws IOException {
         if (look.tag == t) move();
-        else throw new ParseException("syntax error");
+        else throw new ParseError("syntax error");
     }
 
-    public void program() throws IOException { // program -> block
+    public Node program() throws IOException { // program -> block
         try {
             Stmt s = block();
             int begin = s.newlabel();
@@ -35,8 +35,9 @@ public class Parser {
             s.emitlabel(begin);
             s.gen(begin, after);
             s.emitlabel(after);
-        } catch (ParseException e) {
-            throw new ParseException(e, lex.getLine());
+            return s;
+        } catch (ParseError e) {
+            throw new ParseError(e, lex.getLine());
         }
     }
 
@@ -152,7 +153,7 @@ public class Parser {
         Token t = look;
         match(Tag.ID);
         Id id = top.get(t);
-        if (id == null) throw new ParseException(t + " undeclared");
+        if (id == null) throw new ParseError(t + " undeclared");
         if (look.tag == '=') { // S -> id = E ;
             move();
             stmt = new Set(id, bool());
@@ -269,10 +270,10 @@ public class Parser {
                 move();
                 return x;
             }
-            default -> throw new ParseException("syntax error");
+            default -> throw new ParseError("syntax error");
             case Tag.ID -> {
                 final Id id = top.get(look);
-                if (id == null) throw new ParseException(look + " undeclared");
+                if (id == null) throw new ParseError(look + " undeclared");
                 move();
                 if (look.tag != '[') return id;
                 else return offset(id);
