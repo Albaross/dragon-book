@@ -1,14 +1,17 @@
-package inter; // File Break.java
+package inter;
+
+import error.*;
 
 public class Break extends Stmt {
-    Stmt stmt;
+    private final Stmt stmt;
 
     public Break() {
-        if (Stmt.Enclosing == Stmt.Null) error("unenclosed break");
-        stmt = Stmt.Enclosing;
+        if (Stmt.Enclosing == Stmt.Null) throw new ParseError("unenclosed break");
+        this.stmt = Stmt.Enclosing;
     }
 
-    public void gen(int b, int a) {
+    @Override
+    public void gen(int begin, int after) {
         emit("goto L" + stmt.after);
     }
 }

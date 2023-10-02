@@ -1,17 +1,18 @@
-package inter; // File Temp.java
+package inter;
 
 import lexer.*;
 import symbols.*;
 
 public class Temp extends Expr {
-    static int count = 0;
-    int number = 0;
+    private static int count = 0;
+    private final int number;
 
     public Temp(Type p) {
-        super(Word.temp, p);
-        number = ++count;
+        super(Word.TEMP, p);
+        this.number = ++count;
     }
 
+    @Override
     public String toString() {
         return "t" + number;
     }

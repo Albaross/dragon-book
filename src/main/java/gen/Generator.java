@@ -8,14 +8,14 @@ import java.util.*;
 
 public class Generator {
 
-    private Parser parse;
+    private final Parser parse;
 
-    public Generator(Parser p) {
-        parse = p;
+    public Generator(Parser parse) {
+        this.parse = parse;
     }
 
     public List<String> gen() throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        final var buffer = new ByteArrayOutputStream();
         Node.out = new PrintStream(buffer);
         parse.program();
         return Arrays.asList(buffer.toString().split("\r?\n"));

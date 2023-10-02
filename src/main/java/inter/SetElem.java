@@ -1,30 +1,31 @@
-package inter; // File SetElem.java
+package inter;
 
-import lexer.*;
+import error.*;
 import symbols.*;
 
 public class SetElem extends Stmt {
-    public Id array;
-    public Expr index;
-    public Expr expr;
+    private final Id array;
+    private final Expr index;
+    private final Expr expr;
 
-    public SetElem(Access x, Expr y) {
-        array = x.array;
-        index = x.index;
-        expr = y;
-        if (check(x.type, expr.type) == null) error("type error");
+    public SetElem(Access access, Expr expr) {
+        checkTypes(access.type, expr.type);
+        this.array = access.array;
+        this.index = access.index;
+        this.expr = expr;
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 instanceof Array || p2 instanceof Array) return null;
-        else if (p1 == p2) return p2;
-        else if (Type.numeric(p1) && Type.numeric(p2)) return p2;
-        else return null;
+    private void checkTypes(Type type1, Type type2) {
+        if (type1 instanceof Array || type2 instanceof Array) throw new ParseError("type error");
+        else if (type1 == type2) return;
+        else if (type1.isNumeric() && type2.isNumeric()) return;
+        throw new ParseError("type error");
     }
 
-    public void gen(int b, int a) {
-        String s1 = index.reduce().toString();
-        String s2 = expr.reduce().toString();
-        emit(array.toString() + " [ " + s1 + " ] = " + s2);
+    @Override
+    public void gen(int begin, int after) {
+        final String s1 = index.reduce().toString();
+        final String s2 = expr.reduce().toString();
+        emit(array + " [ " + s1 + " ] = " + s2);
     }
 }

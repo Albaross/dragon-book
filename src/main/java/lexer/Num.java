@@ -1,14 +1,15 @@
-package lexer; // File Num.java
+package lexer;
 
 public class Num extends Token {
     public final int value;
 
-    public Num(int v) {
+    public Num(int value) {
         super(Tag.NUM);
-        value = v;
+        this.value = value;
     }
 
+    @Override
     public String toString() {
-        return "" + value;
+        return String.valueOf(value);
     }
 }

@@ -1,24 +1,26 @@
-package inter; // File Rel.java
+package inter;
 
 import lexer.*;
 import symbols.*;
 
 public class Rel extends Logical {
-    public Rel(Token tok, Expr x1, Expr x2) {
-        super(tok, x1, x2);
+    public Rel(Token tok, Expr expr1, Expr expr2) {
+        super(tok, expr1, expr2);
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 instanceof Array || p2 instanceof Array) return null;
-        else if (p1 == p2) return Type.Bool;
+    @Override
+    protected Type check(Type type1, Type type2) {
+        if (type1 instanceof Array || type2 instanceof Array) return null;
+        else if (type1 == type2) return Type.BOOL;
         else return null;
     }
 
+    @Override
     public void jumping(int t, int f) {
-        Expr a = expr1.reduce();
-        Expr b = expr2.reduce();
+        final Expr a = expr1.reduce();
+        final Expr b = expr2.reduce();
 
-        String test = a.toString() + " " + op.toString() + " " + b.toString();
-        emitjumps(test, t, f);
+        final String test = a + " " + op + " " + b;
+        emitJumps(test, t, f);
     }
 }

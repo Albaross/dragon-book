@@ -1,27 +1,24 @@
-package inter; // File Do.java
+package inter;
 
+import error.*;
 import symbols.*;
 
 public class Do extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    private Expr expr;
+    private Stmt stmt;
 
-    public Do() {
-        expr = null;
-        stmt = null;
+    public void init(Stmt stmt, Expr expr) {
+        if (expr.type != Type.BOOL) throw new ParseError("boolean required in do");
+        this.expr = expr;
+        this.stmt = stmt;
     }
 
-    public void init(Stmt s, Expr x) {
-        expr = x;
-        stmt = s;
-        if (expr.type != Type.Bool) expr.error("boolean required in do");
-    }
-
-    public void gen(int b, int a) {
-        after = a;
-        int label = newlabel(); // label for expr
-        stmt.gen(b, label);
+    @Override
+    public void gen(int begin, int after) {
+        this.after = after;
+        final int label = newlabel(); // label for expr
+        stmt.gen(begin, label);
         emitlabel(label);
-        expr.jumping(b, 0);
+        expr.jumping(begin, 0);
     }
 }

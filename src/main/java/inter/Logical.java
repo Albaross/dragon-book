@@ -1,38 +1,40 @@
-package inter; // File Logical.java
+package inter;
 
+import error.*;
 import lexer.*;
 import symbols.*;
 
 public class Logical extends Expr {
-    public Expr expr1, expr2;
+    protected final Expr expr1, expr2;
 
-    Logical(Token tok, Expr x1, Expr x2) {
+    Logical(Token tok, Expr expr1, Expr expr2) {
         super(tok, null); // null type to start
-        expr1 = x1;
-        expr2 = x2;
-        type = check(expr1.type, expr2.type);
-        if (type == null) error("type error");
+        this.expr1 = expr1;
+        this.expr2 = expr2;
+        this.type = check(expr1.type, expr2.type);
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 == Type.Bool && p2 == Type.Bool) return Type.Bool;
-        else return null;
+    protected Type check(Type type1, Type type2) {
+        if (type1 == Type.BOOL && type2 == Type.BOOL) return Type.BOOL;
+        throw new ParseError("type error");
     }
 
+    @Override
     public Expr gen() {
         int f = newlabel();
         int a = newlabel();
         Temp temp = new Temp(type);
         this.jumping(0, f);
-        emit(temp.toString() + " = true");
+        emit(temp + " = true");
         emit("goto L" + a);
         emitlabel(f);
-        emit(temp.toString() + " = false");
+        emit(temp + " = false");
         emitlabel(a);
         return temp;
     }
 
+    @Override
     public String toString() {
-        return expr1.toString() + " " + op.toString() + " " + expr2.toString();
+        return expr1 + " " + op + " " + expr2;
     }
 }

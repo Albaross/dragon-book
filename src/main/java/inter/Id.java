@@ -1,13 +1,13 @@
-package inter; // File Id.java
+package inter;
 
 import lexer.*;
 import symbols.*;
 
 public class Id extends Expr {
-    public int offset; // relative address
+    private final int offset; // relative address
 
-    public Id(Word id, Type p, int b) {
-        super(id, p);
-        offset = b;
+    public Id(Word id, Type type, int offset) {
+        super(id, type);
+        this.offset = offset;
     }
 }

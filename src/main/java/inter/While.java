@@ -1,28 +1,25 @@
-package inter; // File While.java
+package inter;
 
+import error.*;
 import symbols.*;
 
 public class While extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    private Expr expr;
+    private Stmt stmt;
 
-    public While() {
-        expr = null;
-        stmt = null;
+    public void init(Expr expr, Stmt stmt) {
+        if (expr.type != Type.BOOL) throw new ParseError("boolean required in while");
+        this.expr = expr;
+        this.stmt = stmt;
     }
 
-    public void init(Expr x, Stmt s) {
-        expr = x;
-        stmt = s;
-        if (expr.type != Type.Bool) expr.error("boolean required in while");
-    }
-
-    public void gen(int b, int a) {
-        after = a; // save label a
-        expr.jumping(0, a);
+    @Override
+    public void gen(int begin, int after) {
+        this.after = after; // save label a
+        expr.jumping(0, after);
         int label = newlabel(); // label for stmt
         emitlabel(label);
-        stmt.gen(label, b);
-        emit("goto L" + b);
+        stmt.gen(label, begin);
+        emit("goto L" + begin);
     }
 }

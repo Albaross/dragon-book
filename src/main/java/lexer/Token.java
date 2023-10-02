@@ -1,4 +1,4 @@
-package lexer; // File Token.java
+package lexer;
 
 public class Token {
     public final int tag;
@@ -7,7 +7,8 @@ public class Token {
         tag = t;
     }
 
+    @Override
     public String toString() {
-        return "" + (char) tag;
+        return String.valueOf((char) tag);
     }
 }
