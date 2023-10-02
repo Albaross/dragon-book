@@ -1,6 +1,6 @@
 package inter;
 
-import error.ParseException;
+import error.*;
 import lexer.*;
 import symbols.*;
 
@@ -16,7 +16,7 @@ public class Logical extends Expr {
 
     protected Type check(Type type1, Type type2) {
         if (type1 == Type.BOOL && type2 == Type.BOOL) return Type.BOOL;
-        throw new ParseException("type error");
+        throw new ParseError("type error");
     }
 
     @Override

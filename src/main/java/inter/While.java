@@ -1,6 +1,6 @@
 package inter;
 
-import error.ParseException;
+import error.*;
 import symbols.*;
 
 public class While extends Stmt {
@@ -8,7 +8,7 @@ public class While extends Stmt {
     private Stmt stmt;
 
     public void init(Expr expr, Stmt stmt) {
-        if (expr.type != Type.BOOL) throw new ParseException("boolean required in while");
+        if (expr.type != Type.BOOL) throw new ParseError("boolean required in while");
         this.expr = expr;
         this.stmt = stmt;
     }

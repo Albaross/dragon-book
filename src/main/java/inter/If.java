@@ -1,6 +1,6 @@
 package inter;
 
-import error.ParseException;
+import error.*;
 import symbols.*;
 
 public class If extends Stmt {
@@ -8,7 +8,7 @@ public class If extends Stmt {
     private final Stmt stmt;
 
     public If(Expr expr, Stmt stmt) {
-        if (expr.type != Type.BOOL) throw new ParseException("boolean required in if");
+        if (expr.type != Type.BOOL) throw new ParseError("boolean required in if");
         this.expr = expr;
         this.stmt = stmt;
     }

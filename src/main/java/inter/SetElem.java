@@ -1,6 +1,6 @@
 package inter;
 
-import error.ParseException;
+import error.*;
 import symbols.*;
 
 public class SetElem extends Stmt {
@@ -16,10 +16,10 @@ public class SetElem extends Stmt {
     }
 
     private void checkTypes(Type type1, Type type2) {
-        if (type1 instanceof Array || type2 instanceof Array) throw new ParseException("type error");
+        if (type1 instanceof Array || type2 instanceof Array) throw new ParseError("type error");
         else if (type1 == type2) return;
         else if (type1.isNumeric() && type2.isNumeric()) return;
-        throw new ParseException("type error");
+        throw new ParseError("type error");
     }
 
     @Override

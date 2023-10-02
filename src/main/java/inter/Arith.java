@@ -1,6 +1,6 @@
 package inter;
 
-import error.ParseException;
+import error.*;
 import lexer.*;
 import symbols.*;
 
@@ -25,7 +25,7 @@ public class Arith extends Op {
     }
 
     private static Type max(Type type1, Type type2) {
-        if (!type1.isNumeric() || !type2.isNumeric()) throw new ParseException("type error");
+        if (!type1.isNumeric() || !type2.isNumeric()) throw new ParseError("type error");
         else if (type1 == Type.FLOAT || type2 == Type.FLOAT) return Type.FLOAT;
         else if (type1 == Type.INT || type2 == Type.INT) return Type.INT;
         return Type.CHAR;

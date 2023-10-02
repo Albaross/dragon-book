@@ -1,6 +1,6 @@
 package inter;
 
-import error.ParseException;
+import error.*;
 import lexer.*;
 import symbols.*;
 
@@ -24,7 +24,7 @@ public class Unary extends Op {
     }
 
     private static Type check(Type type) {
-        if (!type.isNumeric()) throw new ParseException("type error");
+        if (!type.isNumeric()) throw new ParseError("type error");
         else if (type == Type.FLOAT) return Type.FLOAT;
         return Type.INT;
     }

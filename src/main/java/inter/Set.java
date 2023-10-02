@@ -1,6 +1,6 @@
 package inter;
 
-import error.ParseException;
+import error.*;
 import symbols.*;
 
 public class Set extends Stmt {
@@ -16,7 +16,7 @@ public class Set extends Stmt {
     private void checkTypes(Type type1, Type type2) {
         if (type1.isNumeric() && type2.isNumeric()) return;
         else if (type1 == Type.BOOL && type2 == Type.BOOL) return;
-        throw new ParseException("type error");
+        throw new ParseError("type error");
     }
 
     @Override
