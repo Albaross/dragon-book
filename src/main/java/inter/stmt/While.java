@@ -1,6 +1,7 @@
-package inter;
+package inter.stmt;
 
 import error.*;
+import inter.expr.*;
 import symbols.*;
 
 public class While extends Stmt {

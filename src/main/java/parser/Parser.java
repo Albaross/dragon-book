@@ -1,6 +1,8 @@
 package parser;
 
 import error.*;
+import inter.expr.*;
+import inter.stmt.*;
 import lexer.*;
 import symbols.*;
 import inter.*;

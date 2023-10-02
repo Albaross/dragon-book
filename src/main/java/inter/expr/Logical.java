@@ -1,4 +1,4 @@
-package inter;
+package inter.expr;
 
 import error.*;
 import lexer.*;
@@ -7,7 +7,7 @@ import symbols.*;
 public class Logical extends Expr {
     protected final Expr expr1, expr2;
 
-    Logical(Token tok, Expr expr1, Expr expr2) {
+    public Logical(Token tok, Expr expr1, Expr expr2) {
         super(tok, null); // null type to start
         this.expr1 = expr1;
         this.expr2 = expr2;

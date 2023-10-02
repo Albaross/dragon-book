@@ -1,4 +1,4 @@
-package inter;
+package inter.stmt;
 
 public class Seq extends Stmt {
     private final Stmt stmt1;

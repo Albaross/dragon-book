@@ -1,5 +1,6 @@
-package inter;
+package inter.expr;
 
+import inter.*;
 import lexer.*;
 import symbols.*;
 
@@ -7,7 +8,7 @@ public class Expr extends Node {
     protected final Token op;
     public Type type;
 
-    Expr(Token tok, Type type) {
+    public Expr(Token tok, Type type) {
         this.op = tok;
         this.type = type;
     }
