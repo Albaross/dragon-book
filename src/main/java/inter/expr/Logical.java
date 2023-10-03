@@ -5,7 +5,7 @@ import lexer.*;
 import symbols.*;
 
 public class Logical extends Expr {
-    protected final Expr expr1, expr2;
+    public final Expr expr1, expr2;
 
     public Logical(Token tok, Expr expr1, Expr expr2) {
         super(tok, null); // null type to start
@@ -17,20 +17,6 @@ public class Logical extends Expr {
     protected Type check(Type type1, Type type2) {
         if (type1 == Type.BOOL && type2 == Type.BOOL) return Type.BOOL;
         throw new ParseError("type error");
-    }
-
-    @Override
-    public Expr gen() {
-        int f = newlabel();
-        int a = newlabel();
-        Temp temp = new Temp(type);
-        this.jumping(0, f);
-        emit(temp + " = true");
-        emit("goto L" + a);
-        emitlabel(f);
-        emit(temp + " = false");
-        emitlabel(a);
-        return temp;
     }
 
     @Override

@@ -18,7 +18,10 @@ public class GeneratorTest {
             Parser parse = new Parser(lex);
             Generator gen = new Generator(parse);
 
-            Assertions.assertEquals(LINES, gen.gen());
+            List<String> result = gen.gen();
+            System.out.println(LINES);
+            System.out.println(result);
+            Assertions.assertEquals(LINES, result);
         }
     }
 
