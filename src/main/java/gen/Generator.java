@@ -24,11 +24,11 @@ public class Generator {
         out = new PrintStream(buffer);
         final var program = parse.program();
 
-        int begin = newlabel();
-        int after = newlabel();
-        emitlabel(begin);
-        genStmt(program, begin, after);
-        emitlabel(after);
+        int begin = s.newlabel();
+        int after = s.newlabel();
+        s.emitlabel(begin);
+        s.gen(begin, after);
+        s.emitlabel(after);
 
         return Arrays.asList(buffer.toString().split("\r?\n"));
     }
@@ -37,80 +37,80 @@ public class Generator {
         if (stmt instanceof Seq seq) {
             genSeq(seq, begin, after);
         } else if (stmt instanceof Set set) {
-            genSet(set);
+            genSet(set, begin, after);
         } else if (stmt instanceof SetElem setElem) {
-            genSetElem(setElem);
+            genSetElem(setElem, begin, after);
         } else if (stmt instanceof If ifStmt) {
-            genIf(ifStmt, after);
+            genIf(ifStmt, begin, after);
         } else if (stmt instanceof Else elseStmt) {
-            genElse(elseStmt, after);
+            genElse(elseStmt, begin, after);
         } else if (stmt instanceof While whileLoop) {
             genWhile(whileLoop, begin, after);
         } else if (stmt instanceof Do doLoop) {
             genDo(doLoop, begin, after);
         } else if (stmt instanceof Break breakStmt) {
-            genBreak(breakStmt);
+            genBreak(breakStmt, begin, after);
         }
     } // called with labels begin and after
 
     public void genSeq(Seq seq, int begin, int after) {
-        if (seq.stmt1 == Stmt.Null) genStmt(seq.stmt2, begin, after);
-        else if (seq.stmt2 == Stmt.Null) genStmt(seq.stmt1, begin, after);
+        if (stmt1 == Stmt.Null) stmt2.gen(begin, after);
+        else if (stmt2 == Stmt.Null) stmt1.gen(begin, after);
         else {
             final int label = newlabel();
-            genStmt(seq.stmt1, begin, label);
+            stmt1.gen(begin, label);
             emitlabel(label);
-            genStmt(seq.stmt2, begin, after);
+            stmt2.gen(label, after);
         }
     }
 
-    public void genSet(Set set) {
-        emit(set.id + " = " + genExpr(set.expr));
+    public void genSet(Set set, int begin, int after) {
+        emit(id + " = " + expr.gen());
     }
 
-    public void genSetElem(SetElem setElem) {
-        final String s1 = reduce(setElem.index).toString();
-        final String s2 = reduce(setElem.expr).toString();
-        emit(setElem.array + " [ " + s1 + " ] = " + s2);
+    public void genSetElem(SetElem setElem, int begin, int after) {
+        final String s1 = index.reduce().toString();
+        final String s2 = expr.reduce().toString();
+        emit(array + " [ " + s1 + " ] = " + s2);
     }
 
-    public void genIf(If ifStmt, int after) {
+    public void genIf(If ifStmt, int begin, int after) {
         final int label = newlabel(); // label for the code for stmt
-        jumping(ifStmt.expr, 0, after); // fall through on true, goto a on false
+        expr.jumping(0, after); // fall through on true, goto a on false
         emitlabel(label);
-        genStmt(ifStmt.stmt, label, after);
+        stmt.gen(label, after);
     }
 
-    public void genElse(Else elseStmt, int after) {
+    public void genElse(Else elseStmt, int begin, int after) {
         final int label1 = newlabel(); // label1 for stmt1
         final int label2 = newlabel(); // label2 for stmt2
-        jumping(elseStmt.expr, 0, label2); // fall through to stmt1 on true
+        expr.jumping(0, label2); // fall through to stmt1 on true
         emitlabel(label1);
-        genStmt(elseStmt.stmt1, label1, after);
+        stmt1.gen(label1, after);
         emit("goto L" + after);
         emitlabel(label2);
-        genStmt(elseStmt.stmt2, label2, after);
+        stmt2.gen(label2, after);
     }
 
     public void genWhile(While whileLoop, int begin, int after) {
-        whileLoop.after = after; // save label a
-        jumping(whileLoop.expr, 0, after);
+        this.after = after; // save label a
+        expr.jumping(0, after);
         int label = newlabel(); // label for stmt
         emitlabel(label);
-        genStmt(whileLoop.stmt, label, begin);
+        stmt.gen(label, begin);
         emit("goto L" + begin);
     }
 
     public void genDo(Do doLoop, int begin, int after) {
-        doLoop.after = after;
+        this.after = after;
         final int label = newlabel(); // label for expr
-        genStmt(doLoop.stmt, begin, label);
+        stmt.gen(begin, label);
         emitlabel(label);
-        jumping(doLoop.expr, begin, 0);
+        expr.jumping(begin, 0);
     }
 
-    public void genBreak(Break breakStmt) {
-        emit("goto L" + breakStmt.stmt.after);
+    public void genBreak(Break breakStmt, int begin, int after) {
+        emit("goto L" + stmt.after);
     }
 
     public Expr genExpr(Expr expr) {
@@ -129,10 +129,10 @@ public class Generator {
     }
 
     public Expr genLogical(Logical logical) {
-        int f = newlabel();
-        int a = newlabel();
-        Temp temp = new Temp(logical.type);
-        jumping(logical, 0, f);
+        final int f = newlabel();
+        final int a = newlabel();
+        Temp temp = new Temp(type);
+        this.jumping(0, f);
         emit(temp + " = true");
         emit("goto L" + a);
         emitlabel(f);
@@ -142,15 +142,15 @@ public class Generator {
     }
 
     public Expr genArith(Arith arith) {
-        return new Arith(arith.op, reduce(arith.expr1), reduce(arith.expr2));
+        return new Arith(op, expr1.reduce(), expr2.reduce());
     }
 
     public Expr genUnary(Unary unary) {
-        return new Unary(unary.op, reduce(unary.expr));
+        return new Unary(op, expr.reduce());
     }
 
     public Expr genAccess(Access access) {
-        return new Access(access.array, reduce(access.index), access.type);
+        return new Access(array, index.reduce(), type);
     }
 
     public Expr reduce(Expr expr) {
@@ -163,8 +163,8 @@ public class Generator {
     }
 
     public Expr reduceOp(Op op) {
-        final Expr expr = genExpr(op);
-        final Temp temp = new Temp(op.type);
+        final Expr expr = gen();
+        final Temp temp = new Temp(type);
         emit(temp + " = " + expr);
         return temp;
     }
@@ -190,38 +190,38 @@ public class Generator {
     }
 
     public void jumpingConstant(Constant constant, int t, int f) {
-        if (constant == Constant.TRUE && t != 0) emit("goto L" + t);
-        else if (constant == Constant.FALSE && f != 0) emit("goto L" + f);
+        if (this == TRUE && t != 0) emit("goto L" + t);
+        else if (this == FALSE && f != 0) emit("goto L" + f);
     }
 
     public void jumpingAnd(And and, int t, int f) {
         final int label = f != 0 ? f : newlabel();
-        jumping(and.expr1, 0, label);
-        jumping(and.expr2, t, f);
+        expr1.jumping(0, label);
+        expr2.jumping(t, f);
         if (f == 0) emitlabel(label);
     }
 
     public void jumpingOr(Or or, int t, int f) {
         final int label = t != 0 ? t : newlabel();
-        jumping(or.expr1, label, 0);
-        jumping(or.expr2, t, f);
+        expr1.jumping(label, 0);
+        expr2.jumping(t, f);
         if (t == 0) emitlabel(label);
     }
 
     public void jumpingRel(Rel rel, int t, int f) {
-        final Expr a = reduce(rel.expr1);
-        final Expr b = reduce(rel.expr2);
+        final Expr a = expr1.reduce();
+        final Expr b = expr2.reduce();
 
-        final String test = a + " " + rel.op + " " + b;
+        final String test = a + " " + op + " " + b;
         emitJumps(test, t, f);
     }
 
     public void jumpingNot(Not not, int t, int f) {
-        jumping(not.expr2, f, t);
+        expr2.jumping(f, t);
     }
 
     public void jumpingAccess(Access access, int t, int f) {
-        emitJumps(reduce(access).toString(), t, f);
+        emitJumps(reduce().toString(), t, f);
     }
 
     public void emitJumps(String test, int t, int f) {
