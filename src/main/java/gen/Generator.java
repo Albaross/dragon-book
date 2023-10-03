@@ -37,19 +37,19 @@ public class Generator {
         if (stmt instanceof Seq seq) {
             genSeq(seq, begin, after);
         } else if (stmt instanceof Set set) {
-            genSet(set, begin, after);
+            genSet(set);
         } else if (stmt instanceof SetElem setElem) {
-            genSetElem(setElem, begin, after);
+            genSetElem(setElem);
         } else if (stmt instanceof If ifStmt) {
-            genIf(ifStmt, begin, after);
+            genIf(ifStmt, after);
         } else if (stmt instanceof Else elseStmt) {
-            genElse(elseStmt, begin, after);
+            genElse(elseStmt, after);
         } else if (stmt instanceof While whileLoop) {
             genWhile(whileLoop, begin, after);
         } else if (stmt instanceof Do doLoop) {
             genDo(doLoop, begin, after);
         } else if (stmt instanceof Break breakStmt) {
-            genBreak(breakStmt, begin, after);
+            genBreak(breakStmt);
         }
     } // called with labels begin and after
 
@@ -64,24 +64,24 @@ public class Generator {
         }
     }
 
-    public void genSet(Set set, int begin, int after) {
+    public void genSet(Set set) {
         emit(set.id + " = " + genExpr(set.expr));
     }
 
-    public void genSetElem(SetElem setElem, int begin, int after) {
+    public void genSetElem(SetElem setElem) {
         final String s1 = reduce(setElem.index).toString();
         final String s2 = reduce(setElem.expr).toString();
         emit(setElem.array + " [ " + s1 + " ] = " + s2);
     }
 
-    public void genIf(If ifStmt, int begin, int after) {
+    public void genIf(If ifStmt, int after) {
         final int label = newlabel(); // label for the code for stmt
         jumping(ifStmt.expr, 0, after); // fall through on true, goto a on false
         emitlabel(label);
         genStmt(ifStmt.stmt, label, after);
     }
 
-    public void genElse(Else elseStmt, int begin, int after) {
+    public void genElse(Else elseStmt, int after) {
         final int label1 = newlabel(); // label1 for stmt1
         final int label2 = newlabel(); // label2 for stmt2
         jumping(elseStmt.expr, 0, label2); // fall through to stmt1 on true
@@ -109,7 +109,7 @@ public class Generator {
         jumping(doLoop.expr, begin, 0);
     }
 
-    public void genBreak(Break breakStmt, int begin, int after) {
+    public void genBreak(Break breakStmt) {
         emit("goto L" + breakStmt.stmt.after);
     }
 
@@ -123,16 +123,16 @@ public class Generator {
             return genUnary(unary);
         } else if (expr instanceof Access access) {
             return genAccess(access);
-        } else {
-            return expr;
         }
+
+        return expr;
     }
 
     public Expr genLogical(Logical logical) {
         final int f = newlabel();
         final int a = newlabel();
-        Temp temp = new Temp(logical.type);
-        jumping(logical,0, f);
+        final var temp = new Temp(logical.type);
+        jumping(logical, 0, f);
         emit(temp + " = true");
         emit("goto L" + a);
         emitlabel(f);
@@ -154,12 +154,11 @@ public class Generator {
     }
 
     public Expr reduce(Expr expr) {
-        // TODO replace with Pattern Matching for switch
         if (expr instanceof Op op) {
             return reduceOp(op);
-        } else {
-            return expr;
         }
+
+        return expr;
     }
 
     public Expr reduceOp(Op op) {
@@ -209,10 +208,7 @@ public class Generator {
     }
 
     public void jumpingRel(Rel rel, int t, int f) {
-        final Expr a = reduce(rel.expr1);
-        final Expr b = reduce(rel.expr2);
-
-        final String test = a + " " + rel.op + " " + b;
+        final String test = reduce(rel.expr1) + " " + rel.op + " " + reduce(rel.expr2);
         emitJumps(test, t, f);
     }
 
