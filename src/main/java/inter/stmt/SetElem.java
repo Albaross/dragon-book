@@ -4,16 +4,10 @@ import error.*;
 import inter.expr.*;
 import symbols.*;
 
-public class SetElem extends Stmt {
-    public final Id array;
-    public final Expr index;
-    public final Expr expr;
+public record SetElem(Access access, Expr expr) implements Stmt {
 
-    public SetElem(Access access, Expr expr) {
+    public SetElem {
         checkTypes(access.type, expr.type);
-        this.array = access.array;
-        this.index = access.index;
-        this.expr = expr;
     }
 
     private void checkTypes(Type type1, Type type2) {
@@ -21,5 +15,13 @@ public class SetElem extends Stmt {
         else if (type1 == type2) return;
         else if (type1.isNumeric() && type2.isNumeric()) return;
         throw new ParseError("type error");
+    }
+
+    public Id array() {
+        return access.array;
+    }
+
+    public Expr index() {
+        return access.index;
     }
 }

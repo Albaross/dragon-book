@@ -4,13 +4,9 @@ import error.*;
 import inter.expr.*;
 import symbols.*;
 
-public class While extends Stmt {
-    public Expr expr;
-    public Stmt stmt;
+public record While(Expr expr, Stmt stmt) implements Stmt {
 
-    public void init(Expr expr, Stmt stmt) {
+    public While {
         if (expr.type != Type.BOOL) throw new ParseError("boolean required in while");
-        this.expr = expr;
-        this.stmt = stmt;
     }
 }

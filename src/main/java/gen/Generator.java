@@ -15,6 +15,8 @@ public class Generator {
     private PrintStream out;
     private int labels = 0;
 
+    private int afterEnclosing = 0; // used for break stmts
+
     public Generator(Parser parse) {
         this.parse = parse;
     }
@@ -48,69 +50,73 @@ public class Generator {
             genWhile(whileLoop, begin, after);
         } else if (stmt instanceof Do doLoop) {
             genDo(doLoop, begin, after);
-        } else if (stmt instanceof Break breakStmt) {
-            genBreak(breakStmt);
+        } else if (stmt instanceof Break) {
+            genBreak();
         }
     } // called with labels begin and after
 
     public void genSeq(Seq seq, int begin, int after) {
-        if (seq.stmt1 == Stmt.NULL) genStmt(seq.stmt2, begin, after);
-        else if (seq.stmt2 == Stmt.NULL) genStmt(seq.stmt1, begin, after);
+        if (seq.stmt1() == Stmt.NULL) genStmt(seq.stmt2(), begin, after);
+        else if (seq.stmt2() == Stmt.NULL) genStmt(seq.stmt1(), begin, after);
         else {
             final int label = newlabel();
-            genStmt(seq.stmt1, begin, label);
+            genStmt(seq.stmt1(), begin, label);
             emitlabel(label);
-            genStmt(seq.stmt2, label, after);
+            genStmt(seq.stmt2(), label, after);
         }
     }
 
     public void genSet(Set set) {
-        emit(set.id + " = " + genExpr(set.expr));
+        emit(set.id() + " = " + genExpr(set.expr()));
     }
 
     public void genSetElem(SetElem setElem) {
-        final String s1 = reduce(setElem.index).toString();
-        final String s2 = reduce(setElem.expr).toString();
-        emit(setElem.array + " [ " + s1 + " ] = " + s2);
+        final String s1 = reduce(setElem.index()).toString();
+        final String s2 = reduce(setElem.expr()).toString();
+        emit(setElem.array() + " [ " + s1 + " ] = " + s2);
     }
 
     public void genIf(If ifStmt, int after) {
         final int label = newlabel(); // label for the code for stmt
-        jumping(ifStmt.expr, 0, after); // fall through on true, goto a on false
+        jumping(ifStmt.expr(), 0, after); // fall through on true, goto a on false
         emitlabel(label);
-        genStmt(ifStmt.stmt, label, after);
+        genStmt(ifStmt.stmt(), label, after);
     }
 
     public void genElse(Else elseStmt, int after) {
         final int label1 = newlabel(); // label1 for stmt1
         final int label2 = newlabel(); // label2 for stmt2
-        jumping(elseStmt.expr, 0, label2); // fall through to stmt1 on true
+        jumping(elseStmt.expr(), 0, label2); // fall through to stmt1 on true
         emitlabel(label1);
-        genStmt(elseStmt.stmt1, label1, after);
+        genStmt(elseStmt.stmt1(), label1, after);
         emit("goto L" + after);
         emitlabel(label2);
-        genStmt(elseStmt.stmt2, label2, after);
+        genStmt(elseStmt.stmt2(), label2, after);
     }
 
     public void genWhile(While whileLoop, int begin, int after) {
-        whileLoop.after = after; // save label a
-        jumping(whileLoop.expr, 0, after);
+        final var saved = afterEnclosing;
+        afterEnclosing = after; // save label after
+        jumping(whileLoop.expr(), 0, after);
         int label = newlabel(); // label for stmt
         emitlabel(label);
-        genStmt(whileLoop.stmt, label, begin);
+        genStmt(whileLoop.stmt(), label, begin);
         emit("goto L" + begin);
+        afterEnclosing = saved;
     }
 
     public void genDo(Do doLoop, int begin, int after) {
-        doLoop.after = after;
+        final var saved = afterEnclosing;
+        afterEnclosing = after; // save label after
         final int label = newlabel(); // label for expr
-        genStmt(doLoop.stmt, begin, label);
+        genStmt(doLoop.stmt(), begin, label);
         emitlabel(label);
-        jumping(doLoop.expr, begin, 0);
+        jumping(doLoop.expr(), begin, 0);
+        afterEnclosing = saved;
     }
 
-    public void genBreak(Break breakStmt) {
-        emit("goto L" + breakStmt.stmt.after);
+    public void genBreak() {
+        emit("goto L" + afterEnclosing);
     }
 
     public Expr genExpr(Expr expr) {

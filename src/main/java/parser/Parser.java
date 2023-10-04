@@ -5,13 +5,13 @@ import inter.expr.*;
 import inter.stmt.*;
 import lexer.*;
 import symbols.*;
-import inter.*;
 
 public class Parser {
     private final Lexer lex; // lexical analyzer for this parser
     private Token look; // lookahead token
     private Env top; // current or top symbol table
     private int used; // storage used for declarations
+    private Word enclosing; // used for break stmts
 
     public Parser(Lexer l) {
         lex = l;
@@ -76,62 +76,27 @@ public class Parser {
     }
 
     private Stmt stmts() {
-        if (look.tag == '}') return Stmt.Null;
+        if (look.tag == '}') return Stmt.NULL;
         else return new Seq(stmt(), stmts());
     }
 
     private Stmt stmt() {
-        Expr expr;
-        Stmt stmt1, stmt2;
-        Stmt savedStmt; // save enclosing loop for breaks
         switch (look.tag) {
             case ';' -> {
                 move();
-                return Stmt.Null;
+                return Stmt.NULL;
             }
             case Tag.IF -> {
-                match(Tag.IF);
-                match('(');
-                expr = bool();
-                match(')');
-                stmt1 = stmt();
-                if (look.tag != Tag.ELSE) return new If(expr, stmt1);
-                match(Tag.ELSE);
-                stmt2 = stmt();
-                return new Else(expr, stmt1, stmt2);
+                return ifElse();
             }
             case Tag.WHILE -> {
-                final var whileNode = new While();
-                savedStmt = Stmt.Enclosing;
-                Stmt.Enclosing = whileNode;
-                match(Tag.WHILE);
-                match('(');
-                expr = bool();
-                match(')');
-                stmt1 = stmt();
-                whileNode.init(expr, stmt1);
-                Stmt.Enclosing = savedStmt; // reset Stmt.Enclosing
-                return whileNode;
+                return whileLoop();
             }
             case Tag.DO -> {
-                final var doNode = new Do();
-                savedStmt = Stmt.Enclosing;
-                Stmt.Enclosing = doNode;
-                match(Tag.DO);
-                stmt1 = stmt();
-                match(Tag.WHILE);
-                match('(');
-                expr = bool();
-                match(')');
-                match(';');
-                doNode.init(stmt1, expr);
-                Stmt.Enclosing = savedStmt; // reset Stmt.Enclosing
-                return doNode;
+                return doLoop();
             }
             case Tag.BREAK -> {
-                match(Tag.BREAK);
-                match(';');
-                return new Break();
+                return breakStmt();
             }
             case '{' -> {
                 return block();
@@ -140,6 +105,53 @@ public class Parser {
                 return assign();
             }
         }
+    }
+
+    private Stmt ifElse() {
+        match(Tag.IF);
+        match('(');
+        final Expr condition = bool();
+        match(')');
+        final Stmt stmt1 = stmt();
+        if (look.tag != Tag.ELSE) return new If(condition, stmt1);
+        match(Tag.ELSE);
+        final Stmt stmt2 = stmt();
+        return new Else(condition, stmt1, stmt2);
+    }
+
+    private Stmt whileLoop() {
+        final Word saved = enclosing; // save enclosing loop for breaks
+        enclosing = Word.WHILE;
+        match(Tag.WHILE);
+        match('(');
+        final Expr condition = bool();
+        match(')');
+        final Stmt stmt = stmt();
+        final var whileLoop = new While(condition, stmt);
+        enclosing = saved; // reset enclosing
+        return whileLoop;
+    }
+
+    private Stmt doLoop() {
+        final Word saved = enclosing; // save enclosing loop for breaks
+        enclosing = Word.DO;
+        match(Tag.DO);
+        final Stmt stmt = stmt();
+        match(Tag.WHILE);
+        match('(');
+        final Expr condition = bool();
+        match(')');
+        match(';');
+        final var doLoop = new Do(stmt, condition);
+        enclosing = saved; // reset enclosing
+        return doLoop;
+    }
+
+    private Break breakStmt() {
+        match(Tag.BREAK);
+        match(';');
+        if (enclosing == null) throw new ParseError("unenclosed break");
+        return new Break();
     }
 
     private Stmt assign() {

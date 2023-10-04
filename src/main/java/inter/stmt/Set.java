@@ -4,14 +4,10 @@ import error.*;
 import inter.expr.*;
 import symbols.*;
 
-public class Set extends Stmt {
-    public final Id id;
-    public final Expr expr;
+public record Set(Id id, Expr expr) implements Stmt {
 
-    public Set(Id id, Expr expr) {
+    public Set {
         checkTypes(id.type, expr.type);
-        this.id = id;
-        this.expr = expr;
     }
 
     private void checkTypes(Type type1, Type type2) {

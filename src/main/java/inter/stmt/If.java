@@ -4,13 +4,9 @@ import error.*;
 import inter.expr.*;
 import symbols.*;
 
-public class If extends Stmt {
-    public final Expr expr;
-    public final Stmt stmt;
+public record If(Expr expr, Stmt stmt) implements Stmt {
 
-    public If(Expr expr, Stmt stmt) {
+    public If {
         if (expr.type != Type.BOOL) throw new ParseError("boolean required in if");
-        this.expr = expr;
-        this.stmt = stmt;
     }
 }
