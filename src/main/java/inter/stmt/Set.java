@@ -7,7 +7,7 @@ import symbols.*;
 public record Set(Id id, Expr expr) implements Stmt {
 
     public Set {
-        checkTypes(id.type, expr.type);
+        checkTypes(id.type(), expr.type());
     }
 
     private void checkTypes(Type type1, Type type2) {

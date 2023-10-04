@@ -7,6 +7,6 @@ import symbols.*;
 public record While(Expr expr, Stmt stmt) implements Stmt {
 
     public While {
-        if (expr.type != Type.BOOL) throw new ParseError("boolean required in while");
+        if (expr.type() != Type.BOOL) throw new ParseError("boolean required in while");
     }
 }

@@ -14,6 +14,7 @@ public class Generator {
     private final Parser parse;
     private PrintStream out;
     private int labels = 0;
+    private int tempCount = 0;
 
     private int afterEnclosing = 0; // used for break stmts
 
@@ -137,7 +138,7 @@ public class Generator {
     public Expr genLogical(Logical logical) {
         final int f = newlabel();
         final int a = newlabel();
-        final var temp = new Temp(logical.type);
+        final var temp = new Temp(logical.type(), ++tempCount);
         jumping(logical, 0, f);
         emit(temp + " = true");
         emit("goto L" + a);
@@ -148,15 +149,15 @@ public class Generator {
     }
 
     public Expr genArith(Arith arith) {
-        return new Arith(arith.op, reduce(arith.expr1), reduce(arith.expr2));
+        return new Arith(arith.op(), reduce(arith.expr1()), reduce(arith.expr2()));
     }
 
     public Expr genUnary(Unary unary) {
-        return new Unary(unary.op, reduce(unary.expr));
+        return new Unary(reduce(unary.expr()));
     }
 
     public Expr genAccess(Access access) {
-        return new Access(access.array, reduce(access.index), access.type);
+        return new Access(access.array(), reduce(access.index()), access.type());
     }
 
     public Expr reduce(Expr expr) {
@@ -169,7 +170,7 @@ public class Generator {
 
     public Expr reduceOp(Op op) {
         final Expr expr = genExpr(op);
-        final Temp temp = new Temp(op.type);
+        final Temp temp = new Temp(op.type(), ++tempCount);
         emit(temp + " = " + expr);
         return temp;
     }
@@ -201,25 +202,25 @@ public class Generator {
 
     public void jumpingAnd(And and, int t, int f) {
         final int label = f != 0 ? f : newlabel();
-        jumping(and.expr1, 0, label);
-        jumping(and.expr2, t, f);
+        jumping(and.expr1(), 0, label);
+        jumping(and.expr2(), t, f);
         if (f == 0) emitlabel(label);
     }
 
     public void jumpingOr(Or or, int t, int f) {
         final int label = t != 0 ? t : newlabel();
-        jumping(or.expr1, label, 0);
-        jumping(or.expr2, t, f);
+        jumping(or.expr1(), label, 0);
+        jumping(or.expr2(), t, f);
         if (t == 0) emitlabel(label);
     }
 
     public void jumpingRel(Rel rel, int t, int f) {
-        final String test = reduce(rel.expr1) + " " + rel.op + " " + reduce(rel.expr2);
+        final String test = reduce(rel.expr1()) + " " + rel.op() + " " + reduce(rel.expr2());
         emitJumps(test, t, f);
     }
 
     public void jumpingNot(Not not, int t, int f) {
-        jumping(not.expr2, f, t);
+        jumping(not.expr2(), f, t);
     }
 
     public void jumpingAccess(Access access, int t, int f) {

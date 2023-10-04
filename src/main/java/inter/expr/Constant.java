@@ -3,13 +3,20 @@ package inter.expr;
 import lexer.*;
 import symbols.*;
 
-public class Constant extends Expr {
-    public Constant(Token tok, Type type) {
-        super(tok, type);
-    }
+public record Constant(Token value, Type type) implements Expr {
 
     public Constant(int i) {
-        super(new Num(i), Type.INT);
+        this(new Num(i), Type.INT);
+    }
+
+    @Override
+    public Token op() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 
     public static final Constant TRUE = new Constant(Word.TRUE, Type.BOOL);

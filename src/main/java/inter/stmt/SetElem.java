@@ -7,7 +7,7 @@ import symbols.*;
 public record SetElem(Access access, Expr expr) implements Stmt {
 
     public SetElem {
-        checkTypes(access.type, expr.type);
+        checkTypes(access.type(), expr.type());
     }
 
     private void checkTypes(Type type1, Type type2) {
@@ -18,10 +18,10 @@ public record SetElem(Access access, Expr expr) implements Stmt {
     }
 
     public Id array() {
-        return access.array;
+        return access.array();
     }
 
     public Expr index() {
-        return access.index;
+        return access.index();
     }
 }

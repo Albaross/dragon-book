@@ -2,8 +2,19 @@ package inter.expr;
 
 import lexer.*;
 
-public class Or extends Logical {
-    public Or(Token tok, Expr expr1, Expr expr2) {
-        super(tok, expr1, expr2);
+public record Or(Expr expr1, Expr expr2) implements Logical {
+
+    public Or {
+        checkTypes();
+    }
+
+    @Override
+    public Token op() {
+        return Token.OR;
+    }
+
+    @Override
+    public String toString() {
+        return expr1() + " " + op() + " " + expr2();
     }
 }

@@ -4,23 +4,24 @@ import error.*;
 import lexer.*;
 import symbols.*;
 
-public class Unary extends Op {
+public record Unary(Expr expr) implements Op {
 
-    public final Expr expr;
+    public Unary { // handles minus, for ! see Not
+        if (!expr.type().isNumeric()) throw new ParseError("type error");
+    }
 
-    public Unary(Token tok, Expr expr) { // handles minus, for ! see Not
-        super(tok, check(expr.type));
-        this.expr = expr;
+    @Override
+    public Token op() {
+        return Word.MINUS;
+    }
+
+    @Override
+    public Type type() {
+        return expr.type() == Type.FLOAT ? Type.FLOAT : Type.INT;
     }
 
     @Override
     public String toString() {
-        return op + " " + expr;
-    }
-
-    private static Type check(Type type) {
-        if (!type.isNumeric()) throw new ParseError("type error");
-        else if (type == Type.FLOAT) return Type.FLOAT;
-        return Type.INT;
+        return op() + " " + expr();
     }
 }

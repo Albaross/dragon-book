@@ -2,8 +2,19 @@ package inter.expr;
 
 import lexer.*;
 
-public class And extends Logical {
-    public And(Token tok, Expr expr1, Expr expr2) {
-        super(tok, expr1, expr2);
+public record And(Expr expr1, Expr expr2) implements Logical {
+
+    public And {
+        checkTypes();
+    }
+
+    @Override
+    public Token op() {
+        return Token.AND;
+    }
+
+    @Override
+    public String toString() {
+        return expr1() + " " + op() + " " + expr2();
     }
 }

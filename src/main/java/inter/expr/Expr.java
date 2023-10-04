@@ -4,17 +4,9 @@ import inter.*;
 import lexer.*;
 import symbols.*;
 
-public class Expr implements Node {
-    public final Token op;
-    public Type type;
+public interface Expr extends Node {
 
-    public Expr(Token op, Type type) {
-        this.op = op;
-        this.type = type;
-    }
+    Token op();
 
-    @Override
-    public String toString() {
-        return op.toString();
-    }
+    Type type();
 }

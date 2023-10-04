@@ -3,11 +3,15 @@ package inter.expr;
 import lexer.*;
 import symbols.*;
 
-public class Id extends Expr {
-    private final int offset; // relative address
+public record Id(Word id, Type type) implements Expr {
 
-    public Id(Word id, Type type, int offset) {
-        super(id, type);
-        this.offset = offset;
+    @Override
+    public Token op() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
     }
 }

@@ -10,7 +10,6 @@ public class Parser {
     private final Lexer lex; // lexical analyzer for this parser
     private Token look; // lookahead token
     private Env top; // current or top symbol table
-    private int used; // storage used for declarations
     private Word enclosing; // used for break stmts
 
     public Parser(Lexer l) {
@@ -52,9 +51,8 @@ public class Parser {
             final Token tok = look;
             match(Tag.ID);
             match(';');
-            final Id id = new Id((Word) tok, type, used);
+            final Id id = new Id((Word) tok, type);
             top.put(tok, id);
-            used += type.width;
         }
     }
 
@@ -175,9 +173,8 @@ public class Parser {
     private Expr bool() {
         Expr expr = join();
         while (look.tag == Tag.OR) {
-            final Token tok = look;
             move();
-            expr = new Or(tok, expr, join());
+            expr = new Or(expr, join());
         }
         return expr;
     }
@@ -185,9 +182,8 @@ public class Parser {
     private Expr join() {
         Expr expr = equality();
         while (look.tag == Tag.AND) {
-            final Token tok = look;
             move();
-            expr = new And(tok, expr, equality());
+            expr = new And(expr, equality());
         }
         return expr;
     }
@@ -239,11 +235,10 @@ public class Parser {
     private Expr unary() {
         if (look.tag == '-') {
             move();
-            return new Unary(Word.MINUS, unary());
+            return new Unary(unary());
         } else if (look.tag == '!') {
-            final Token tok = look;
             move();
-            return new Not(tok, unary());
+            return new Not(unary());
         } else return factor();
     }
 
@@ -292,7 +287,7 @@ public class Parser {
         Expr w;
         Expr t1, t2;
         Expr loc; // inherit id
-        Type type = a.type;
+        Type type = a.type();
         match('[');
         i = bool();
         match(']'); // first index, I -> [ E ]
