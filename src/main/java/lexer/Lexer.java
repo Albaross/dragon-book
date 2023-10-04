@@ -55,27 +55,27 @@ public class Lexer {
         switch (peek) {
             case '&' -> {
                 if (readChar('&')) return Word.AND;
-                else return new Token('&');
+                else return Token.AND;
             }
             case '|' -> {
                 if (readChar('|')) return Word.OR;
-                else return new Token('|');
+                else return Token.OR;
             }
             case '=' -> {
                 if (readChar('=')) return Word.EQ;
-                else return new Token('=');
+                else return Token.EQ;
             }
             case '!' -> {
                 if (readChar('=')) return Word.NE;
-                else return new Token('!');
+                else return Token.NOT;
             }
             case '<' -> {
                 if (readChar('=')) return Word.LE;
-                else return new Token('<');
+                else return Token.LT;
             }
             case '>' -> {
                 if (readChar('=')) return Word.GE;
-                else return new Token('>');
+                else return Token.GT;
             }
         }
         if (Character.isDigit(peek)) {
