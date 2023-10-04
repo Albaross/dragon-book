@@ -19,8 +19,7 @@ public class GeneratorTest {
             Generator gen = new Generator(parse);
 
             List<String> result = gen.gen();
-            System.out.println(LINES);
-            System.out.println(result);
+            result.forEach(System.out::println);
             Assertions.assertEquals(LINES, result);
         }
     }
