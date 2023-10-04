@@ -1,4 +1,4 @@
-package inter;
+package inter.expr;
 
 import lexer.*;
 import symbols.*;
@@ -11,16 +11,6 @@ public class Access extends Op {
         super(new Word("[]", Tag.INDEX), type); // flattening the array
         this.array = array;
         this.index = index;
-    }
-
-    @Override
-    public Expr gen() {
-        return new Access(array, index.reduce(), type);
-    }
-
-    @Override
-    public void jumping(int t, int f) {
-        emitJumps(reduce().toString(), t, f);
     }
 
     @Override

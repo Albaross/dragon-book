@@ -1,11 +1,12 @@
-package inter;
+package inter.stmt;
 
 import error.*;
+import inter.expr.*;
 import symbols.*;
 
 public class Set extends Stmt {
-    private final Id id;
-    private final Expr expr;
+    public final Id id;
+    public final Expr expr;
 
     public Set(Id id, Expr expr) {
         checkTypes(id.type, expr.type);
@@ -17,10 +18,5 @@ public class Set extends Stmt {
         if (type1.isNumeric() && type2.isNumeric()) return;
         else if (type1 == Type.BOOL && type2 == Type.BOOL) return;
         throw new ParseError("type error");
-    }
-
-    @Override
-    public void gen(int begin, int after) {
-        emit(id + " = " + expr.gen());
     }
 }

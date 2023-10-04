@@ -2,8 +2,8 @@ package symbols;
 
 import java.util.*;
 
+import inter.expr.*;
 import lexer.*;
-import inter.*;
 
 public class Env {
     private final HashMap<Token, Id> table = new HashMap<>();

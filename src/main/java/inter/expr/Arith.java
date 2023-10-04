@@ -1,22 +1,17 @@
-package inter;
+package inter.expr;
 
 import error.*;
 import lexer.*;
 import symbols.*;
 
 public class Arith extends Op {
-    private final Expr expr1;
-    private final Expr expr2;
+    public final Expr expr1;
+    public final Expr expr2;
 
     public Arith(Token tok, Expr expr1, Expr expr2) {
         super(tok, max(expr1.type, expr2.type));
         this.expr1 = expr1;
         this.expr2 = expr2;
-    }
-
-    @Override
-    public Expr gen() {
-        return new Arith(op, expr1.reduce(), expr2.reduce());
     }
 
     @Override

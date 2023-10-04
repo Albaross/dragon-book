@@ -1,4 +1,4 @@
-package inter;
+package inter.expr;
 
 import lexer.*;
 import symbols.*;
@@ -13,14 +13,5 @@ public class Rel extends Logical {
         if (type1 instanceof Array || type2 instanceof Array) return null;
         else if (type1 == type2) return Type.BOOL;
         else return null;
-    }
-
-    @Override
-    public void jumping(int t, int f) {
-        final Expr a = expr1.reduce();
-        final Expr b = expr2.reduce();
-
-        final String test = a + " " + op + " " + b;
-        emitJumps(test, t, f);
     }
 }

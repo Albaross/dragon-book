@@ -1,6 +1,8 @@
 package parser;
 
 import error.*;
+import inter.expr.*;
+import inter.stmt.*;
 import lexer.*;
 import symbols.*;
 import inter.*;
@@ -25,15 +27,9 @@ public class Parser {
         else throw new ParseError("syntax error");
     }
 
-    public Node program() { // program -> block
+    public Stmt program() { // program -> block
         try {
-            Stmt s = block();
-            int begin = s.newlabel();
-            int after = s.newlabel();
-            s.emitlabel(begin);
-            s.gen(begin, after);
-            s.emitlabel(after);
-            return s;
+            return block();
         } catch (ParseError e) {
             throw new ParseError(e, lex.getLine());
         }
