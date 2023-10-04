@@ -1,11 +1,10 @@
 package lexer;
 
-public class Num extends Token {
-    public final int value;
+public record Num(int value) implements Token {
 
-    public Num(int value) {
-        super(Tag.NUM);
-        this.value = value;
+    @Override
+    public int tag() {
+        return Tag.NUM;
     }
 
     @Override

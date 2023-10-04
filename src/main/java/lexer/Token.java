@@ -1,23 +1,22 @@
 package lexer;
 
-public class Token {
-    public final int tag;
+public interface Token {
 
-    public Token(int tag) {
-        this.tag = tag;
+    int tag();
+
+    Token AND = new Symbol('&');
+    Token OR = new Symbol('|');
+    Token EQ = new Symbol('=');
+    Token NOT = new Symbol('!');
+    Token LT = new Symbol('<');
+    Token GT = new Symbol('>');
+    Token PLUS = new Symbol('+');
+    Token TIMES = new Symbol('*');
+
+    record Symbol(int tag) implements Token {
+        @Override
+        public String toString() {
+            return String.valueOf((char) tag);
+        }
     }
-
-    @Override
-    public String toString() {
-        return String.valueOf((char) tag);
-    }
-
-    public static final Token AND = new Token('&');
-    public static final Token OR = new Token('|');
-    public static final Token EQ = new Token('=');
-    public static final Token NOT = new Token('!');
-    public static final Token LT = new Token('<');
-    public static final Token GT = new Token('>');
-    public static final Token PLUS = new Token('+');
-    public static final Token TIMES = new Token('*');
 }

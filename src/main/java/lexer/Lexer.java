@@ -13,7 +13,7 @@ public class Lexer {
     private char peek = ' ';
 
     private void reserve(Word w) {
-        words.put(w.lexeme, w);
+        words.put(w.lexeme(), w);
     }
 
     public Lexer(InputStream in) {
@@ -104,11 +104,11 @@ public class Lexer {
             String key = builder.toString();
             Word word = words.get(key);
             if (word != null) return word;
-            word = new Word(key, Tag.ID);
+            word = new Word.Id(key);
             words.put(key, word);
             return word;
         }
-        final Token tok = new Token(peek);
+        final Token tok = new Token.Symbol(peek);
         peek = ' ';
         return tok;
     }

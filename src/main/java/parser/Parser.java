@@ -22,7 +22,7 @@ public class Parser {
     }
 
     private void match(int tok) {
-        if (look.tag == tok) move();
+        if (look.tag() == tok) move();
         else throw new ParseError("syntax error");
     }
 
@@ -46,7 +46,7 @@ public class Parser {
     }
 
     private void decls() {
-        while (look.tag == Tag.BASIC) { // D -> type ID ;
+        while (look.tag() == Tag.BASIC) { // D -> type ID ;
             final Type type = type();
             final Token tok = look;
             match(Tag.ID);
@@ -57,9 +57,9 @@ public class Parser {
     }
 
     private Type type() {
-        final Type type = (Type) look; // expect look.tag == Tag.BASIC
+        final Type type = (Type) look; // expect look.tag() == Tag.BASIC
         match(Tag.BASIC);
-        if (look.tag != '[') return type; // T -> basic
+        if (look.tag() != '[') return type; // T -> basic
         else return dims(type); // return array type
     }
 
@@ -68,18 +68,18 @@ public class Parser {
         final Token tok = look;
         match(Tag.NUM);
         match(']');
-        if (look.tag == '[')
+        if (look.tag() == '[')
             type = dims(type);
-        return new Array(((Num) tok).value, type);
+        return new Array(((Num) tok).value(), type);
     }
 
     private Stmt stmts() {
-        if (look.tag == '}') return Stmt.NULL;
+        if (look.tag() == '}') return Stmt.NULL;
         else return new Seq(stmt(), stmts());
     }
 
     private Stmt stmt() {
-        switch (look.tag) {
+        switch (look.tag()) {
             case ';' -> {
                 move();
                 return Stmt.NULL;
@@ -111,7 +111,7 @@ public class Parser {
         final Expr condition = bool();
         match(')');
         final Stmt stmt1 = stmt();
-        if (look.tag != Tag.ELSE) return new If(condition, stmt1);
+        if (look.tag() != Tag.ELSE) return new If(condition, stmt1);
         match(Tag.ELSE);
         final Stmt stmt2 = stmt();
         return new Else(condition, stmt1, stmt2);
@@ -158,7 +158,7 @@ public class Parser {
         match(Tag.ID);
         Id id = top.get(tok);
         if (id == null) throw new ParseError(tok + " undeclared");
-        if (look.tag == '=') { // S -> id = E ;
+        if (look.tag() == '=') { // S -> id = E ;
             move();
             stmt = new Set(id, bool());
         } else { // S -> L = E ;
@@ -172,7 +172,7 @@ public class Parser {
 
     private Expr bool() {
         Expr expr = join();
-        while (look.tag == Tag.OR) {
+        while (look.tag() == Tag.OR) {
             move();
             expr = new Or(expr, join());
         }
@@ -181,7 +181,7 @@ public class Parser {
 
     private Expr join() {
         Expr expr = equality();
-        while (look.tag == Tag.AND) {
+        while (look.tag() == Tag.AND) {
             move();
             expr = new And(expr, equality());
         }
@@ -190,7 +190,7 @@ public class Parser {
 
     private Expr equality() {
         Expr expr = rel();
-        while (look.tag == Tag.EQ || look.tag == Tag.NE) {
+        while (look.tag() == Tag.EQ || look.tag() == Tag.NE) {
             final Token tok = look;
             move();
             expr = new Rel(tok, expr, rel());
@@ -200,7 +200,7 @@ public class Parser {
 
     private Expr rel() {
         final Expr expr = expr();
-        switch (look.tag) {
+        switch (look.tag()) {
             case '<', Tag.LE, Tag.GE, '>' -> {
                 final Token tok = look;
                 move();
@@ -214,7 +214,7 @@ public class Parser {
 
     private Expr expr() {
         Expr expr = term();
-        while (look.tag == '+' || look.tag == '-') {
+        while (look.tag() == '+' || look.tag() == '-') {
             final Token tok = look;
             move();
             expr = new Arith(tok, expr, term());
@@ -224,7 +224,7 @@ public class Parser {
 
     private Expr term() {
         Expr expr = unary();
-        while (look.tag == '*' || look.tag == '/') {
+        while (look.tag() == '*' || look.tag() == '/') {
             final Token tok = look;
             move();
             expr = new Arith(tok, expr, unary());
@@ -233,10 +233,10 @@ public class Parser {
     }
 
     private Expr unary() {
-        if (look.tag == '-') {
+        if (look.tag() == '-') {
             move();
             return new Unary(unary());
-        } else if (look.tag == '!') {
+        } else if (look.tag() == '!') {
             move();
             return new Not(unary());
         } else return factor();
@@ -244,7 +244,7 @@ public class Parser {
 
     private Expr factor() {
         Expr expr;
-        switch (look.tag) {
+        switch (look.tag()) {
             case '(' -> {
                 move();
                 expr = bool();
@@ -276,7 +276,7 @@ public class Parser {
                 final Id id = top.get(look);
                 if (id == null) throw new ParseError(look + " undeclared");
                 move();
-                if (look.tag != '[') return id;
+                if (look.tag() != '[') return id;
                 else return offset(id);
             }
         }
@@ -284,25 +284,25 @@ public class Parser {
 
     private Access offset(Id a) { // I -> [E] | [E] I
         Expr i;
-        Expr w;
+        Expr width;
         Expr t1, t2;
         Expr loc; // inherit id
         Type type = a.type();
         match('[');
         i = bool();
         match(']'); // first index, I -> [ E ]
-        type = ((Array) type).of;
-        w = new Constant(type.width);
-        t1 = new Arith(new Token('*'), i, w);
+        type = ((Array) type).of();
+        width = new Constant(type.width());
+        t1 = new Arith(Token.TIMES, i, width);
         loc = t1;
-        while (look.tag == '[') { // multi-dimensional I -> [ E ] I
+        while (look.tag() == '[') { // multi-dimensional I -> [ E ] I
             match('[');
             i = bool();
             match(']');
-            type = ((Array) type).of;
-            w = new Constant(type.width);
-            t1 = new Arith(new Token('*'), i, w);
-            t2 = new Arith(new Token('+'), loc, t1);
+            type = ((Array) type).of();
+            width = new Constant(type.width());
+            t1 = new Arith(Token.TIMES, i, width);
+            t2 = new Arith(Token.PLUS, loc, t1);
             loc = t2;
         }
         return new Access(a, loc, type);

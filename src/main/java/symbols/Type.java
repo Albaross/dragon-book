@@ -3,21 +3,58 @@ package symbols;
 import lexer.Tag;
 import lexer.Word;
 
-public class Type extends Word {
+public interface Type extends Word {
 
-    public final int width; // width is used for storage allocation
-
-    public Type(String name, int tag, int width) {
-        super(name, tag);
-        this.width = width;
+    @Override
+    default String lexeme() {
+        return name();
     }
 
-    public boolean isNumeric() {
-        return this == Type.CHAR || this == Type.INT || this == Type.FLOAT;
+    @Override
+    default int tag() {
+        return Tag.BASIC;
     }
 
-    public static final Type INT = new Type("int", Tag.BASIC, 4);
-    public static final Type FLOAT = new Type("float", Tag.BASIC, 8);
-    public static final Type CHAR = new Type("char", Tag.BASIC, 1);
-    public static final Type BOOL = new Type("bool", Tag.BASIC, 1);
+    String name();
+
+    int width(); // width is used for storage allocation
+
+
+    default boolean isNumeric() {
+        return false;
+    }
+
+    Type INT = new Numeric("int", 4);
+    Type FLOAT = new Numeric("float", 8);
+    Type CHAR = new Numeric("char", 1);
+    Type BOOL = new Bool();
+
+    record Numeric(String name, int width) implements Type {
+        @Override
+        public boolean isNumeric() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    record Bool() implements Type {
+        @Override
+        public String name() {
+            return "bool";
+        }
+
+        @Override
+        public int width() {
+            return 1;
+        }
+
+        @Override
+        public String toString() {
+            return name();
+        }
+    }
 }
