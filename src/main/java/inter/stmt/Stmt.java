@@ -4,8 +4,8 @@ import inter.*;
 
 public class Stmt implements Node {
 
-    public static Stmt Null = new Stmt();
+    public static final Stmt NULL = new Stmt();
 
     public int after = 0; // saves label after
-    public static Stmt Enclosing = Stmt.Null; // used for break stmts
+    public static Stmt Enclosing = Stmt.NULL; // used for break stmts
 }

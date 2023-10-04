@@ -54,8 +54,8 @@ public class Generator {
     } // called with labels begin and after
 
     public void genSeq(Seq seq, int begin, int after) {
-        if (seq.stmt1 == Stmt.Null) genStmt(seq.stmt2, begin, after);
-        else if (seq.stmt2 == Stmt.Null) genStmt(seq.stmt1, begin, after);
+        if (seq.stmt1 == Stmt.NULL) genStmt(seq.stmt2, begin, after);
+        else if (seq.stmt2 == Stmt.NULL) genStmt(seq.stmt1, begin, after);
         else {
             final int label = newlabel();
             genStmt(seq.stmt1, begin, label);

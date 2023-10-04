@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.albaross</groupId>
     <artifactId>dragon-book</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
     <name>dragon-book</name>
     <description>dragon-book</description>
 
