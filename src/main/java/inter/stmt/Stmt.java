@@ -1,8 +1,8 @@
 package inter.stmt;
 
-import inter.Node;
+import inter.*;
 
-public class Stmt extends Node {
+public class Stmt implements Node {
 
     public static Stmt Null = new Stmt();
 

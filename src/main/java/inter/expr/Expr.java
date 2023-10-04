@@ -4,7 +4,7 @@ import inter.*;
 import lexer.*;
 import symbols.*;
 
-public class Expr extends Node {
+public class Expr implements Node {
     public final Token op;
     public Type type;
 

@@ -1,3 +1,3 @@
 package inter;
 
-public class Node {}
+public interface Node {}
