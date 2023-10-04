@@ -12,12 +12,6 @@ public class Constant extends Expr {
         super(new Num(i), Type.INT);
     }
 
-    @Override
-    public void jumping(int t, int f) {
-        if (this == TRUE && t != 0) emit("goto L" + t);
-        else if (this == FALSE && f != 0) emit("goto L" + f);
-    }
-
     public static final Constant TRUE = new Constant(Word.TRUE, Type.BOOL);
     public static final Constant FALSE = new Constant(Word.FALSE, Type.BOOL);
 }
