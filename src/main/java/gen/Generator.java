@@ -120,18 +120,13 @@ public class Generator {
     }
 
     public Expr genExpr(Expr expr) {
-        // TODO replace with Pattern Matching for switch
-        if (expr instanceof Logical logical) {
-            return genLogical(logical);
-        } else if (expr instanceof Arith arith) {
-            return genArith(arith);
-        } else if (expr instanceof Unary unary) {
-            return genUnary(unary);
-        } else if (expr instanceof Access access) {
-            return genAccess(access);
-        }
-
-        return expr;
+        return switch (expr) {
+            case Logical logical -> genLogical(logical);
+            case Arith arith -> genArith(arith);
+            case Unary unary -> genUnary(unary);
+            case Access access -> genAccess(access);
+            default -> expr;
+        };
     }
 
     public Expr genLogical(Logical logical) {
@@ -175,22 +170,14 @@ public class Generator {
     }
 
     public void jumping(Expr expr, int t, int f) {
-        // TODO replace with Pattern Matching for switch
-        if (expr instanceof Constant constant) {
-            jumpingConstant(constant, t, f);
-        } else if (expr instanceof And and) {
-            jumpingAnd(and, t, f);
-        } else if (expr instanceof Or or) {
-            jumpingOr(or, t, f);
-        } else if (expr instanceof Not not) {
-            jumpingNot(not, t, f);
-        } else if (expr instanceof Rel rel) {
-            jumpingRel(rel, t, f);
-        } else if (expr instanceof Access access) {
-            jumpingAccess(access, t, f);
-        } else {
-            String test = expr.toString();
-            emitJumps(test, t, f);
+        switch (expr) {
+            case Constant constant -> jumpingConstant(constant, t, f);
+            case And and -> jumpingAnd(and, t, f);
+            case Or or -> jumpingOr(or, t, f);
+            case Not not -> jumpingNot(not, t, f);
+            case Rel rel -> jumpingRel(rel, t, f);
+            case Access access -> jumpingAccess(access, t, f);
+            default -> emitJumps(expr.toString(), t, f);
         }
     }
 
