@@ -1,10 +1,9 @@
 package dragonbook.gen;
 
-import dragonbook.gen.Generator;
 import dragonbook.lexer.Lexer;
+import dragonbook.parser.Parser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import dragonbook.parser.Parser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
