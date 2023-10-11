@@ -1,27 +1,18 @@
-package inter; // File Access.java
+package inter;
 
-import lexer.*;
-import symbols.*;
+import lexer.Token;
+import lexer.Word;
+import symbols.Type;
 
-public class Access extends Op {
-    public Id array;
-    public Expr index;
+public record Access(Id array, Expr index, Type type) implements Op {
 
-    public Access(Id a, Expr i, Type p) { // p is element type after
-        super(new Word("[]", Tag.INDEX), p); // flattening the array
-        array = a;
-        index = i;
+    @Override
+    public Token op() {
+        return Word.ACCESS;
     }
 
-    public Expr gen() {
-        return new Access(array, index.reduce(), type);
-    }
-
-    public void jumping(int t, int f) {
-        emitjumps(reduce().toString(), t, f);
-    }
-
+    @Override
     public String toString() {
-        return array.toString() + " [ " + index.toString() + " ]";
+        return array + " [ " + index + " ]";
     }
 }

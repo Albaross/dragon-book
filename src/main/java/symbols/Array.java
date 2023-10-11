@@ -1,18 +1,26 @@
-package symbols; // File Array.java
+package symbols;
 
-import lexer.*;
+import lexer.Tag;
 
-public class Array extends Type {
-    public Type of; // array *of* type
-    public int size = 1; // number of elements
+public record Array(int size, Type of) implements Type {
 
-    public Array(int sz, Type p) {
-        super("[]", Tag.INDEX, sz * p.width);
-        size = sz;
-        of = p;
+    @Override
+    public String name() {
+        return "[]";
     }
 
+    @Override
+    public int tag() {
+        return Tag.INDEX;
+    }
+
+    @Override
+    public int width() {
+        return size * of.width();
+    }
+
+    @Override
     public String toString() {
-        return "[" + size + "] " + of.toString();
+        return "[" + size + "] " + of;
     }
 }

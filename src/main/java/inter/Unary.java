@@ -1,23 +1,28 @@
-package inter; // File Unary.java
+package inter;
 
-import lexer.*;
-import symbols.*;
+import error.ParseError;
+import lexer.Token;
+import lexer.Word;
+import symbols.Type;
 
-public class Unary extends Op {
-    public Expr expr;
+public record Unary(Expr expr) implements Op {
 
-    public Unary(Token tok, Expr x) { // handles minus, for ! see Not
-        super(tok, null);
-        expr = x;
-        type = Type.max(Type.Int, expr.type);
-        if (type == null) error("type error");
+    public Unary { // handles minus, for ! see Not
+        if (!expr.type().isNumeric()) throw new ParseError("type error");
     }
 
-    public Expr gen() {
-        return new Unary(op, expr.reduce());
+    @Override
+    public Token op() {
+        return Word.MINUS;
     }
 
+    @Override
+    public Type type() {
+        return expr.type() == Type.FLOAT ? Type.FLOAT : Type.INT;
+    }
+
+    @Override
     public String toString() {
-        return op.toString() + " " + expr.toString();
+        return op() + " " + expr();
     }
 }

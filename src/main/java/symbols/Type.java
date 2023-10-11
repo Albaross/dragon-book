@@ -1,30 +1,60 @@
-package symbols; // File Type.java
+package symbols;
 
-import lexer.*;
+import lexer.Tag;
+import lexer.Word;
 
-public class Type extends Word {
-    public int width = 0; // width is used for storage allocation
+public interface Type extends Word {
 
-    public Type(String s, int tag, int w) {
-        super(s, tag);
-        width = w;
+    @Override
+    default String lexeme() {
+        return name();
     }
 
-    public static final Type
-            Int = new Type("int", Tag.BASIC, 4),
-            Float = new Type("float", Tag.BASIC, 8),
-            Char = new Type("char", Tag.BASIC, 1),
-            Bool = new Type("bool", Tag.BASIC, 1);
-
-    public static boolean numeric(Type p) {
-        if (p == Type.Char || p == Type.Int || p == Type.Float) return true;
-        else return false;
+    @Override
+    default int tag() {
+        return Tag.BASIC;
     }
 
-    public static Type max(Type p1, Type p2) {
-        if (!numeric(p1) || !numeric(p2)) return null;
-        else if (p1 == Type.Float || p2 == Type.Float) return Type.Float;
-        else if (p1 == Type.Int || p2 == Type.Int) return Type.Int;
-        else return Type.Char;
+    String name();
+
+    int width(); // width is used for storage allocation
+
+
+    default boolean isNumeric() {
+        return false;
+    }
+
+    Type INT = new Numeric("int", 4);
+    Type FLOAT = new Numeric("float", 8);
+    Type CHAR = new Numeric("char", 1);
+    Type BOOL = new Bool();
+
+    record Numeric(String name, int width) implements Type {
+        @Override
+        public boolean isNumeric() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    record Bool() implements Type {
+        @Override
+        public String name() {
+            return "bool";
+        }
+
+        @Override
+        public int width() {
+            return 1;
+        }
+
+        @Override
+        public String toString() {
+            return name();
+        }
     }
 }

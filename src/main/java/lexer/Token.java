@@ -1,13 +1,15 @@
-package lexer; // File Token.java
+package lexer;
 
-public class Token {
-    public final int tag;
+public interface Token {
 
-    public Token(int t) {
-        tag = t;
-    }
+    int tag();
 
-    public String toString() {
-        return "" + (char) tag;
-    }
+    Token AND = new Symbol('&');
+    Token OR = new Symbol('|');
+    Token EQ = new Symbol('=');
+    Token NOT = new Symbol('!');
+    Token LT = new Symbol('<');
+    Token GT = new Symbol('>');
+    Token PLUS = new Symbol('+');
+    Token TIMES = new Symbol('*');
 }

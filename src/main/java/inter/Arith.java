@@ -1,24 +1,28 @@
-package inter; // File Arith.java
+package inter;
 
-import lexer.*;
-import symbols.*;
+import error.ParseError;
+import lexer.Token;
+import symbols.Type;
 
-public class Arith extends Op {
-    public Expr expr1, expr2;
+public record Arith(Token op, Expr expr1, Expr expr2) implements Op {
 
-    public Arith(Token tok, Expr x1, Expr x2) {
-        super(tok, null);
-        expr1 = x1;
-        expr2 = x2;
-        type = Type.max(expr1.type, expr2.type);
-        if (type == null) error("type error");
+    public Arith {
+        if (!expr1.type().isNumeric() || !expr2.type().isNumeric()) throw new ParseError("type error");
     }
 
-    public Expr gen() {
-        return new Arith(op, expr1.reduce(), expr2.reduce());
+    @Override
+    public Type type() {
+        return max(expr1.type(), expr2.type());
     }
 
+    private static Type max(Type type1, Type type2) {
+        if (type1 == Type.FLOAT || type2 == Type.FLOAT) return Type.FLOAT;
+        else if (type1 == Type.INT || type2 == Type.INT) return Type.INT;
+        return Type.CHAR;
+    }
+
+    @Override
     public String toString() {
-        return expr1.toString() + " " + op.toString() + " " + expr2.toString();
+        return expr1 + " " + op + " " + expr2;
     }
 }

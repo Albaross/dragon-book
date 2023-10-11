@@ -1,24 +1,18 @@
-package inter; // File Rel.java
+package inter;
 
-import lexer.*;
-import symbols.*;
+import error.ParseError;
+import lexer.Token;
+import symbols.Array;
 
-public class Rel extends Logical {
-    public Rel(Token tok, Expr x1, Expr x2) {
-        super(tok, x1, x2);
+public record Rel(Token op, Expr expr1, Expr expr2) implements Logical {
+
+    public Rel {
+        if (expr1.type() instanceof Array || expr2.type() instanceof Array || expr1.type() != expr2.type())
+            throw new ParseError("type error");
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 instanceof Array || p2 instanceof Array) return null;
-        else if (p1 == p2) return Type.Bool;
-        else return null;
-    }
-
-    public void jumping(int t, int f) {
-        Expr a = expr1.reduce();
-        Expr b = expr2.reduce();
-
-        String test = a.toString() + " " + op.toString() + " " + b.toString();
-        emitjumps(test, t, f);
+    @Override
+    public String toString() {
+        return expr1() + " " + op() + " " + expr2();
     }
 }

@@ -1,13 +1,18 @@
-package inter; // File Id.java
+package inter;
 
-import lexer.*;
-import symbols.*;
+import lexer.Token;
+import lexer.Word;
+import symbols.Type;
 
-public class Id extends Expr {
-    public int offset; // relative address
+public record Id(Word id, Type type) implements Expr {
 
-    public Id(Word id, Type p, int b) {
-        super(id, p);
-        offset = b;
+    @Override
+    public Token op() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
     }
 }

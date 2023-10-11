@@ -1,14 +1,14 @@
-package lexer; // File Real.java
+package lexer;
 
-public class Real extends Token {
-    public final float value;
+public record Real(float value) implements Token {
 
-    public Real(float v) {
-        super(Tag.REAL);
-        value = v;
+    @Override
+    public int tag() {
+        return Tag.REAL;
     }
 
+    @Override
     public String toString() {
-        return "" + value;
+        return String.valueOf(value);
     }
 }

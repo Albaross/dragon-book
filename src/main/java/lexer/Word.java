@@ -1,23 +1,23 @@
-package lexer; // File Word.java
+package lexer;
 
-public class Word extends Token {
-    public String lexeme = "";
+public interface Word extends Token {
 
-    public Word(String s, int tag) {
-        super(tag);
-        lexeme = s;
-    }
+    String lexeme();
 
-    public String toString() {
-        return lexeme;
-    }
-
-    public static final Word
-            and = new Word("&&", Tag.AND), or = new Word("||", Tag.OR),
-            eq = new Word("==", Tag.EQ), ne = new Word("!=", Tag.NE),
-            le = new Word("<=", Tag.LE), ge = new Word(">=", Tag.GE),
-            minus = new Word("minus", Tag.MINUS),
-            True = new Word("true", Tag.TRUE),
-            False = new Word("false", Tag.FALSE),
-            temp = new Word("t", Tag.TEMP);
+    Word AND = new Keyword("&&", Tag.AND);
+    Word OR = new Keyword("||", Tag.OR);
+    Word EQ = new Keyword("==", Tag.EQ);
+    Word NE = new Keyword("!=", Tag.NE);
+    Word LE = new Keyword("<=", Tag.LE);
+    Word GE = new Keyword(">=", Tag.GE);
+    Word MINUS = new Keyword("minus", Tag.MINUS);
+    Word TRUE = new Keyword("true", Tag.TRUE);
+    Word FALSE = new Keyword("false", Tag.FALSE);
+    Word TEMP = new Keyword("t", Tag.TEMP);
+    Word IF = new Keyword("if", Tag.IF);
+    Word ELSE = new Keyword("else", Tag.ELSE);
+    Word WHILE = new Keyword("while", Tag.WHILE);
+    Word DO = new Keyword("do", Tag.DO);
+    Word BREAK = new Keyword("break", Tag.BREAK);
+    Word ACCESS = new Keyword("[]", Tag.INDEX);
 }

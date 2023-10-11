@@ -1,25 +1,17 @@
-package inter; // File Set.java
+package inter;
 
-import lexer.*;
-import symbols.*;
+import error.ParseError;
+import symbols.Type;
 
-public class Set extends Stmt {
-    public Id id;
-    public Expr expr;
+public record Set(Id id, Expr expr) implements Stmt {
 
-    public Set(Id i, Expr x) {
-        id = i;
-        expr = x;
-        if (check(id.type, expr.type) == null) error("type error");
+    public Set {
+        checkTypes(id.type(), expr.type());
     }
 
-    public Type check(Type p1, Type p2) {
-        if (Type.numeric(p1) && Type.numeric(p2)) return p2;
-        else if (p1 == Type.Bool && p2 == Type.Bool) return p2;
-        else return null;
-    }
-
-    public void gen(int b, int a) {
-        emit(id.toString() + " = " + expr.gen().toString());
+    private void checkTypes(Type type1, Type type2) {
+        if (type1.isNumeric() && type2.isNumeric()) return;
+        else if (type1 == Type.BOOL && type2 == Type.BOOL) return;
+        throw new ParseError("type error");
     }
 }

@@ -1,21 +1,11 @@
-package inter; // File If.java
+package inter;
 
-import symbols.*;
+import error.ParseError;
+import symbols.Type;
 
-public class If extends Stmt {
-    Expr expr;
-    Stmt stmt;
+public record If(Expr expr, Stmt stmt) implements Stmt {
 
-    public If(Expr x, Stmt s) {
-        expr = x;
-        stmt = s;
-        if (expr.type != Type.Bool) expr.error("boolean required in if");
-    }
-
-    public void gen(int b, int a) {
-        int label = newlabel(); // label for the code for stmt
-        expr.jumping(0, a); // fall through on true, goto a on false
-        emitlabel(label);
-        stmt.gen(label, a);
+    public If {
+        if (expr.type() != Type.BOOL) throw new ParseError("boolean required in if");
     }
 }

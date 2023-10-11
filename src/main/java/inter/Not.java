@@ -1,18 +1,30 @@
-package inter; // File Not.java
+package inter;
 
-import lexer.*;
-import symbols.*;
+import lexer.Token;
 
-public class Not extends Logical {
-    public Not(Token tok, Expr x2) {
-        super(tok, x2, x2);
+public record Not(Expr expr) implements Logical {
+
+    public Not {
+        checkTypes();
     }
 
-    public void jumping(int t, int f) {
-        expr2.jumping(f, t);
+    @Override
+    public Token op() {
+        return Token.NOT;
     }
 
+    @Override
+    public Expr expr1() {
+        return expr;
+    }
+
+    @Override
+    public Expr expr2() {
+        return expr;
+    }
+
+    @Override
     public String toString() {
-        return op.toString() + " " + expr2.toString();
+        return op() + " " + expr2();
     }
 }

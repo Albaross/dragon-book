@@ -1,14 +1,14 @@
 package lexer;
 
-public record Num(int value) implements Token {
+record Name(String lexeme) implements Word {
 
     @Override
     public int tag() {
-        return Tag.NUM;
+        return Tag.ID;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(value);
+        return lexeme;
     }
 }
