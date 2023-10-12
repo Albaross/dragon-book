@@ -10,9 +10,4 @@ public record Temp(Type type, int number) implements Expr {
     public Token op() {
         return Word.TEMP;
     }
-
-    @Override
-    public String toString() {
-        return "t" + number;
-    }
 }

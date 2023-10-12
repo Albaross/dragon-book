@@ -16,11 +16,6 @@ public record Constant(Token value, Type type) implements Expr {
         return value;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
     public static final Constant TRUE = new Constant(Word.TRUE, Type.BOOL);
     public static final Constant FALSE = new Constant(Word.FALSE, Type.BOOL);
 }

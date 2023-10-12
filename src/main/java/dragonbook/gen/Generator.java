@@ -215,7 +215,7 @@ public class Generator {
 
     private String str(Expr expr) {
         return switch (expr) {
-            case Access access -> str(access.array()) + "[" + str(access.index()) + "]";
+            case Access access -> str(access.array()) + " [ " + str(access.index()) + " ]";
             case Arith arith -> str(arith.expr1()) + " " + str(arith.op()) + " " + str(arith.expr2());
             case Not not -> str(not.op()) + " " + str(not.expr2());
             case Logical logical -> str(logical.expr1()) + " " + str(logical.op()) + " " + str(logical.expr2());

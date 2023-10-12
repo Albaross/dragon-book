@@ -20,9 +20,4 @@ public record Arith(Token op, Expr expr1, Expr expr2) implements Op {
         else if (type1 == Type.INT || type2 == Type.INT) return Type.INT;
         return Type.CHAR;
     }
-
-    @Override
-    public String toString() {
-        return expr1 + " " + op + " " + expr2;
-    }
 }

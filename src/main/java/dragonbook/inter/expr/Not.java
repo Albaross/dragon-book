@@ -22,9 +22,4 @@ public record Not(Expr expr) implements Logical {
     public Expr expr2() {
         return expr;
     }
-
-    @Override
-    public String toString() {
-        return op() + " " + expr2();
-    }
 }

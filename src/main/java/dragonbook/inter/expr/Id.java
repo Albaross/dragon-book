@@ -10,9 +10,4 @@ public record Id(Word id, Type type) implements Expr {
     public Token op() {
         return id;
     }
-
-    @Override
-    public String toString() {
-        return id.toString();
-    }
 }

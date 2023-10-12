@@ -20,9 +20,4 @@ public record Unary(Expr expr) implements Op {
     public Type type() {
         return expr.type() == Type.FLOAT ? Type.FLOAT : Type.INT;
     }
-
-    @Override
-    public String toString() {
-        return op() + " " + expr();
-    }
 }

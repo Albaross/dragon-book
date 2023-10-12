@@ -10,9 +10,4 @@ public record Access(Id array, Expr index, Type type) implements Op {
     public Token op() {
         return Word.ACCESS;
     }
-
-    @Override
-    public String toString() {
-        return array + " [ " + index + " ]";
-    }
 }

@@ -12,9 +12,4 @@ public record Or(Expr expr1, Expr expr2) implements Logical {
     public Token op() {
         return Token.OR;
     }
-
-    @Override
-    public String toString() {
-        return expr1() + " " + op() + " " + expr2();
-    }
 }
