@@ -147,7 +147,7 @@ public class Generator {
     }
 
     private Expr genUnary(Unary unary) {
-        return new Unary(reduce(unary.expr()));
+        return new Unary(unary.op(), reduce(unary.expr()));
     }
 
     private Expr genAccess(Access access) {
