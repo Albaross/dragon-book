@@ -2,15 +2,10 @@ package dragonbook.inter.expr;
 
 import dragonbook.lexer.Token;
 
-public record Not(Expr expr) implements Logical {
+public record Not(Token op, Expr expr) implements Logical {
 
     public Not {
         checkTypes();
-    }
-
-    @Override
-    public Token op() {
-        return Token.NOT;
     }
 
     @Override

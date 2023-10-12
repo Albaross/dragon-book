@@ -175,8 +175,9 @@ public class Parser {
     private Expr bool() {
         Expr expr = join();
         while (look.tag() == Tag.OR) {
+            final Token tok = look;
             move();
-            expr = new Or(expr, join());
+            expr = new Or(tok, expr, join());
         }
         return expr;
     }
@@ -184,8 +185,9 @@ public class Parser {
     private Expr join() {
         Expr expr = equality();
         while (look.tag() == Tag.AND) {
+            final Token tok = look;
             move();
-            expr = new And(expr, equality());
+            expr = new And(tok, expr, equality());
         }
         return expr;
     }
@@ -237,10 +239,11 @@ public class Parser {
     private Expr unary() {
         if (look.tag() == '-') {
             move();
-            return new Unary(unary());
+            return new Unary(Word.MINUS, unary());
         } else if (look.tag() == '!') {
+            final Token tok = look;
             move();
-            return new Not(unary());
+            return new Not(tok, unary());
         } else return factor();
     }
 
