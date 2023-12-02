@@ -1,6 +1,5 @@
 package inter;
 
-import lexer.*;
 import symbols.*;
 
 public class Set extends Stmt {

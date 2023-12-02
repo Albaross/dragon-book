@@ -6,7 +6,7 @@ import java.io.*;
 
 public class Node {
     public static PrintStream out = System.out;
-    int lexline = 0;
+    int lexline;
 
     Node() {
         lexline = Lexer.line;

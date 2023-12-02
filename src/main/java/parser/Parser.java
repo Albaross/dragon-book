@@ -7,7 +7,7 @@ import symbols.*;
 import inter.*;
 
 public class Parser {
-    private Lexer lex; // lexical analyzer for this parser
+    private final Lexer lex; // lexical analyzer for this parser
     private Token look; // lookahead token
     Env top = null; // current or top symbol table
     int used = 0; // storage used for declarations
@@ -22,7 +22,7 @@ public class Parser {
     }
 
     void error(String s) {
-        throw new Error("near line " + lex.line + ": " + s);
+        throw new Error("near line " + Lexer.line + ": " + s);
     }
 
     void match(int t) throws IOException {
@@ -86,7 +86,7 @@ public class Parser {
 
     Stmt stmt() throws IOException {
         Expr x;
-        Stmt s, s1, s2;
+        Stmt s1, s2;
         Stmt savedStmt; // save enclosing loop for breaks
         switch (look.tag) {
             case ';':
@@ -261,7 +261,6 @@ public class Parser {
                 error("syntax error");
                 return x;
             case Tag.ID:
-                String s = look.toString();
                 Id id = top.get(look);
                 if (id == null) error(look.toString() + " undeclared");
                 move();

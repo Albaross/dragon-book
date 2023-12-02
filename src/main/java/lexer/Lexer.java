@@ -9,7 +9,7 @@ public class Lexer {
     public static int line = 1;
     InputStream in;
     char peek = ' ';
-    Hashtable words = new Hashtable();
+    HashMap<String, Word> words = new HashMap<>();
 
     void reserve(Word w) {
         words.put(w.lexeme, w);
@@ -85,13 +85,13 @@ public class Lexer {
             return new Real(x);
         }
         if (Character.isLetter(peek)) {
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
             do {
                 b.append(peek);
                 readch();
             } while (Character.isLetterOrDigit(peek));
             String s = b.toString();
-            Word w = (Word) words.get(s);
+            Word w = words.get(s);
             if (w != null) return w;
             w = new Word(s, Tag.ID);
             words.put(s, w);

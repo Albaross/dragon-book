@@ -3,7 +3,7 @@ package symbols;
 import lexer.*;
 
 public class Type extends Word {
-    public int width = 0; // width is used for storage allocation
+    public int width; // width is used for storage allocation
 
     public Type(String s, int tag, int w) {
         super(s, tag);
@@ -17,8 +17,7 @@ public class Type extends Word {
             Bool = new Type("bool", Tag.BASIC, 1);
 
     public static boolean numeric(Type p) {
-        if (p == Type.Char || p == Type.Int || p == Type.Float) return true;
-        else return false;
+        return p == Type.Char || p == Type.Int || p == Type.Float;
     }
 
     public static Type max(Type p1, Type p2) {
