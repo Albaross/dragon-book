@@ -20,10 +20,14 @@ public class Logical extends Expr {
     }
 
     public Expr gen() {
+        return genLogical(this);
+    }
+
+    private static Expr genLogical(Logical logical) {
         int f = newlabel();
         int a = newlabel();
-        Temp temp = new Temp(type);
-        this.jumping(0, f);
+        Temp temp = new Temp(logical.type);
+        logical.jumping(0, f);
         emit(temp.toString() + " = true");
         emit("goto L" + a);
         emitlabel(f);

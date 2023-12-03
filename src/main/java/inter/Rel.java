@@ -15,10 +15,14 @@ public class Rel extends Logical {
     }
 
     public void jumping(int t, int f) {
-        Expr a = expr1.reduce();
-        Expr b = expr2.reduce();
+        jumpingRel(this, t, f);
+    }
 
-        String test = a.toString() + " " + op.toString() + " " + b.toString();
+    private static void jumpingRel(Rel rel, int t, int f) {
+        Expr a = rel.expr1.reduce();
+        Expr b = rel.expr2.reduce();
+
+        String test = a.toString() + " " + rel.op.toString() + " " + b.toString();
         emitjumps(test, t, f);
     }
 }

@@ -13,18 +13,30 @@ public class Expr extends Node {
     }
 
     public Expr gen() {
-        return this;
+        return genExpr(this);
+    }
+
+    private static Expr genExpr(Expr expr) {
+        return expr;
     }
 
     public Expr reduce() {
-        return this;
+        return reduceExpr(this);
+    }
+
+    private static Expr reduceExpr(Expr expr) {
+        return expr;
     }
 
     public void jumping(int t, int f) {
-        emitjumps(toString(), t, f);
+        jumpingExpr(this, t, f);
     }
 
-    public void emitjumps(String test, int t, int f) {
+    private static void jumpingExpr(Expr expr, int t, int f) {
+        emitjumps(expr.toString(), t, f);
+    }
+
+    public static void emitjumps(String test, int t, int f) {
         if (t != 0 && f != 0) {
             emit("if " + test + " goto L" + t);
             emit("goto L" + f);

@@ -18,7 +18,11 @@ public class Set extends Stmt {
         else return null;
     }
 
-    public void gen(int b, int a) {
-        emit(id.toString() + " = " + expr.gen().toString());
+    public void gen(int begin, int after) {
+        genSet(this, begin, after);
+    }
+
+    private static void genSet(Set set, int begin, int after) {
+        emit(set.id.toString() + " = " + set.expr.gen().toString());
     }
 }

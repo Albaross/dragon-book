@@ -15,7 +15,11 @@ public class Arith extends Op {
     }
 
     public Expr gen() {
-        return new Arith(op, expr1.reduce(), expr2.reduce());
+        return genArith(this);
+    }
+
+    private static Expr genArith(Arith arith) {
+        return new Arith(arith.op, arith.expr1.reduce(), arith.expr2.reduce());
     }
 
     public String toString() {

@@ -9,14 +9,18 @@ public class Seq extends Stmt {
         stmt2 = s2;
     }
 
-    public void gen(int b, int a) {
-        if (stmt1 == Stmt.Null) stmt2.gen(b, a);
-        else if (stmt2 == Stmt.Null) stmt1.gen(b, a);
+    public void gen(int begin, int after) {
+        genSeq(this, begin, after);
+    }
+
+    private static void genSeq(Seq seq, int begin, int after) {
+        if (seq.stmt1 == Stmt.Null) seq.stmt2.gen(begin, after);
+        else if (seq.stmt2 == Stmt.Null) seq.stmt1.gen(begin, after);
         else {
             int label = newlabel();
-            stmt1.gen(b, label);
+            seq.stmt1.gen(begin, label);
             emitlabel(label);
-            stmt2.gen(label, a);
+            seq.stmt2.gen(label, after);
         }
     }
 }

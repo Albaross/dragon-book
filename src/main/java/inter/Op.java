@@ -9,8 +9,12 @@ public class Op extends Expr {
     }
 
     public Expr reduce() {
-        Expr x = gen();
-        Temp t = new Temp(type);
+        return reduceOp(this);
+    }
+
+    private static Expr reduceOp(Op op) {
+        Expr x = op.gen();
+        Temp t = new Temp(op.type);
         emit(t.toString() + " = " + x.toString());
         return t;
     }

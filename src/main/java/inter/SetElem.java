@@ -21,9 +21,13 @@ public class SetElem extends Stmt {
         else return null;
     }
 
-    public void gen(int b, int a) {
-        String s1 = index.reduce().toString();
-        String s2 = expr.reduce().toString();
-        emit(array.toString() + " [ " + s1 + " ] = " + s2);
+    public void gen(int begin, int after) {
+        genSetElem(this, begin, after);
+    }
+
+    private static void genSetElem(SetElem setElem, int begin, int after) {
+        String s1 = setElem.index.reduce().toString();
+        String s2 = setElem.expr.reduce().toString();
+        emit(setElem.array.toString() + " [ " + s1 + " ] = " + s2);
     }
 }

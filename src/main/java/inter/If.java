@@ -12,10 +12,14 @@ public class If extends Stmt {
         if (expr.type != Type.Bool) expr.error("boolean required in if");
     }
 
-    public void gen(int b, int a) {
+    public void gen(int begin, int after) {
+        genIf(this, begin, after);
+    }
+
+    private static void genIf(If ifStmt, int begin, int after) {
         int label = newlabel(); // label for the code for stmt
-        expr.jumping(0, a); // fall through on true, goto a on false
+        ifStmt.expr.jumping(0, after); // fall through on true, goto a on false
         emitlabel(label);
-        stmt.gen(label, a);
+        ifStmt.stmt.gen(label, after);
     }
 }

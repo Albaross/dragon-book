@@ -8,7 +8,11 @@ public class Break extends Stmt {
         stmt = Stmt.Enclosing;
     }
 
-    public void gen(int b, int a) {
-        emit("goto L" + stmt.after);
+    public void gen(int begin, int after) {
+        genBreak(this, begin, after);
+    }
+
+    private static void genBreak(Break breakStmt, int begin, int after) {
+        emit("goto L" + breakStmt.stmt.after);
     }
 }

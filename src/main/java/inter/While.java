@@ -17,12 +17,16 @@ public class While extends Stmt {
         if (expr.type != Type.Bool) expr.error("boolean required in while");
     }
 
-    public void gen(int b, int a) {
-        after = a; // save label a
-        expr.jumping(0, a);
+    public void gen(int begin, int after) {
+        genWhile(this, begin, after);
+    }
+
+    private static void genWhile(While whileLoop, int begin, int after) {
+        whileLoop.after = after; // save label a
+        whileLoop.expr.jumping(0, after);
         int label = newlabel(); // label for stmt
         emitlabel(label);
-        stmt.gen(label, b);
-        emit("goto L" + b);
+        whileLoop.stmt.gen(label, begin);
+        emit("goto L" + begin);
     }
 }

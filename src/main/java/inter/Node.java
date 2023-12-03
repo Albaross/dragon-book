@@ -18,15 +18,15 @@ public class Node {
 
     static int labels = 0;
 
-    public int newlabel() {
+    public static int newlabel() {
         return ++labels;
     }
 
-    public void emitlabel(int i) {
+    public static void emitlabel(int i) {
         out.print("L" + i + ":");
     }
 
-    public void emit(String s) {
+    public static void emit(String s) {
         out.println("\t" + s);
     }
 }

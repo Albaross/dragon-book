@@ -8,7 +8,11 @@ public class Not extends Logical {
     }
 
     public void jumping(int t, int f) {
-        expr2.jumping(f, t);
+        jumpingNot(this, t, f);
+    }
+
+    private static void jumpingNot(Not not, int t, int f) {
+        not.expr2.jumping(f, t);
     }
 
     public String toString() {

@@ -14,7 +14,11 @@ public class Unary extends Op {
     }
 
     public Expr gen() {
-        return new Unary(op, expr.reduce());
+        return genUnary(this);
+    }
+
+    private static Expr genUnary(Unary unary) {
+        return new Unary(unary.op, unary.expr.reduce());
     }
 
     public String toString() {
