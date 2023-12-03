@@ -14,19 +14,11 @@ public class Access extends Op {
     }
 
     public Expr gen() {
-        return genAccess(this);
-    }
-
-    private static Expr genAccess(Access access) {
-        return new Access(access.array, access.index.reduce(), access.type);
+        return gen.Generator.genAccess(this);
     }
 
     public void jumping(int t, int f) {
-        jumpingAccess(this, t, f);
-    }
-
-    private static void jumpingAccess(Access access, int t, int f) {
-        emitjumps(access.reduce().toString(), t, f);
+        gen.Generator.jumpingAccess(this, t, f);
     }
 
 

@@ -17,11 +17,6 @@ public class Constant extends Expr {
             False = new Constant(Word.False, Type.Bool);
 
     public void jumping(int t, int f) {
-        jumpingConstant(this, t, f);
-    }
-
-    private static void jumpingConstant(Constant constant, int t, int f) {
-        if (constant == True && t != 0) emit("goto L" + t);
-        else if (constant == False && f != 0) emit("goto L" + f);
+        gen.Generator.jumpingConstant(this, t, f);
     }
 }

@@ -32,11 +32,11 @@ public class Parser {
 
     public void program() throws IOException { // program -> block
         Stmt s = block();
-        int begin = s.newlabel();
-        int after = s.newlabel();
-        s.emitlabel(begin);
+        int begin = gen.Generator.newlabel();
+        int after = gen.Generator.newlabel();
+        gen.Generator.emitlabel(begin);
         s.gen(begin, after);
-        s.emitlabel(after);
+        gen.Generator.emitlabel(after);
     }
 
     Stmt block() throws IOException { // block -> { decls stmts }

@@ -19,10 +19,6 @@ public class Set extends Stmt {
     }
 
     public void gen(int begin, int after) {
-        genSet(this, begin, after);
-    }
-
-    private static void genSet(Set set, int begin, int after) {
-        emit(set.id.toString() + " = " + set.expr.gen().toString());
+        gen.Generator.genSet(this, begin, after);
     }
 }

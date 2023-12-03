@@ -3,8 +3,8 @@ package inter;
 import symbols.*;
 
 public class Do extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    public Expr expr;
+    public Stmt stmt;
 
     public Do() {
         expr = null;
@@ -18,14 +18,6 @@ public class Do extends Stmt {
     }
 
     public void gen(int begin, int after) {
-        genDo(this, begin, after);
-    }
-
-    private static void genDo(Do doLoop, int begin, int after) {
-        doLoop.after = after;
-        int label = newlabel(); // label for expr
-        doLoop.stmt.gen(begin, label);
-        emitlabel(label);
-        doLoop.expr.jumping(begin, 0);
+        gen.Generator.genDo(this, begin, after);
     }
 }

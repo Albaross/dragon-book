@@ -15,14 +15,6 @@ public class Rel extends Logical {
     }
 
     public void jumping(int t, int f) {
-        jumpingRel(this, t, f);
-    }
-
-    private static void jumpingRel(Rel rel, int t, int f) {
-        Expr a = rel.expr1.reduce();
-        Expr b = rel.expr2.reduce();
-
-        String test = a.toString() + " " + rel.op.toString() + " " + b.toString();
-        emitjumps(test, t, f);
+        gen.Generator.jumpingRel(this, t, f);
     }
 }

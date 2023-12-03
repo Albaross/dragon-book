@@ -11,6 +11,6 @@ public class Stmt extends Node {
 
     private static void genStmt(Stmt stmt, int begin, int after) {}
 
-    int after = 0; // saves label after
+    public int after = 0; // saves label after
     public static Stmt Enclosing = Stmt.Null; // used for break stmts
 }

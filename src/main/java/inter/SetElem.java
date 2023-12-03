@@ -22,12 +22,6 @@ public class SetElem extends Stmt {
     }
 
     public void gen(int begin, int after) {
-        genSetElem(this, begin, after);
-    }
-
-    private static void genSetElem(SetElem setElem, int begin, int after) {
-        String s1 = setElem.index.reduce().toString();
-        String s2 = setElem.expr.reduce().toString();
-        emit(setElem.array.toString() + " [ " + s1 + " ] = " + s2);
+        gen.Generator.genSetElem(this, begin, after);
     }
 }

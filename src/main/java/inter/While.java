@@ -3,8 +3,8 @@ package inter;
 import symbols.*;
 
 public class While extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    public Expr expr;
+    public Stmt stmt;
 
     public While() {
         expr = null;
@@ -18,15 +18,6 @@ public class While extends Stmt {
     }
 
     public void gen(int begin, int after) {
-        genWhile(this, begin, after);
-    }
-
-    private static void genWhile(While whileLoop, int begin, int after) {
-        whileLoop.after = after; // save label a
-        whileLoop.expr.jumping(0, after);
-        int label = newlabel(); // label for stmt
-        emitlabel(label);
-        whileLoop.stmt.gen(label, begin);
-        emit("goto L" + begin);
+        gen.Generator.genWhile(this, begin, after);
     }
 }

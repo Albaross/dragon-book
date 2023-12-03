@@ -3,8 +3,8 @@ package inter;
 import symbols.*;
 
 public class If extends Stmt {
-    Expr expr;
-    Stmt stmt;
+    public Expr expr;
+    public Stmt stmt;
 
     public If(Expr x, Stmt s) {
         expr = x;
@@ -13,13 +13,6 @@ public class If extends Stmt {
     }
 
     public void gen(int begin, int after) {
-        genIf(this, begin, after);
-    }
-
-    private static void genIf(If ifStmt, int begin, int after) {
-        int label = newlabel(); // label for the code for stmt
-        ifStmt.expr.jumping(0, after); // fall through on true, goto a on false
-        emitlabel(label);
-        ifStmt.stmt.gen(label, after);
+        gen.Generator.genIf(this, begin, after);
     }
 }
