@@ -185,8 +185,8 @@ public class Generator {
     }
 
     private void jumpingConstant(Constant constant, int t, int f) {
-        if (constant == Constant.True && t != 0) emit("goto L" + t);
-        else if (constant == Constant.False && f != 0) emit("goto L" + f);
+        if (constant == Constant.TRUE && t != 0) emit("goto L" + t);
+        else if (constant == Constant.FALSE && f != 0) emit("goto L" + f);
     }
 
     private void jumpingAnd(And and, int t, int f) {

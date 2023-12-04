@@ -11,20 +11,19 @@ public class Type extends Word {
         width = w;
     }
 
-    public static final Type
-            Int = new Type("int", Tag.BASIC, 4),
-            Float = new Type("float", Tag.BASIC, 8),
-            Char = new Type("char", Tag.BASIC, 1),
-            Bool = new Type("bool", Tag.BASIC, 1);
-
     public static boolean numeric(Type p) {
-        return p == Type.Char || p == Type.Int || p == Type.Float;
+        return p == Type.CHAR || p == Type.INT || p == Type.FLOAT;
     }
 
     public static Type max(Type p1, Type p2) {
         if (!numeric(p1) || !numeric(p2)) return null;
-        else if (p1 == Type.Float || p2 == Type.Float) return Type.Float;
-        else if (p1 == Type.Int || p2 == Type.Int) return Type.Int;
-        else return Type.Char;
+        else if (p1 == Type.FLOAT || p2 == Type.FLOAT) return Type.FLOAT;
+        else if (p1 == Type.INT || p2 == Type.INT) return Type.INT;
+        else return Type.CHAR;
     }
+
+    public static final Type INT = new Type("int", Tag.BASIC, 4);
+    public static final Type FLOAT = new Type("float", Tag.BASIC, 8);
+    public static final Type CHAR = new Type("char", Tag.BASIC, 1);
+    public static final Type BOOL = new Type("bool", Tag.BASIC, 1);
 }

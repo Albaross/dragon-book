@@ -225,7 +225,7 @@ public class Parser {
     Expr unary() throws IOException {
         if (look.tag == '-') {
             move();
-            return new Unary(Word.minus, unary());
+            return new Unary(Word.MINUS, unary());
         } else if (look.tag == '!') {
             Token tok = look;
             move();
@@ -242,19 +242,19 @@ public class Parser {
                 match(')');
                 return x;
             case Tag.NUM:
-                x = new Constant(look, Type.Int);
+                x = new Constant(look, Type.INT);
                 move();
                 return x;
             case Tag.REAL:
-                x = new Constant(look, Type.Float);
+                x = new Constant(look, Type.FLOAT);
                 move();
                 return x;
             case Tag.TRUE:
-                x = Constant.True;
+                x = Constant.TRUE;
                 move();
                 return x;
             case Tag.FALSE:
-                x = Constant.False;
+                x = Constant.FALSE;
                 move();
                 return x;
             default:

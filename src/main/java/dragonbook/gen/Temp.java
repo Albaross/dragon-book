@@ -8,7 +8,7 @@ public class Temp extends Expr {
     public int number;
 
     public Temp(Type p, int number) {
-        super(Word.temp, p);
+        super(Word.TEMP, p);
         this.number = number;
     }
 

@@ -18,17 +18,17 @@ public class Lexer {
 
     public Lexer(InputStream in) {
         this.in = in;
-        reserve(new Word("if", Tag.IF));
-        reserve(new Word("else", Tag.ELSE));
-        reserve(new Word("while", Tag.WHILE));
-        reserve(new Word("do", Tag.DO));
-        reserve(new Word("break", Tag.BREAK));
-        reserve(Word.True);
-        reserve(Word.False);
-        reserve(Type.Int);
-        reserve(Type.Char);
-        reserve(Type.Bool);
-        reserve(Type.Float);
+        reserve(Word.IF);
+        reserve(Word.ELSE);
+        reserve(Word.WHILE);
+        reserve(Word.DO);
+        reserve(Word.BREAK);
+        reserve(Word.TRUE);
+        reserve(Word.FALSE);
+        reserve(Type.INT);
+        reserve(Type.CHAR);
+        reserve(Type.BOOL);
+        reserve(Type.FLOAT);
     }
 
     void readch() throws IOException {
@@ -50,22 +50,22 @@ public class Lexer {
         }
         switch (peek) {
             case '&':
-                if (readch('&')) return Word.and;
+                if (readch('&')) return Word.AND;
                 else return new Token('&');
             case '|':
-                if (readch('|')) return Word.or;
+                if (readch('|')) return Word.OR;
                 else return new Token('|');
             case '=':
-                if (readch('=')) return Word.eq;
+                if (readch('=')) return Word.EQ;
                 else return new Token('=');
             case '!':
-                if (readch('=')) return Word.ne;
+                if (readch('=')) return Word.NE;
                 else return new Token('!');
             case '<':
-                if (readch('=')) return Word.le;
+                if (readch('=')) return Word.LE;
                 else return new Token('<');
             case '>':
-                if (readch('=')) return Word.ge;
+                if (readch('=')) return Word.GE;
                 else return new Token('>');
         }
         if (Character.isDigit(peek)) {

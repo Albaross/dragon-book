@@ -11,7 +11,7 @@ public class Rel extends Logical {
 
     public Type check(Type p1, Type p2) {
         if (p1 instanceof Array || p2 instanceof Array) return null;
-        else if (p1 == p2) return Type.Bool;
+        else if (p1 == p2) return Type.BOOL;
         else return null;
     }
 }

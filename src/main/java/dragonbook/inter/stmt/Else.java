@@ -11,6 +11,6 @@ public class Else extends Stmt {
         expr = x;
         stmt1 = s1;
         stmt2 = s2;
-        if (expr.type != Type.Bool) expr.error("boolean required in if");
+        if (expr.type != Type.BOOL) expr.error("boolean required in if");
     }
 }

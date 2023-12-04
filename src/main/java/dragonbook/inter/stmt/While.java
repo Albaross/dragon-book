@@ -15,6 +15,6 @@ public class While extends Stmt {
     public void init(Expr x, Stmt s) {
         expr = x;
         stmt = s;
-        if (expr.type != Type.Bool) expr.error("boolean required in while");
+        if (expr.type != Type.BOOL) expr.error("boolean required in while");
     }
 }
