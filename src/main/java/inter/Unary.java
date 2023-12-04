@@ -14,6 +14,6 @@ public class Unary extends Op {
     }
 
     public String toString() {
-        return op.toString() + " " + expr.toString();
+        return op + " " + expr;
     }
 }

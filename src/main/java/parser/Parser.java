@@ -10,6 +10,7 @@ public class Parser {
     private final Lexer lex; // lexical analyzer for this parser
     private Token look; // lookahead token
     Env top = null; // current or top symbol table
+    String Enclosing = null; // used for break stmts
     int used = 0; // storage used for declarations
 
     public Parser(Lexer l) throws IOException {
@@ -82,7 +83,7 @@ public class Parser {
     Stmt stmt() throws IOException {
         Expr x;
         Stmt s1, s2;
-        Stmt savedStmt; // save enclosing loop for breaks
+        String savedStmt; // save enclosing loop for breaks
         switch (look.tag) {
             case ';':
                 move();
@@ -99,20 +100,20 @@ public class Parser {
                 return new Else(x, s1, s2);
             case Tag.WHILE:
                 While whilenode = new While();
-                savedStmt = Stmt.Enclosing;
-                Stmt.Enclosing = whilenode;
+                savedStmt = Enclosing;
+                Enclosing = "while";
                 match(Tag.WHILE);
                 match('(');
                 x = bool();
                 match(')');
                 s1 = stmt();
                 whilenode.init(x, s1);
-                Stmt.Enclosing = savedStmt; // reset Stmt.Enclosing
+                Enclosing = savedStmt; // reset Enclosing
                 return whilenode;
             case Tag.DO:
                 Do donode = new Do();
-                savedStmt = Stmt.Enclosing;
-                Stmt.Enclosing = donode;
+                savedStmt = Enclosing;
+                Enclosing = "do";
                 match(Tag.DO);
                 s1 = stmt();
                 match(Tag.WHILE);
@@ -121,11 +122,12 @@ public class Parser {
                 match(')');
                 match(';');
                 donode.init(s1, x);
-                Stmt.Enclosing = savedStmt; // reset Stmt.Enclosing
+                Enclosing = savedStmt; // reset Enclosing
                 return donode;
             case Tag.BREAK:
                 match(Tag.BREAK);
                 match(';');
+                if (Enclosing == null) error("unenclosed break");
                 return new Break();
             case '{':
                 return block();
@@ -139,7 +141,7 @@ public class Parser {
         Token t = look;
         match(Tag.ID);
         Id id = top.get(t);
-        if (id == null) error(t.toString() + " undeclared");
+        if (id == null) error(t + " undeclared");
         if (look.tag == '=') { // S -> id = E ;
             move();
             stmt = new Set(id, bool());
@@ -257,7 +259,7 @@ public class Parser {
                 return x;
             case Tag.ID:
                 Id id = top.get(look);
-                if (id == null) error(look.toString() + " undeclared");
+                if (id == null) error(look + " undeclared");
                 move();
                 if (look.tag != '[') return id;
                 else return offset(id);

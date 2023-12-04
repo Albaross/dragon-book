@@ -1,15 +1,15 @@
-package inter;
+package gen;
 
+import inter.*;
 import lexer.*;
 import symbols.*;
 
 public class Temp extends Expr {
-    static int count = 0;
-    int number;
+    public int number;
 
-    public Temp(Type p) {
+    public Temp(Type p, int number) {
         super(Word.temp, p);
-        number = ++count;
+        this.number = number;
     }
 
     public String toString() {
