@@ -5,12 +5,6 @@ public class Stmt extends Node {
 
     public static Stmt Null = new Stmt();
 
-    public void gen(int begin, int after) {
-        genStmt(this, begin, after);
-    } // called with labels begin and after
-
-    private static void genStmt(Stmt stmt, int begin, int after) {}
-
     public int after = 0; // saves label after
     public static Stmt Enclosing = Stmt.Null; // used for break stmts
 }

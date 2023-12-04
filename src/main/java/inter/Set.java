@@ -17,8 +17,4 @@ public class Set extends Stmt {
         else if (p1 == Type.Bool && p2 == Type.Bool) return p2;
         else return null;
     }
-
-    public void gen(int begin, int after) {
-        gen.Generator.genSet(this, begin, after);
-    }
 }

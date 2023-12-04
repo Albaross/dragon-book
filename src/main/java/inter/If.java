@@ -11,8 +11,4 @@ public class If extends Stmt {
         stmt = s;
         if (expr.type != Type.Bool) expr.error("boolean required in if");
     }
-
-    public void gen(int begin, int after) {
-        gen.Generator.genIf(this, begin, after);
-    }
 }

@@ -8,8 +8,4 @@ public class Seq extends Stmt {
         stmt1 = s1;
         stmt2 = s2;
     }
-
-    public void gen(int begin, int after) {
-        gen.Generator.genSeq(this, begin, after);
-    }
 }

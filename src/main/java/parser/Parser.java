@@ -30,13 +30,8 @@ public class Parser {
         else error("syntax error");
     }
 
-    public void program() throws IOException { // program -> block
-        Stmt s = block();
-        int begin = gen.Generator.newlabel();
-        int after = gen.Generator.newlabel();
-        gen.Generator.emitlabel(begin);
-        s.gen(begin, after);
-        gen.Generator.emitlabel(after);
+    public Stmt program() throws IOException { // program -> block
+        return block();
     }
 
     Stmt block() throws IOException { // block -> { decls stmts }

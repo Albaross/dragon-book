@@ -12,18 +12,6 @@ public class Expr extends Node {
         type = p;
     }
 
-    public Expr gen() {
-        return gen.Generator.genExpr(this);
-    }
-
-    public Expr reduce() {
-        return gen.Generator.reduceExpr(this);
-    }
-
-    public void jumping(int t, int f) {
-        gen.Generator.jumpingExpr(this, t, f);
-    }
-
     public String toString() {
         return op.toString();
     }

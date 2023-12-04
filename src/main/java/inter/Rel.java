@@ -13,8 +13,4 @@ public class Rel extends Logical {
         else if (p1 == p2) return Type.Bool;
         else return null;
     }
-
-    public void jumping(int t, int f) {
-        gen.Generator.jumpingRel(this, t, f);
-    }
 }

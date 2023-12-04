@@ -13,15 +13,6 @@ public class Access extends Op {
         index = i;
     }
 
-    public Expr gen() {
-        return gen.Generator.genAccess(this);
-    }
-
-    public void jumping(int t, int f) {
-        gen.Generator.jumpingAccess(this, t, f);
-    }
-
-
     public String toString() {
         return array.toString() + " [ " + index.toString() + " ]";
     }

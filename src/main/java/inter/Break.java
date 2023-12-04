@@ -7,8 +7,4 @@ public class Break extends Stmt {
         if (Stmt.Enclosing == Stmt.Null) error("unenclosed break");
         stmt = Stmt.Enclosing;
     }
-
-    public void gen(int begin, int after) {
-        gen.Generator.genBreak(this, begin, after);
-    }
 }

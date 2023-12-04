@@ -14,10 +14,6 @@ public class Arith extends Op {
         if (type == null) error("type error");
     }
 
-    public Expr gen() {
-        return gen.Generator.genArith(this);
-    }
-
     public String toString() {
         return expr1.toString() + " " + op.toString() + " " + expr2.toString();
     }

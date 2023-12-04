@@ -13,10 +13,6 @@ public class Unary extends Op {
         if (type == null) error("type error");
     }
 
-    public Expr gen() {
-        return gen.Generator.genUnary(this);
-    }
-
     public String toString() {
         return op.toString() + " " + expr.toString();
     }

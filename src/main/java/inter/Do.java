@@ -16,8 +16,4 @@ public class Do extends Stmt {
         stmt = s;
         if (expr.type != Type.Bool) expr.error("boolean required in do");
     }
-
-    public void gen(int begin, int after) {
-        gen.Generator.genDo(this, begin, after);
-    }
 }

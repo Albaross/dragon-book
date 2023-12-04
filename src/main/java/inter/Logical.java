@@ -19,10 +19,6 @@ public class Logical extends Expr {
         else return null;
     }
 
-    public Expr gen() {
-        return gen.Generator.genLogical(this);
-    }
-
     public String toString() {
         return expr1.toString() + " " + op.toString() + " " + expr2.toString();
     }

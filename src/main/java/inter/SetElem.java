@@ -20,8 +20,4 @@ public class SetElem extends Stmt {
         else if (Type.numeric(p1) && Type.numeric(p2)) return p2;
         else return null;
     }
-
-    public void gen(int begin, int after) {
-        gen.Generator.genSetElem(this, begin, after);
-    }
 }

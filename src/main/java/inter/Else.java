@@ -12,8 +12,4 @@ public class Else extends Stmt {
         stmt2 = s2;
         if (expr.type != Type.Bool) expr.error("boolean required in if");
     }
-
-    public void gen(int begin, int after) {
-        gen.Generator.genElse(this, begin, after);
-    }
 }

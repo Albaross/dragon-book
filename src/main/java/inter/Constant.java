@@ -15,8 +15,4 @@ public class Constant extends Expr {
     public static final Constant
             True = new Constant(Word.True, Type.Bool),
             False = new Constant(Word.False, Type.Bool);
-
-    public void jumping(int t, int f) {
-        gen.Generator.jumpingConstant(this, t, f);
-    }
 }
