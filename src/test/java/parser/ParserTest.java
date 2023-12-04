@@ -1,7 +1,8 @@
 package parser;
 
-import gen.Generator;
-import lexer.Lexer;
+import dragonbook.gen.Generator;
+import dragonbook.lexer.Lexer;
+import dragonbook.parser.Parser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
