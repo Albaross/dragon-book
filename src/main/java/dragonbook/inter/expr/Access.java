@@ -1,19 +1,19 @@
 package dragonbook.inter.expr;
 
-import dragonbook.lexer.Tag;
 import dragonbook.lexer.Word;
 import dragonbook.symbols.Type;
 
 public class Access extends Op {
-    public Id array;
-    public Expr index;
+    public final Id array;
+    public final Expr index;
 
-    public Access(Id a, Expr i, Type p) { // p is element type after
-        super(new Word("[]", Tag.INDEX), p); // flattening the array
-        array = a;
-        index = i;
+    public Access(Id array, Expr index, Type type) { // type is element type after
+        super(Word.INDEX, type); // flattening the array
+        this.array = array;
+        this.index = index;
     }
 
+    @Override
     public String toString() {
         return array + "[" + index + "]";
     }

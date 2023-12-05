@@ -4,12 +4,17 @@ import dragonbook.inter.expr.Expr;
 import dragonbook.symbols.Type;
 
 public class If extends Stmt {
-    public Expr expr;
-    public Stmt stmt;
+    public final Expr condition;
+    public final Stmt then;
 
-    public If(Expr x, Stmt s) {
-        expr = x;
-        stmt = s;
-        if (expr.type != Type.BOOL) expr.error("boolean required in if");
+    public If(Expr condition, Stmt then) {
+        if (condition.type != Type.BOOL) condition.error("boolean required in if");
+        this.condition = condition;
+        this.then = then;
+    }
+
+    @Override
+    public String toString() {
+        return "if (" + condition + ") " + then;
     }
 }

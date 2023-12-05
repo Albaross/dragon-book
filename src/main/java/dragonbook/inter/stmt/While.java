@@ -4,17 +4,17 @@ import dragonbook.inter.expr.Expr;
 import dragonbook.symbols.Type;
 
 public class While extends Stmt {
-    public Expr expr;
+    public Expr condition;
     public Stmt stmt;
 
-    public While() {
-        expr = null;
-        stmt = null;
+    public While(Expr condition, Stmt stmt) {
+        if (condition.type != Type.BOOL) condition.error("boolean required in while");
+        this.condition = condition;
+        this.stmt = stmt;
     }
 
-    public void init(Expr x, Stmt s) {
-        expr = x;
-        stmt = s;
-        if (expr.type != Type.BOOL) expr.error("boolean required in while");
+    @Override
+    public String toString() {
+        return "while (" + condition + ") " + stmt;
     }
 }

@@ -6,19 +6,19 @@ import dragonbook.lexer.Word;
 public class Type extends Word {
     public int width; // width is used for storage allocation
 
-    public Type(String s, int tag, int w) {
-        super(s, tag);
-        width = w;
+    public Type(String name, int tag, int width) {
+        super(name, tag);
+        this.width = width;
     }
 
-    public static boolean numeric(Type p) {
-        return p == Type.CHAR || p == Type.INT || p == Type.FLOAT;
+    public boolean isNumeric() {
+        return this == Type.CHAR || this == Type.INT || this == Type.FLOAT;
     }
 
-    public static Type max(Type p1, Type p2) {
-        if (!numeric(p1) || !numeric(p2)) return null;
-        else if (p1 == Type.FLOAT || p2 == Type.FLOAT) return Type.FLOAT;
-        else if (p1 == Type.INT || p2 == Type.INT) return Type.INT;
+    public static Type max(Type type1, Type type2) {
+        if (!type1.isNumeric() || !type2.isNumeric()) return null;
+        else if (type1 == Type.FLOAT || type2 == Type.FLOAT) return Type.FLOAT;
+        else if (type1 == Type.INT || type2 == Type.INT) return Type.INT;
         else return Type.CHAR;
     }
 

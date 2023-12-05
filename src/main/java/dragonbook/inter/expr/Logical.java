@@ -4,21 +4,26 @@ import dragonbook.lexer.Token;
 import dragonbook.symbols.Type;
 
 public class Logical extends Expr {
-    public Expr expr1, expr2;
+    public final Expr expr1;
+    public final Expr expr2;
 
-    Logical(Token tok, Expr x1, Expr x2) {
-        super(tok, null); // null type to start
-        expr1 = x1;
-        expr2 = x2;
-        type = check(expr1.type, expr2.type);
-        if (type == null) error("type error");
+    public Logical(Token op, Expr expr1, Expr expr2) {
+        this(op, expr1, expr2, check(expr1.type, expr2.type));
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 == Type.BOOL && p2 == Type.BOOL) return Type.BOOL;
+    public Logical(Token op, Expr expr1, Expr expr2, Type type) {
+        super(op, type);
+        if (type == null) error("type error");
+        this.expr1 = expr1;
+        this.expr2 = expr2;
+    }
+
+    private static Type check(Type type1, Type type2) {
+        if (type1 == Type.BOOL && type2 == Type.BOOL) return Type.BOOL;
         else return null;
     }
 
+    @Override
     public String toString() {
         return expr1 + " " + op + " " + expr2;
     }

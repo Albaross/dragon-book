@@ -4,17 +4,17 @@ import dragonbook.inter.expr.Expr;
 import dragonbook.symbols.Type;
 
 public class Do extends Stmt {
-    public Expr expr;
-    public Stmt stmt;
+    public final Expr condition;
+    public final Stmt stmt;
 
-    public Do() {
-        expr = null;
-        stmt = null;
+    public Do(Stmt stmt, Expr condition) {
+        if (condition.type != Type.BOOL) condition.error("boolean required in do");
+        this.condition = condition;
+        this.stmt = stmt;
     }
 
-    public void init(Stmt s, Expr x) {
-        expr = x;
-        stmt = s;
-        if (expr.type != Type.BOOL) expr.error("boolean required in do");
+    @Override
+    public String toString() {
+        return "do " + stmt + " while (" + condition + ")";
     }
 }

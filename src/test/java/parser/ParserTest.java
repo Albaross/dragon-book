@@ -15,15 +15,17 @@ public class ParserTest {
     @Test
     public void codeIsGeneratedCorrectly() throws IOException {
         try (final var in = new FileInputStream("src/test/resources/test")) {
-            Lexer lex = new Lexer(in);
-            Parser parse = new Parser(lex);
-            Generator gen = new Generator(parse);
+            final Lexer lex = new Lexer(in);
+            final Parser parse = new Parser(lex);
+            final Generator gen = new Generator(parse);
 
-            Assertions.assertEquals(LINES, gen.gen());
+            final List<String> result = gen.gen();
+            result.forEach(System.out::println);
+            Assertions.assertEquals(EXPECTED_GENERATOR_OUTPUT, result);
         }
     }
 
-    private static final List<String> LINES = List.of(
+    private static final List<String> EXPECTED_GENERATOR_OUTPUT = List.of(
             "L1:L3:\ti = i + 1",
             "L5:\tt1 = i * 8",
             "\tt2 = a [ t1 ]",

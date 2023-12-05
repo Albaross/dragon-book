@@ -3,13 +3,13 @@ package dragonbook.symbols;
 import dragonbook.lexer.Tag;
 
 public class Array extends Type {
-    public Type of; // array *of* type
-    public int size; // number of elements
+    public final Type of; // array *of* type
+    public final int size; // number of elements
 
-    public Array(int sz, Type p) {
-        super("[]", Tag.INDEX, sz * p.width);
-        size = sz;
-        of = p;
+    public Array(int size, Type of) {
+        super("[]", Tag.INDEX, size * of.width);
+        this.size = size;
+        this.of = of;
     }
 
     public String toString() {

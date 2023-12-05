@@ -6,12 +6,12 @@ import dragonbook.lexer.Word;
 import dragonbook.symbols.Type;
 
 public class Constant extends Expr {
-    public Constant(Token tok, Type p) {
-        super(tok, p);
+    public Constant(Token value, Type type) {
+        super(value, type);
     }
 
-    public Constant(int i) {
-        super(new Num(i), Type.INT);
+    public Constant(int value) {
+        super(new Num(value), Type.INT);
     }
 
     public static final Constant TRUE = new Constant(Word.TRUE, Type.BOOL);

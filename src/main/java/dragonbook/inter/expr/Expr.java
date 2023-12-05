@@ -5,14 +5,15 @@ import dragonbook.lexer.Token;
 import dragonbook.symbols.Type;
 
 public class Expr extends Node {
-    public Token op;
-    public Type type;
+    public final Token op;
+    public final Type type;
 
-    public Expr(Token tok, Type p) {
-        op = tok;
-        type = p;
+    public Expr(Token op, Type type) {
+        this.op = op;
+        this.type = type;
     }
 
+    @Override
     public String toString() {
         return op.toString();
     }

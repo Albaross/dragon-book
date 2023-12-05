@@ -6,21 +6,20 @@ import dragonbook.lexer.Token;
 import java.util.HashMap;
 
 public class Env {
-    private final HashMap<Token, Id> table;
-    protected Env prev;
+    private final HashMap<Token, Id> table = new HashMap<>();
+    private final Env prev;
 
-    public Env(Env n) {
-        table = new HashMap<>();
-        prev = n;
+    public Env(Env prev) {
+        this.prev = prev;
     }
 
-    public void put(Token w, Id i) {
-        table.put(w, i);
+    public void put(Token tok, Id id) {
+        table.put(tok, id);
     }
 
-    public Id get(Token w) {
-        for (Env e = this; e != null; e = e.prev) {
-            Id found = e.table.get(w);
+    public Id get(Token tok) {
+        for (Env env = this; env != null; env = env.prev) {
+            Id found = env.table.get(tok);
             if (found != null) return found;
         }
         return null;

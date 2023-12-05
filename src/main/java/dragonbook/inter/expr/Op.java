@@ -4,7 +4,8 @@ import dragonbook.lexer.Token;
 import dragonbook.symbols.Type;
 
 public class Op extends Expr {
-    public Op(Token tok, Type p) {
-        super(tok, p);
+    public Op(Token op, Type type) {
+        super(op, type);
+        if (type == null) error("type error");
     }
 }

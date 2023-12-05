@@ -3,10 +3,10 @@ package dragonbook.inter;
 import dragonbook.lexer.Lexer;
 
 public class Node {
-    int lexline;
+    private final int lexline;
 
     public Node() {
-        lexline = Lexer.line;
+        lexline = Lexer.lineNumber;
     }
 
     public void error(String s) {

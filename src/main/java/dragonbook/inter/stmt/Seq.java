@@ -1,11 +1,16 @@
 package dragonbook.inter.stmt;
 
 public class Seq extends Stmt {
-    public Stmt stmt1;
-    public Stmt stmt2;
+    public final Stmt head;
+    public final Stmt tail;
 
-    public Seq(Stmt s1, Stmt s2) {
-        stmt1 = s1;
-        stmt2 = s2;
+    public Seq(Stmt head, Stmt stmt2) {
+        this.head = head;
+        this.tail = stmt2;
+    }
+
+    @Override
+    public String toString() {
+        return "{ " + head + "; " + tail + " }";
     }
 }

@@ -3,12 +3,12 @@ package dragonbook.lexer;
 public class Real extends Token {
     public final float value;
 
-    public Real(float v) {
+    public Real(float value) {
         super(Tag.REAL);
-        value = v;
+        this.value = value;
     }
 
     public String toString() {
-        return "" + value;
+        return String.valueOf(value);
     }
 }

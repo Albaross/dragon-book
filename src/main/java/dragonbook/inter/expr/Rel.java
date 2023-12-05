@@ -5,13 +5,13 @@ import dragonbook.symbols.Array;
 import dragonbook.symbols.Type;
 
 public class Rel extends Logical {
-    public Rel(Token tok, Expr x1, Expr x2) {
-        super(tok, x1, x2);
+    public Rel(Token op, Expr expr1, Expr expr2) {
+        super(op, expr1, expr2, check(expr1.type, expr2.type));
     }
 
-    public Type check(Type p1, Type p2) {
-        if (p1 instanceof Array || p2 instanceof Array) return null;
-        else if (p1 == p2) return Type.BOOL;
+    private static Type check(Type type1, Type type2) {
+        if (type1 instanceof Array || type2 instanceof Array) return null;
+        else if (type1 == type2) return Type.BOOL;
         else return null;
     }
 }

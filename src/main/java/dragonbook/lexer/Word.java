@@ -3,9 +3,9 @@ package dragonbook.lexer;
 public class Word extends Token {
     public String lexeme;
 
-    public Word(String s, int tag) {
+    public Word(String lexeme, int tag) {
         super(tag);
-        lexeme = s;
+        this.lexeme = lexeme;
     }
 
     public String toString() {
@@ -27,4 +27,5 @@ public class Word extends Token {
     public static final Word WHILE = new Word("while", Tag.WHILE);
     public static final Word DO = new Word("do", Tag.DO);
     public static final Word BREAK = new Word("break", Tag.BREAK);
+    public static final Word INDEX = new Word("[]", Tag.INDEX);
 }

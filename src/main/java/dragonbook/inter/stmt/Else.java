@@ -4,13 +4,14 @@ import dragonbook.inter.expr.Expr;
 import dragonbook.symbols.Type;
 
 public class Else extends Stmt {
-    public Expr expr;
-    public Stmt stmt1, stmt2;
+    public final Expr condition;
+    public final Stmt then;
+    public final Stmt elseStmt;
 
-    public Else(Expr x, Stmt s1, Stmt s2) {
-        expr = x;
-        stmt1 = s1;
-        stmt2 = s2;
-        if (expr.type != Type.BOOL) expr.error("boolean required in if");
+    public Else(Expr condition, Stmt then, Stmt elseStmt) {
+        if (condition.type != Type.BOOL) condition.error("boolean required in if");
+        this.condition = condition;
+        this.then = then;
+        this.elseStmt = elseStmt;
     }
 }

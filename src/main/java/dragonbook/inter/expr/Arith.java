@@ -4,16 +4,16 @@ import dragonbook.lexer.Token;
 import dragonbook.symbols.Type;
 
 public class Arith extends Op {
-    public Expr expr1, expr2;
+    public final Expr expr1;
+    public final Expr expr2;
 
-    public Arith(Token tok, Expr x1, Expr x2) {
-        super(tok, null);
-        expr1 = x1;
-        expr2 = x2;
-        type = Type.max(expr1.type, expr2.type);
-        if (type == null) error("type error");
+    public Arith(Token op, Expr expr1, Expr expr2) {
+        super(op, Type.max(expr1.type, expr2.type));
+        this.expr1 = expr1;
+        this.expr2 = expr2;
     }
 
+    @Override
     public String toString() {
         return expr1 + " " + op + " " + expr2;
     }

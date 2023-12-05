@@ -10,7 +10,6 @@ import dragonbook.parser.Parser;
 import dragonbook.symbols.Array;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Generator {
         this.parse = parse;
     }
 
-    public List<String> gen() throws IOException {
+    public List<String> gen() {
         final var buffer = new ByteArrayOutputStream();
         out = new PrintStream(buffer);
         final var program = parse.program();
@@ -57,13 +56,13 @@ public class Generator {
 
 
     private void genSeq(Seq seq, int begin, int after) {
-        if (seq.stmt1 == Stmt.Null) genStmt(seq.stmt2, begin, after);
-        else if (seq.stmt2 == Stmt.Null) genStmt(seq.stmt1, begin, after);
+        if (seq.head == Stmt.Null) genStmt(seq.tail, begin, after);
+        else if (seq.tail == Stmt.Null) genStmt(seq.head, begin, after);
         else {
             int label = newlabel();
-            genStmt(seq.stmt1, begin, label);
+            genStmt(seq.head, begin, label);
             emitlabel(label);
-            genStmt(seq.stmt2, label, after);
+            genStmt(seq.tail, label, after);
         }
     }
 
@@ -79,26 +78,26 @@ public class Generator {
 
     private void genIf(If ifStmt, int after) {
         int label = newlabel(); // label for the code for stmt
-        jumping(ifStmt.expr, 0, after); // fall through on true, goto a on false
+        jumping(ifStmt.condition, 0, after); // fall through on true, goto a on false
         emitlabel(label);
-        genStmt(ifStmt.stmt, label, after);
+        genStmt(ifStmt.then, label, after);
     }
 
     private void genElse(Else elseStmt, int after) {
         int label1 = newlabel(); // label1 for stmt1
         int label2 = newlabel(); // label2 for stmt2
-        jumping(elseStmt.expr, 0, label2); // fall through to stmt1 on true
+        jumping(elseStmt.condition, 0, label2); // fall through to stmt1 on true
         emitlabel(label1);
-        genStmt(elseStmt.stmt1, label1, after);
+        genStmt(elseStmt.then, label1, after);
         emit("goto L" + after);
         emitlabel(label2);
-        genStmt(elseStmt.stmt2, label2, after);
+        genStmt(elseStmt.elseStmt, label2, after);
     }
 
     private void genWhile(While whileLoop, int begin, int after) {
         int saved = afterEnclosing;
         afterEnclosing = after; // save label after
-        jumping(whileLoop.expr, 0, after);
+        jumping(whileLoop.condition, 0, after);
         int label = newlabel(); // label for stmt
         emitlabel(label);
         genStmt(whileLoop.stmt, label, begin);
@@ -113,7 +112,7 @@ public class Generator {
         int label = newlabel(); // label for expr
         genStmt(doLoop.stmt, begin, label);
         emitlabel(label);
-        jumping(doLoop.expr, begin, 0);
+        jumping(doLoop.condition, begin, 0);
         afterEnclosing = saved;
     }
 
