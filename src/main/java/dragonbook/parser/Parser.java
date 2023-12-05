@@ -19,19 +19,6 @@ public class Parser {
         move();
     }
 
-    private void move() {
-        look = lex.scan();
-    }
-
-    private void error(String s) {
-        throw new Error("near line " + Lexer.lineNumber + ": " + s);
-    }
-
-    private void match(int tok) {
-        if (look.tag == tok) move();
-        else error("syntax error");
-    }
-
     public Stmt program() { // program -> block
         return block();
     }
@@ -298,5 +285,18 @@ public class Parser {
             loc = plus;
         }
         return new Access(id, loc, type);
+    }
+
+    private void move() {
+        look = lex.scan();
+    }
+
+    private void error(String s) {
+        throw new Error("near line " + Lexer.lineNumber + ": " + s);
+    }
+
+    private void match(int tok) {
+        if (look.tag == tok) move();
+        else error("syntax error");
     }
 }
