@@ -304,7 +304,7 @@ class Parser(private val lex: Lexer) { // lexical analyzer for this parser
     }
 
     private fun error(s: String): Nothing {
-        throw Error("near line " + Lexer.lineNumber + ": " + s)
+        throw Error("near line 0: $s")
     }
 
     private fun match(tok: Char) {
