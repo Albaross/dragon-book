@@ -1,27 +1,22 @@
-package dragonbook.symbols;
+package dragonbook.symbols
 
-import dragonbook.inter.expr.Id;
-import dragonbook.lexer.Token;
+import dragonbook.inter.expr.Id
+import dragonbook.lexer.Token
 
-import java.util.HashMap;
+class Env(private val prev: Env?) {
+    private val table = HashMap<Token, Id>()
 
-public class Env {
-    private final HashMap<Token, Id> table = new HashMap<>();
-    private final Env prev;
-
-    public Env(Env prev) {
-        this.prev = prev;
+    operator fun set(tok: Token, id: Id) {
+        table[tok] = id
     }
 
-    public void put(Token tok, Id id) {
-        table.put(tok, id);
-    }
-
-    public Id get(Token tok) {
-        for (Env env = this; env != null; env = env.prev) {
-            Id found = env.table.get(tok);
-            if (found != null) return found;
+    operator fun get(tok: Token): Id? {
+        var env: Env? = this
+        while (env != null) {
+            val found = env.table[tok]
+            if (found != null) return found
+            env = env.prev
         }
-        return null;
+        return null
     }
 }

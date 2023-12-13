@@ -1,302 +1,318 @@
-package dragonbook.parser;
+package dragonbook.parser
 
-import dragonbook.inter.expr.*;
-import dragonbook.inter.stmt.*;
-import dragonbook.lexer.*;
-import dragonbook.symbols.Array;
-import dragonbook.symbols.Env;
-import dragonbook.symbols.Type;
+import dragonbook.inter.expr.*
+import dragonbook.inter.stmt.*
+import dragonbook.inter.stmt.Set
+import dragonbook.lexer.*
+import dragonbook.symbols.Array
+import dragonbook.symbols.Env
+import dragonbook.symbols.Type
 
-public class Parser {
-    private final Lexer lex; // lexical analyzer for this parser
-    private Token look; // lookahead token
-    private Env top = null; // current or top symbol table
-    private Word enclosing = null; // used for break stmts
-    private int used = 0; // storage used for declarations
+class Parser(private val lex: Lexer) { // lexical analyzer for this parser
 
-    public Parser(Lexer lex) {
-        this.lex = lex;
-        move();
+    private lateinit var look: Token // lookahead token
+    private var top: Env? = null // current or top symbol table
+    private var enclosing: Word? = null // used for break stmts
+    private var used = 0 // storage used for declarations
+
+    init {
+        move()
     }
 
-    public Stmt program() { // program -> block
-        return block();
+    fun program(): Stmt { // program -> block
+        return block()
     }
 
-    private Stmt block() { // block -> { decls stmts }
-        match('{');
-        final Env savedEnv = top;
-        top = new Env(top);
-        decls();
-        final Stmt stmts = stmts();
-        match('}');
-        top = savedEnv;
-        return stmts;
+    private fun block(): Stmt { // block -> { decls stmts }
+        match('{')
+        val savedEnv = top
+        top = Env(top)
+        decls()
+        val stmts = stmts()
+        match('}')
+        top = savedEnv
+        return stmts
     }
 
-    private void decls() {
-        while (look.tag == Tag.BASIC) { // D -> type ID ;
-            final Type type = type();
-            final Token tok = look;
-            match(Tag.ID);
-            match(';');
-            final Id id = new Id((Word) tok, type, used);
-            top.put(tok, id);
-            used += type.width;
+    private fun decls() {
+        while (look.tag == Tag.BASIC) { // D -> type ID 
+            val type = type()
+            val tok = look
+            match(Tag.ID)
+            match(';')
+            val id = Id(tok as Word, type, used)
+            top!![tok] = id
+            used += type.width
         }
     }
 
-    private Type type() {
-        final Type type = (Type) look; // expect look.tag == Tag.BASIC
-        match(Tag.BASIC);
-        if (look.tag != '[') return type; // T -> basic
-        else return dims(type); // return array type
+    private fun type(): Type {
+        val type = look as Type // expect look.tag == Tag.BASIC
+        match(Tag.BASIC)
+        return if (look.tag != '['.code) type // T -> basic
+        else dims(type) // return array type
     }
 
-    private Type dims(Type type) {
-        match('[');
-        final Token tok = look;
-        match(Tag.NUM);
-        match(']');
-        if (look.tag == '[')
-            type = dims(type);
-        return new Array(((Num) tok).value, type);
+    private fun dims(type: Type): Type {
+        match('[')
+        val tok = look
+        match(Tag.NUM)
+        match(']')
+        return Array((tok as Num).value, if (look.tag == '['.code) dims(type) else type)
     }
 
-    private Stmt stmts() {
-        if (look.tag == '}') return Stmt.Null;
-        else return new Seq(stmt(), stmts());
+    private fun stmts(): Stmt {
+        return if (look.tag == '}'.code) Stmt.Null
+        else Seq(stmt(), stmts())
     }
 
-    private Stmt stmt() {
-        return switch (look.tag) {
-            case ';' -> {
-                move();
-                yield Stmt.Null;
+    private fun stmt(): Stmt {
+        return when (look.tag) {
+            ';'.code -> {
+                move()
+                Stmt.Null
             }
-            case Tag.IF -> ifElse();
-            case Tag.WHILE -> whileLoop();
-            case Tag.DO -> doLoop();
-            case Tag.BREAK -> breakStmt();
-            case '{' -> block();
-            default -> assign();
-        };
-    }
 
-    private Stmt ifElse() {
-        match(Tag.IF);
-        match('(');
-        final Expr condition = bool();
-        match(')');
-        final Stmt then = stmt();
-        if (look.tag != Tag.ELSE) return new If(condition, then);
-        match(Tag.ELSE);
-        final Stmt elseStmt = stmt();
-        return new Else(condition, then, elseStmt);
-    }
-
-    private While whileLoop() {
-        final Word savedStmt = enclosing; // save enclosing loop for breaks
-        enclosing = Word.WHILE;
-        match(Tag.WHILE);
-        match('(');
-        final Expr condition = bool();
-        match(')');
-        final Stmt stmt = stmt();
-        final While whileLoop = new While(condition, stmt);
-        enclosing = savedStmt; // reset Enclosing
-        return whileLoop;
-    }
-
-    private Do doLoop() {
-        final Word savedStmt = enclosing; // save enclosing loop for breaks
-        enclosing = Word.DO;
-        match(Tag.DO);
-        final Stmt stmt = stmt();
-        match(Tag.WHILE);
-        match('(');
-        final Expr condition = bool();
-        match(')');
-        match(';');
-        final Do doLoop = new Do(stmt, condition);
-        enclosing = savedStmt; // reset Enclosing
-        return doLoop;
-    }
-
-    private Break breakStmt() {
-        match(Tag.BREAK);
-        match(';');
-        if (enclosing == null) error("unenclosed break");
-        return new Break();
-    }
-
-    private Stmt assign() {
-        final Token t = look;
-        match(Tag.ID);
-        final Id id = top.get(t);
-        if (id == null) error(t + " undeclared");
-        Stmt stmt;
-        if (look.tag == '=') { // S -> id = E ;
-            move();
-            stmt = new Set(id, bool());
-        } else { // S -> L = E ;
-            Access access = offset(id);
-            match('=');
-            stmt = new SetElem(access, bool());
+            Tag.IF -> ifElse()
+            Tag.WHILE -> whileLoop()
+            Tag.DO -> doLoop()
+            Tag.BREAK -> breakStmt()
+            '{'.code -> block()
+            else -> assign()
         }
-        match(';');
-        return stmt;
     }
 
-    private Expr bool() {
-        Expr expr = join();
+    private fun ifElse(): Stmt {
+        match(Tag.IF)
+        match('(')
+        val condition = bool()
+        match(')')
+        val then = stmt()
+        if (look.tag != Tag.ELSE) return If(condition, then)
+        match(Tag.ELSE)
+        val elseStmt = stmt()
+        return Else(condition, then, elseStmt)
+    }
+
+    private fun whileLoop(): While {
+        val savedStmt = enclosing // save enclosing loop for breaks
+        enclosing = Word.WHILE
+        match(Tag.WHILE)
+        match('(')
+        val condition = bool()
+        match(')')
+        val stmt = stmt()
+        val whileLoop = While(condition, stmt)
+        enclosing = savedStmt // reset Enclosing
+        return whileLoop
+    }
+
+    private fun doLoop(): Do {
+        val savedStmt = enclosing // save enclosing loop for breaks
+        enclosing = Word.DO
+        match(Tag.DO)
+        val stmt = stmt()
+        match(Tag.WHILE)
+        match('(')
+        val condition = bool()
+        match(')')
+        match(';')
+        val doLoop = Do(stmt, condition)
+        enclosing = savedStmt // reset Enclosing
+        return doLoop
+    }
+
+    private fun breakStmt(): Break {
+        match(Tag.BREAK)
+        match(';')
+        if (enclosing == null) error("unenclosed break")
+        return Break()
+    }
+
+    private fun assign(): Stmt {
+        val t = look
+        match(Tag.ID)
+        val id = top!![t] ?: error("$t undeclared")
+        val stmt: Stmt =
+            if (look.tag == '='.code) { // S -> id = E
+                move()
+                Set(id, bool())
+            } else { // S -> L = E
+                val access = offset(id)
+                match('=')
+                SetElem(access, bool())
+            }
+        match(';')
+        return stmt
+    }
+
+    private fun bool(): Expr {
+        var expr = join()
         while (look.tag == Tag.OR) {
-            final Token tok = look;
-            move();
-            expr = new Or(tok, expr, join());
+            val tok = look
+            move()
+            expr = Or(tok, expr, join())
         }
-        return expr;
+        return expr
     }
 
-    private Expr join() {
-        Expr expr = equality();
+    private fun join(): Expr {
+        var expr = equality()
         while (look.tag == Tag.AND) {
-            final Token tok = look;
-            move();
-            expr = new And(tok, expr, equality());
+            val tok = look
+            move()
+            expr = And(tok, expr, equality())
         }
-        return expr;
+        return expr
     }
 
-    private Expr equality() {
-        Expr expr = rel();
+    private fun equality(): Expr {
+        var expr = rel()
         while (look.tag == Tag.EQ || look.tag == Tag.NE) {
-            final Token tok = look;
-            move();
-            expr = new Rel(tok, expr, rel());
+            val tok = look
+            move()
+            expr = Rel(tok, expr, rel())
         }
-        return expr;
+        return expr
     }
 
-    private Expr rel() {
-        final Expr expr = expr();
-        switch (look.tag) {
-            case '<':
-            case Tag.LE:
-            case Tag.GE:
-            case '>':
-                final Token tok = look;
-                move();
-                return new Rel(tok, expr, expr());
-            default:
-                return expr;
-        }
-    }
+    private fun rel(): Expr {
+        val expr = expr()
+        return when (look.tag) {
+            '<'.code,
+            Tag.LE,
+            Tag.GE,
+            '>'.code -> {
+                val tok = look
+                move()
+                Rel(tok, expr, expr())
+            }
 
-    private Expr expr() {
-        Expr expr = term();
-        while (look.tag == '+' || look.tag == '-') {
-            final Token tok = look;
-            move();
-            expr = new Arith(tok, expr, term());
-        }
-        return expr;
-    }
-
-    private Expr term() {
-        Expr expr = unary();
-        while (look.tag == '*' || look.tag == '/') {
-            final Token tok = look;
-            move();
-            expr = new Arith(tok, expr, unary());
-        }
-        return expr;
-    }
-
-    private Expr unary() {
-        if (look.tag == '-') {
-            move();
-            return new Unary(Word.MINUS, unary());
-        } else if (look.tag == '!') {
-            final Token tok = look;
-            move();
-            return new Not(tok, unary());
-        } else return factor();
-    }
-
-    private Expr factor() {
-        Expr expr = null;
-        switch (look.tag) {
-            case '(':
-                move();
-                expr = bool();
-                match(')');
-                return expr;
-            case Tag.NUM:
-                expr = new Constant(look, Type.INT);
-                move();
-                return expr;
-            case Tag.REAL:
-                expr = new Constant(look, Type.FLOAT);
-                move();
-                return expr;
-            case Tag.TRUE:
-                expr = Constant.TRUE;
-                move();
-                return expr;
-            case Tag.FALSE:
-                expr = Constant.FALSE;
-                move();
-                return expr;
-            default:
-                error("syntax error");
-                return expr;
-            case Tag.ID:
-                final Id id = top.get(look);
-                if (id == null) error(look + " undeclared");
-                move();
-                if (look.tag != '[') return id;
-                else return offset(id);
+            else -> expr
         }
     }
 
-    private Access offset(Id id) { // I -> [E] | [E] I
-        Expr index;
-        Expr width;
-        Expr times;
-        Expr plus;
-        Expr loc; // inherit id
-        Type type = id.type;
-        match('[');
-        index = bool();
-        match(']'); // first index, I -> [ E ]
-        type = ((Array) type).of;
-        width = new Constant(type.width);
-        times = new Arith(Token.TIMES, index, width);
-        loc = times;
-        while (look.tag == '[') { // multi-dimensional I -> [ E ] I
-            match('[');
-            index = bool();
-            match(']');
-            type = ((Array) type).of;
-            width = new Constant(type.width);
-            times = new Arith(Token.TIMES, index, width);
-            plus = new Arith(Token.PLUS, loc, times);
-            loc = plus;
+    private fun expr(): Expr {
+        var expr = term()
+        while (look.tag == '+'.code || look.tag == '-'.code) {
+            val tok = look
+            move()
+            expr = Arith(tok, expr, term())
         }
-        return new Access(id, loc, type);
+        return expr
     }
 
-    private void move() {
-        look = lex.scan();
+    private fun term(): Expr {
+        var expr = unary()
+        while (look.tag == '*'.code || look.tag == '/'.code) {
+            val tok = look
+            move()
+            expr = Arith(tok, expr, unary())
+        }
+        return expr
     }
 
-    private void error(String s) {
-        throw new Error("near line " + Lexer.lineNumber + ": " + s);
+    private fun unary(): Expr {
+        return when (look.tag) {
+            '-'.code -> {
+                move()
+                Unary(Word.MINUS, unary())
+            }
+
+            '!'.code -> {
+                val tok = look
+                move()
+                Not(tok, unary())
+            }
+
+            else -> factor()
+        }
     }
 
-    private void match(int tok) {
-        if (look.tag == tok) move();
-        else error("syntax error");
+    private fun factor(): Expr {
+        return when (look.tag) {
+            '('.code -> {
+                move()
+                val expr = bool()
+                match(')')
+                expr
+            }
+
+            Tag.NUM -> {
+                val expr = Constant(look, Type.INT)
+                move()
+                expr
+            }
+
+            Tag.REAL -> {
+                val expr = Constant(look, Type.FLOAT)
+                move()
+                expr
+            }
+
+            Tag.TRUE -> {
+                val expr = Constant.TRUE
+                move()
+                expr
+            }
+
+            Tag.FALSE -> {
+                val expr = Constant.FALSE
+                move()
+                expr
+            }
+
+            Tag.ID -> {
+                val id = top!![look] ?: error("$look undeclared")
+                move()
+                if (look.tag != '['.code) id else offset(id)
+            }
+
+            else -> error("syntax error")
+        }
+    }
+
+    private fun offset(id: Id): Access { // I -> [E] | [E] I
+        var index: Expr
+        var width: Expr
+        var times: Expr
+        var plus: Expr
+        var loc: Expr // inherit id
+        var type = id.type
+        match('[')
+        index = bool()
+        match(']') // first index, I -> [ E ]
+        type = (type as Array).of
+        width = Constant(type.width)
+        times = Arith(Token.TIMES, index, width)
+        loc = times
+        while (look.tag == '['.code) { // multi-dimensional I -> [ E ] I
+            match('[')
+            index = bool()
+            match(']')
+            type = (type as Array).of
+            width = Constant(type.width)
+            times = Arith(Token.TIMES, index, width)
+            plus = Arith(Token.PLUS, loc, times)
+            loc = plus
+        }
+        return Access(id, loc, type)
+    }
+
+    private fun move() {
+        look = lex.scan()
+    }
+
+    private fun error(s: String): Nothing {
+        throw Error("near line " + Lexer.lineNumber + ": " + s)
+    }
+
+    private fun match(tok: Char) {
+        match(tok.code)
+    }
+
+    private fun match(tok: Int) {
+        if (look.tag == tok) move()
+        else error("syntax error")
     }
 }
