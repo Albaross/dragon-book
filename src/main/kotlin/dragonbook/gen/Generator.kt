@@ -1,263 +1,257 @@
-package dragonbook.gen;
+package dragonbook.gen
 
-import dragonbook.inter.expr.*;
-import dragonbook.inter.stmt.*;
-import dragonbook.lexer.Num;
-import dragonbook.lexer.Real;
-import dragonbook.lexer.Token;
-import dragonbook.lexer.Word;
-import dragonbook.parser.Parser;
-import dragonbook.symbols.Array;
+import dragonbook.inter.expr.*
+import dragonbook.inter.stmt.*
+import dragonbook.inter.stmt.Set
+import dragonbook.lexer.Num
+import dragonbook.lexer.Real
+import dragonbook.lexer.Token
+import dragonbook.lexer.Word
+import dragonbook.parser.Parser
+import dragonbook.symbols.Array
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
-public class Generator {
+class Generator(private val parse: Parser) {
 
-    private final Parser parse;
-    private PrintStream out;
-    private int labels = 0;
-    int tempCount = 0;
-    int afterEnclosing = 0; // saves label after
+    private lateinit var out: PrintStream
+    private var labels = 0
+    private var tempCount = 0
+    private var afterEnclosing = 0 // saves label after
 
-    public Generator(Parser parse) {
-        this.parse = parse;
+    fun gen(): List<String> {
+        val buffer = ByteArrayOutputStream()
+        out = PrintStream(buffer)
+        val program = parse.program()
+
+        val begin = newlabel()
+        val after = newlabel()
+        emitlabel(begin)
+        genStmt(program, begin, after)
+        emitlabel(after)
+
+        return buffer.toString().split(Regex("\r?\n")).toList()
     }
 
-    public List<String> gen() {
-        final var buffer = new ByteArrayOutputStream();
-        out = new PrintStream(buffer);
-        final var program = parse.program();
-
-        final int begin = newlabel();
-        final int after = newlabel();
-        emitlabel(begin);
-        genStmt(program, begin, after);
-        emitlabel(after);
-
-        return Arrays.asList(buffer.toString().split("\r?\n"));
-    }
-
-    private void genStmt(Stmt stmt, int begin, int after) {
-        switch (stmt) {
-            case Seq seq -> genSeq(seq, begin, after);
-            case Set set -> genSet(set);
-            case SetElem setElem -> genSetElem(setElem);
-            case If ifStmt -> genIf(ifStmt, after);
-            case Else elseStmt -> genElse(elseStmt, after);
-            case While whileLoop -> genWhile(whileLoop, begin, after);
-            case Do doLoop -> genDo(doLoop, begin, after);
-            case Break ignored -> genBreak();
-            default -> throw new IllegalArgumentException("Unexpected value: " + stmt.getClass());
+    private fun genStmt(stmt: Stmt, begin: Int, after: Int) {
+        when (stmt) {
+            is Seq -> genSeq(stmt, begin, after)
+            is Set -> genSet(stmt)
+            is SetElem -> genSetElem(stmt)
+            is If -> genIf(stmt, after)
+            is Else -> genElse(stmt, after)
+            is While -> genWhile(stmt, begin, after)
+            is Do -> genDo(stmt, begin, after)
+            is Break -> genBreak()
+            else -> throw IllegalArgumentException("Unexpected value: $stmt")
         }
     } // called with labels begin and after
 
 
-    private void genSeq(Seq seq, int begin, int after) {
-        if (seq.head == Stmt.Null) genStmt(seq.tail, begin, after);
-        else if (seq.tail == Stmt.Null) genStmt(seq.head, begin, after);
+    private fun genSeq(seq: Seq, begin: Int, after: Int) {
+        if (seq.head == Stmt.Null) genStmt(seq.tail, begin, after)
+        else if (seq.tail == Stmt.Null) genStmt(seq.head, begin, after)
         else {
-            int label = newlabel();
-            genStmt(seq.head, begin, label);
-            emitlabel(label);
-            genStmt(seq.tail, label, after);
+            val label = newlabel()
+            genStmt(seq.head, begin, label)
+            emitlabel(label)
+            genStmt(seq.tail, label, after)
         }
     }
 
-    private void genSet(Set set) {
-        emit(str(set.id) + " = " + str(genExpr(set.expr)));
+    private fun genSet(set: Set) {
+        emit(str(set.id) + " = " + str(genExpr(set.expr)))
     }
 
-    private void genSetElem(SetElem setElem) {
-        String s1 = str(reduce(setElem.index));
-        String s2 = str(reduce(setElem.expr));
-        emit(str(setElem.array) + " [ " + s1 + " ] = " + s2);
+    private fun genSetElem(setElem: SetElem) {
+        val s1 = str(reduce(setElem.index))
+        val s2 = str(reduce(setElem.expr))
+        emit(str(setElem.array) + " [ " + s1 + " ] = " + s2)
     }
 
-    private void genIf(If ifStmt, int after) {
-        int label = newlabel(); // label for the code for stmt
-        jumping(ifStmt.condition, 0, after); // fall through on true, goto a on false
-        emitlabel(label);
-        genStmt(ifStmt.then, label, after);
+    private fun genIf(ifStmt: If, after: Int) {
+        val label = newlabel() // label for the code for stmt
+        jumping(ifStmt.condition, 0, after) // fall through on true, goto after on false
+        emitlabel(label)
+        genStmt(ifStmt.then, label, after)
     }
 
-    private void genElse(Else elseStmt, int after) {
-        int label1 = newlabel(); // label1 for stmt1
-        int label2 = newlabel(); // label2 for stmt2
-        jumping(elseStmt.condition, 0, label2); // fall through to stmt1 on true
-        emitlabel(label1);
-        genStmt(elseStmt.then, label1, after);
-        emit("goto L" + after);
-        emitlabel(label2);
-        genStmt(elseStmt.elseStmt, label2, after);
+    private fun genElse(elseStmt: Else, after: Int) {
+        val label1 = newlabel() // label1 for stmt1
+        val label2 = newlabel() // label2 for stmt2
+        jumping(elseStmt.condition, 0, label2) // fall through to stmt1 on true
+        emitlabel(label1)
+        genStmt(elseStmt.then, label1, after)
+        emit("goto L$after")
+        emitlabel(label2)
+        genStmt(elseStmt.elseStmt, label2, after)
     }
 
-    private void genWhile(While whileLoop, int begin, int after) {
-        int saved = afterEnclosing;
-        afterEnclosing = after; // save label after
-        jumping(whileLoop.condition, 0, after);
-        int label = newlabel(); // label for stmt
-        emitlabel(label);
-        genStmt(whileLoop.stmt, label, begin);
-        emit("goto L" + begin);
-        afterEnclosing = saved;
-    }
-
-
-    private void genDo(Do doLoop, int begin, int after) {
-        int saved = afterEnclosing;
-        afterEnclosing = after;
-        int label = newlabel(); // label for expr
-        genStmt(doLoop.stmt, begin, label);
-        emitlabel(label);
-        jumping(doLoop.condition, begin, 0);
-        afterEnclosing = saved;
-    }
-
-    private void genBreak() {
-        emit("goto L" + afterEnclosing);
-    }
-
-    private Expr genExpr(Expr expr) {
-        return switch (expr) {
-            case Logical logical -> genLogical(logical);
-            case Arith arith -> genArith(arith);
-            case Unary unary -> genUnary(unary);
-            case Access access -> genAccess(access);
-            default -> expr;
-        };
-    }
-
-    private Expr genLogical(Logical logical) {
-        int f = newlabel();
-        int a = newlabel();
-        Temp temp = new Temp(logical.type, ++tempCount);
-        jumping(logical, 0, f);
-        emit(str(temp) + " = true");
-        emit("goto L" + a);
-        emitlabel(f);
-        emit(str(temp) + " = false");
-        emitlabel(a);
-        return temp;
+    private fun genWhile(whileLoop: While, begin: Int, after: Int) {
+        val saved = afterEnclosing
+        afterEnclosing = after // save label after
+        jumping(whileLoop.condition, 0, after)
+        val label = newlabel() // label for stmt
+        emitlabel(label)
+        genStmt(whileLoop.stmt, label, begin)
+        emit("goto L$begin")
+        afterEnclosing = saved
     }
 
 
-    private Expr genArith(Arith arith) {
-        return new Arith(arith.op, reduce(arith.expr1), reduce(arith.expr2));
+    private fun genDo(doLoop: Do, begin: Int, after: Int) {
+        val saved = afterEnclosing
+        afterEnclosing = after
+        val label = newlabel() // label for expr
+        genStmt(doLoop.stmt, begin, label)
+        emitlabel(label)
+        jumping(doLoop.condition, begin, 0)
+        afterEnclosing = saved
     }
 
-    private Expr genUnary(Unary unary) {
-        return new Unary(unary.op, reduce(unary.expr));
+    private fun genBreak() {
+        emit("goto L$afterEnclosing")
     }
 
-    private Expr genAccess(Access access) {
-        return new Access(access.array, reduce(access.index), access.type);
-    }
-
-    private Expr reduce(Expr expr) {
-        if (expr instanceof Op op) {
-            return reduceOp(op);
-        }
-
-        return expr;
-    }
-
-    private Expr reduceOp(Op op) {
-        Expr x = genExpr(op);
-        Temp t = new Temp(op.type, ++tempCount);
-        emit(str(t) + " = " + str(x));
-        return t;
-    }
-
-    private void jumping(Expr expr, int t, int f) {
-        switch (expr) {
-            case Constant constant -> jumpingConstant(constant, t, f);
-            case And and -> jumpingAnd(and, t, f);
-            case Or or -> jumpingOr(or, t, f);
-            case Not not -> jumpingNot(not, t, f);
-            case Rel rel -> jumpingRel(rel, t, f);
-            case Access access -> jumpingAccess(access, t, f);
-            default -> emitjumps(str(expr), t, f);
+    private fun genExpr(expr: Expr): Expr {
+        return when (expr) {
+            is Logical -> genLogical(expr)
+            is Arith -> genArith(expr)
+            is Unary -> genUnary(expr)
+            is Access -> genAccess(expr)
+            else -> expr
         }
     }
 
-    private void jumpingConstant(Constant constant, int t, int f) {
-        if (constant == Constant.TRUE && t != 0) emit("goto L" + t);
-        else if (constant == Constant.FALSE && f != 0) emit("goto L" + f);
+    private fun genLogical(logical: Logical): Expr {
+        val f = newlabel()
+        val a = newlabel()
+        val temp = Temp(logical.type, ++tempCount)
+        jumping(logical, 0, f)
+        emit(str(temp) + " = true")
+        emit("goto L$a")
+        emitlabel(f)
+        emit(str(temp) + " = false")
+        emitlabel(a)
+        return temp
     }
 
-    private void jumpingAnd(And and, int t, int f) {
-        int label = f != 0 ? f : newlabel();
-        jumping(and.expr1, 0, label);
-        jumping(and.expr2, t, f);
-        if (f == 0) emitlabel(label);
+
+    private fun genArith(arith: Arith): Expr {
+        return Arith(arith.op, reduce(arith.expr1), reduce(arith.expr2))
     }
 
-    private void jumpingOr(Or or, int t, int f) {
-        int label = t != 0 ? t : newlabel();
-        jumping(or.expr1, label, 0);
-        jumping(or.expr2, t, f);
-        if (t == 0) emitlabel(label);
+    private fun genUnary(unary: Unary): Expr {
+        return Unary(unary.op, reduce(unary.expr))
     }
 
-    private void jumpingRel(Rel rel, int t, int f) {
-        Expr a = reduce(rel.expr1);
-        Expr b = reduce(rel.expr2);
-
-        String test = str(a) + " " + str(rel.op) + " " + str(b);
-        emitjumps(test, t, f);
+    private fun genAccess(access: Access): Expr {
+        return Access(access.array, reduce(access.index), access.type)
     }
 
-    private void jumpingNot(Not not, int t, int f) {
-        jumping(not.expr2, f, t);
+    private fun reduce(expr: Expr): Expr {
+        if (expr is Op) {
+            return reduceOp(expr)
+        }
+
+        return expr
     }
 
-    private void jumpingAccess(Access access, int t, int f) {
-        emitjumps(str(reduce(access)), t, f);
+    private fun reduceOp(op: Op): Expr {
+        val expr = genExpr(op)
+        val temp = Temp(op.type, ++tempCount)
+        emit(str(temp) + " = " + str(expr))
+        return temp
     }
 
-    private void emitjumps(String test, int t, int f) {
+    private fun jumping(expr: Expr, t: Int, f: Int) {
+        when (expr) {
+            is Constant -> jumpingConstant(expr, t, f)
+            is And -> jumpingAnd(expr, t, f)
+            is Or -> jumpingOr(expr, t, f)
+            is Not -> jumpingNot(expr, t, f)
+            is Rel -> jumpingRel(expr, t, f)
+            is Access -> jumpingAccess(expr, t, f)
+            else -> emitjumps(str(expr), t, f)
+        }
+    }
+
+    private fun jumpingConstant(constant: Constant, t: Int, f: Int) {
+        if (constant == Constant.TRUE && t != 0) emit("goto L$t")
+        else if (constant == Constant.FALSE && f != 0) emit("goto L$f")
+    }
+
+    private fun jumpingAnd(and: And, t: Int, f: Int) {
+        val label = if (f != 0) f else newlabel()
+        jumping(and.expr1, 0, label)
+        jumping(and.expr2, t, f)
+        if (f == 0) emitlabel(label)
+    }
+
+    private fun jumpingOr(or: Or, t: Int, f: Int) {
+        val label = if (t != 0) t else newlabel()
+        jumping(or.expr1, label, 0)
+        jumping(or.expr2, t, f)
+        if (t == 0) emitlabel(label)
+    }
+
+    private fun jumpingRel(rel: Rel, t: Int, f: Int) {
+        val a = reduce(rel.expr1)
+        val b = reduce(rel.expr2)
+
+        val test = str(a) + " " + str(rel.op) + " " + str(b)
+        emitjumps(test, t, f)
+    }
+
+    private fun jumpingNot(not: Not, t: Int, f: Int) {
+        jumping(not.expr2, f, t)
+    }
+
+    private fun jumpingAccess(access: Access, t: Int, f: Int) {
+        emitjumps(str(reduce(access)), t, f)
+    }
+
+    private fun emitjumps(test: String, t: Int, f: Int) {
         if (t != 0 && f != 0) {
-            emit("if " + test + " goto L" + t);
-            emit("goto L" + f);
-        } else if (t != 0) emit("if " + test + " goto L" + t);
-        else if (f != 0) emit("iffalse " + test + " goto L" + f);
+            emit("if $test goto L$t")
+            emit("goto L$f")
+        } else if (t != 0) emit("if $test goto L$t")
+        else if (f != 0) emit("iffalse $test goto L$f")
         // nothing since both t and f fall through
     }
 
-    private int newlabel() {
-        return ++labels;
+    private fun newlabel(): Int {
+        return ++labels
     }
 
-    private void emitlabel(int i) {
-        out.print("L" + i + ":");
+    private fun emitlabel(i: Int) {
+        out.print("L$i:")
     }
 
-    private void emit(String s) {
-        out.println("\t" + s);
+    private fun emit(s: String) {
+        out.println("\t$s")
     }
 
-    private String str(Expr expr) {
-        return switch (expr) {
-            case Access access -> str(access.array) + " [ " + str(access.index) + " ]";
-            case Arith arith -> str(arith.expr1) + " " + str(arith.op) + " " + str(arith.expr2);
-            case Not not -> str(not.op) + " " + str(not.expr2);
-            case Logical logical -> str(logical.expr1) + " " + str(logical.op) + " " + str(logical.expr2);
-            case Temp temp -> "t" + temp.number;
-            case Unary unary -> str(unary.op) + " " + str(unary.expr);
-            default -> str(expr.op);
-        };
+    private fun str(expr: Expr): String {
+        return when (expr) {
+            is Access -> str(expr.array) + " [ " + str(expr.index) + " ]"
+            is Arith -> str(expr.expr1) + " " + str(expr.op) + " " + str(expr.expr2)
+            is Not -> str(expr.op) + " " + str(expr.expr2)
+            is Logical -> str(expr.expr1) + " " + str(expr.op) + " " + str(expr.expr2)
+            is Temp -> "t" + expr.number
+            is Unary -> str(expr.op) + " " + str(expr.expr)
+            else -> str(expr.op)
+        }
     }
 
-    private String str(Token op) {
-        return switch (op) {
-            case Array array -> "[" + array.size + "] " + str(array.of);
-            case Num num -> String.valueOf(num.value);
-            case Real real -> String.valueOf(real.value);
-            case Word word -> word.lexeme;
-            default -> String.valueOf((char) op.tag);
-        };
+    private fun str(op: Token): String {
+        return when (op) {
+            is Array -> "[" + op.size + "] " + str(op.of)
+            is Num -> op.value.toString()
+            is Real -> op.value.toString()
+            is Word -> op.lexeme
+            else -> op.tag.toChar().toString()
+        }
     }
 }
