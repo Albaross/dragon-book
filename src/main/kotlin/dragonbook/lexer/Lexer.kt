@@ -8,7 +8,6 @@ class Lexer(private val source: InputStream) {
     private var peek = ' '
     private var lineNumber = 1
 
-
     init {
         reserve(Word.IF)
         reserve(Word.ELSE)
@@ -38,9 +37,8 @@ class Lexer(private val source: InputStream) {
 
     private fun consumeWhitespaces() {
         while (true) {
-            if (peek == ' ' || peek == '\t' || peek == '\r') continue
-            else if (peek == '\n') lineNumber += 1
-            else break
+            if (peek == '\n') lineNumber += 1
+            else if (peek != ' ' && peek != '\t' && peek != '\r') break
             readChar()
         }
     }
