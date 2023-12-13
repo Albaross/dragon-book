@@ -1,18 +1,15 @@
-package dragonbook.symbols;
+package dragonbook.symbols
 
-import dragonbook.lexer.Tag;
+import dragonbook.lexer.Tag
 
-public class Array extends Type {
-    public final Type of; // array *of* type
-    public final int size; // number of elements
+data class Array(
+    val of: Type, // array *of* type
+    val size: Int // number of elements
+) : Type {
 
-    public Array(int size, Type of) {
-        super("[]", Tag.INDEX, size * of.width);
-        this.size = size;
-        this.of = of;
-    }
+    override val tag: Int get() = Tag.INDEX
+    override val lexeme: String get() = "[]"
+    override val width: Int get() = size * of.width
+    override fun toString(): String = "$of[$size]"
 
-    public String toString() {
-        return of + "[" + size + "]";
-    }
 }

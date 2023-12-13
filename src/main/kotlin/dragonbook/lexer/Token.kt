@@ -1,22 +1,22 @@
-package dragonbook.lexer;
+package dragonbook.lexer
 
-public class Token {
-    public final int tag;
+interface Token {
+    val tag: Int
 
-    public Token(int t) {
-        tag = t;
+    companion object {
+        val AND: Token = Symbol('&')
+        val OR: Token = Symbol('|')
+        val EQ: Token = Symbol('=')
+        val NOT: Token = Symbol('!')
+        val LT: Token = Symbol('<')
+        val GT: Token = Symbol('>')
+        val PLUS: Token = Symbol('+')
+        val TIMES: Token = Symbol('*')
     }
+}
 
-    public String toString() {
-        return String.valueOf((char) tag);
-    }
+data class Symbol(override val tag: Int) : Token {
+    constructor(tag: Char) : this(tag.code)
 
-    public static final Token AND = new Token('&');
-    public static final Token OR = new Token('|');
-    public static final Token EQ = new Token('=');
-    public static final Token NOT = new Token('!');
-    public static final Token LT = new Token('<');
-    public static final Token GT = new Token('>');
-    public static final Token PLUS = new Token('+');
-    public static final Token TIMES = new Token('*');
+    override fun toString(): String = tag.toChar().toString()
 }

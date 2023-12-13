@@ -1,14 +1,7 @@
-package dragonbook.lexer;
+package dragonbook.lexer
 
-public class Num extends Token {
-    public final int value;
+data class Num(val value: Int) : Token {
 
-    public Num(int value) {
-        super(Tag.NUM);
-        this.value = value;
-    }
-
-    public String toString() {
-        return String.valueOf(value);
-    }
+    override val tag: Int get() = Tag.NUM
+    override fun toString(): String = value.toString()
 }
