@@ -8,7 +8,9 @@ import dragonbook.symbols.Array
 import dragonbook.symbols.Env
 import dragonbook.symbols.Type
 
-class Parser(private val lex: Lexer) { // lexical analyzer for this parser
+class Parser(private val scan: () -> Token) {
+
+    constructor(lexer: Lexer) : this(lexer::scan) // lexical analyzer for this parser
 
     private lateinit var look: Token // lookahead token
     private var top: Env? = null // current or top symbol table
@@ -300,7 +302,7 @@ class Parser(private val lex: Lexer) { // lexical analyzer for this parser
     }
 
     private fun move() {
-        look = lex.scan()
+        look = scan()
     }
 
     private fun error(s: String): Nothing {

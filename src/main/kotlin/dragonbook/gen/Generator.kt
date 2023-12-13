@@ -9,21 +9,19 @@ import dragonbook.lexer.Token
 import dragonbook.lexer.Word
 import dragonbook.parser.Parser
 import dragonbook.symbols.Array
-
 import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 
-class Generator(private val parse: Parser) {
+class Generator(private val program: () -> Stmt) {
 
-    private lateinit var out: PrintStream
+    constructor(parser: Parser) : this(parser::program)
+
+    private val buffer = ByteArrayOutputStream()
     private var labels = 0
     private var tempCount = 0
     private var afterEnclosing = 0 // saves label after
 
     fun gen(): List<String> {
-        val buffer = ByteArrayOutputStream()
-        out = PrintStream(buffer)
-        val program = parse.program()
+        val program = program()
 
         val begin = newlabel()
         val after = newlabel()
@@ -31,7 +29,7 @@ class Generator(private val parse: Parser) {
         genStmt(program, begin, after)
         emitlabel(after)
 
-        return buffer.toString().split(Regex("\r?\n")).toList()
+        return buffer.toString().split('\n').toList()
     }
 
     private fun genStmt(stmt: Stmt, begin: Int, after: Int) {
@@ -226,11 +224,11 @@ class Generator(private val parse: Parser) {
     }
 
     private fun emitlabel(i: Int) {
-        out.print("L$i:")
+        buffer.write("L$i:".toByteArray())
     }
 
     private fun emit(s: String) {
-        out.println("\t$s")
+        buffer.write("\t$s\n".toByteArray())
     }
 
     private fun str(expr: Expr): String {
