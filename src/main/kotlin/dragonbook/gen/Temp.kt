@@ -1,18 +1,11 @@
 package dragonbook.gen;
 
 import dragonbook.inter.expr.Expr;
+import dragonbook.lexer.Token
 import dragonbook.lexer.Word;
 import dragonbook.symbols.Type;
 
-public class Temp extends Expr {
-    public int number;
-
-    public Temp(Type p, int number) {
-        super(Word.TEMP, p);
-        this.number = number;
-    }
-
-    public String toString() {
-        return "t" + number;
-    }
+data class Temp(override val type: Type, val number: Int) : Expr {
+    override val op: Token get() = Word.TEMP
+    override fun toString(): String = "t$number"
 }

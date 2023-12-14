@@ -1,13 +1,14 @@
-package dragonbook.inter.stmt;
+package dragonbook.inter.stmt
 
-import dragonbook.inter.Node;
+import dragonbook.inter.Node
 
-public class Stmt extends Node {
+interface Stmt : Node {
 
-    public static Stmt Null = new Stmt() {
-        @Override
-        public String toString() {
-            return "null";
-        }
-    };
+    companion object {
+        val NULL: Stmt = Null
+    }
+}
+
+object Null : Stmt {
+    override fun toString(): String = "null"
 }

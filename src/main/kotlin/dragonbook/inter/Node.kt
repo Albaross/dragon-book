@@ -1,13 +1,7 @@
 package dragonbook.inter;
 
-public class Node {
-    private final int lexline;
-
-    public Node() {
-        lexline = 0;
-    }
-
-    public void error(String s) {
-        throw new Error("near line " + lexline + ": " + s);
+interface Node {
+    fun error(s: String): Nothing {
+        throw Error("near line 0: $s");
     }
 }
