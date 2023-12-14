@@ -6,6 +6,10 @@ import dragonbook.symbols.Type
 data class Else(val condition: Expr, val then: Stmt, val elseStmt: Stmt) : Stmt {
 
     init {
+        validate()
+    }
+
+    private fun validate() {
         if (condition.type != Type.BOOL) condition.error("boolean required in if")
     }
 

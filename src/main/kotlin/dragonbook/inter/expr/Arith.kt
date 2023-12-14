@@ -10,6 +10,10 @@ data class Arith(
 ) : Op {
 
     init {
+        validate()
+    }
+
+    private fun validate() {
         if (!expr1.type.isNumeric() || !expr2.type.isNumeric()) error("type error")
     }
 

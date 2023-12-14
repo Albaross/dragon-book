@@ -9,7 +9,7 @@ data class And(
 ) : Logical {
 
     init {
-        check()
+        validate()
     }
 
     override fun toString(): String = "$expr1 $op $expr2"

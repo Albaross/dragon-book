@@ -9,7 +9,7 @@ interface Logical : Expr {
 
     override val type: Type get() = Type.BOOL
 
-    fun check() {
+    fun validate() {
         if (expr1.type != Type.BOOL || expr2.type != Type.BOOL) error("type error")
     }
 }

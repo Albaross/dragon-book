@@ -10,10 +10,10 @@ data class Rel(
 ) : Logical {
 
     init {
-        check()
+        validate()
     }
 
-    override fun check() {
+    override fun validate() {
         if (expr1.type is Array || expr2.type is Array || expr1.type != expr2.type) error("type error")
     }
 

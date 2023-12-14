@@ -7,13 +7,13 @@ import dragonbook.symbols.Type
 data class Set(val id: Id, val expr: Expr) : Stmt {
 
     init {
-        if (check(id.type, expr.type) == null) error("type error")
+        validate()
     }
 
-    private fun check(type1: Type, type2: Type): Type? {
-        return if (type1.isNumeric() && type2.isNumeric()) type2
-        else if (type1 == Type.BOOL && type2 == Type.BOOL) type2
-        else null
+    private fun validate() {
+        if (id.type.isNumeric() && expr.type.isNumeric()) expr.type
+        else if (id.type == Type.BOOL && expr.type == Type.BOOL) expr.type
+        else error("type error")
     }
 
     override fun toString(): String = "$id = $expr"
