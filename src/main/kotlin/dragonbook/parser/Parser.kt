@@ -60,11 +60,11 @@ class Parser(private val scan: () -> Token) {
         val tok = look
         match(Tag.NUM)
         match(']')
-        return Array((tok as Num).value, if (look.tag == '['.code) dims(type) else type)
+        return Array(size = (tok as Num).value, of = if (look.tag == '['.code) dims(type) else type)
     }
 
     private fun stmts(): Stmt {
-        return if (look.tag == '}'.code) Stmt.Null
+        return if (look.tag == '}'.code) Stmt.NULL
         else Seq(stmt(), stmts())
     }
 
@@ -72,7 +72,7 @@ class Parser(private val scan: () -> Token) {
         return when (look.tag) {
             ';'.code -> {
                 move()
-                Stmt.Null
+                Stmt.NULL
             }
 
             Tag.IF -> ifElse()
@@ -128,7 +128,7 @@ class Parser(private val scan: () -> Token) {
         match(Tag.BREAK)
         match(';')
         if (enclosing == null) error("unenclosed break")
-        return Break()
+        return Break
     }
 
     private fun assign(): Stmt {

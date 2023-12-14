@@ -1,30 +1,15 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Token;
-import dragonbook.symbols.Type;
+import dragonbook.symbols.Type
 
-public class Logical extends Expr {
-    public final Expr expr1;
-    public final Expr expr2;
+interface Logical : Expr {
 
-    public Logical(Token op, Expr expr1, Expr expr2) {
-        this(op, expr1, expr2, check(expr1.type, expr2.type));
-    }
+    val expr1: Expr
+    val expr2: Expr
 
-    public Logical(Token op, Expr expr1, Expr expr2, Type type) {
-        super(op, type);
-        if (type == null) error("type error");
-        this.expr1 = expr1;
-        this.expr2 = expr2;
-    }
+    override val type: Type get() = Type.BOOL
 
-    private static Type check(Type type1, Type type2) {
-        if (type1 == Type.BOOL && type2 == Type.BOOL) return Type.BOOL;
-        else return null;
-    }
-
-    @Override
-    public String toString() {
-        return expr1 + " " + op + " " + expr2;
+    fun check() {
+        if (expr1.type != Type.BOOL || expr2.type != Type.BOOL) error("type error")
     }
 }

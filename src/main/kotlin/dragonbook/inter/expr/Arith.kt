@@ -1,27 +1,23 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Token;
-import dragonbook.symbols.Type;
+import dragonbook.lexer.Token
+import dragonbook.symbols.Type
 
-public class Arith extends Op {
-    public final Expr expr1;
-    public final Expr expr2;
+data class Arith(
+    override val op: Token,
+    val expr1: Expr,
+    val expr2: Expr
+) : Op {
 
-    public Arith(Token op, Expr expr1, Expr expr2) {
-        super(op, max(expr1.type, expr2.type));
-        this.expr1 = expr1;
-        this.expr2 = expr2;
+    init {
+        if (!expr1.type.isNumeric() || !expr2.type.isNumeric()) error("type error")
     }
 
-    private static Type max(Type type1, Type type2) {
-        if (!type1.isNumeric() || !type2.isNumeric()) return null;
-        else if (type1 == Type.FLOAT || type2 == Type.FLOAT) return Type.FLOAT;
-        else if (type1 == Type.INT || type2 == Type.INT) return Type.INT;
-        else return Type.CHAR;
-    }
+    override val type: Type
+        get() =
+            if (expr1.type == Type.FLOAT || expr2.type == Type.FLOAT) Type.FLOAT
+            else if (expr1.type == Type.INT || expr2.type == Type.INT) Type.INT
+            else Type.CHAR
 
-    @Override
-    public String toString() {
-        return expr1 + " " + op + " " + expr2;
-    }
+    override fun toString(): String = "$expr1 $op $expr2"
 }

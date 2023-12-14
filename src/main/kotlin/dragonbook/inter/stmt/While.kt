@@ -1,20 +1,13 @@
-package dragonbook.inter.stmt;
+package dragonbook.inter.stmt
 
-import dragonbook.inter.expr.Expr;
-import dragonbook.symbols.Type;
+import dragonbook.inter.expr.Expr
+import dragonbook.symbols.Type
 
-public class While extends Stmt {
-    public Expr condition;
-    public Stmt stmt;
+data class While(val condition: Expr, val stmt: Stmt) : Stmt {
 
-    public While(Expr condition, Stmt stmt) {
-        if (condition.type != Type.BOOL) condition.error("boolean required in while");
-        this.condition = condition;
-        this.stmt = stmt;
+    init {
+        if (condition.type != Type.BOOL) condition.error("boolean required in while")
     }
 
-    @Override
-    public String toString() {
-        return "while (" + condition + ") " + stmt;
-    }
+    override fun toString(): String = "while ($condition) $stmt"
 }

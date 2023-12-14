@@ -23,6 +23,11 @@ interface Word : Token {
     }
 }
 
+data class Name(override val lexeme: String) : Word {
+    override val tag: Int get() = Tag.ID
+    override fun toString(): String = lexeme
+}
+
 data class Keyword(override val lexeme: String, override val tag: Int) : Word {
     override fun toString(): String = lexeme
 }

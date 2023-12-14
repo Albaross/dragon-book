@@ -1,9 +1,16 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Token;
+import dragonbook.lexer.Token
 
-public class Or extends Logical {
-    public Or(Token op, Expr expr1, Expr expr2) {
-        super(op, expr1, expr2);
+data class Or(
+    override val op: Token,
+    override val expr1: Expr,
+    override val expr2: Expr
+) : Logical {
+
+    init {
+        check()
     }
+
+    override fun toString(): String = "$expr1 $op $expr2"
 }

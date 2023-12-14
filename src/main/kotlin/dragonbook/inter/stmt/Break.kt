@@ -1,9 +1,5 @@
-package dragonbook.inter.stmt;
+package dragonbook.inter.stmt
 
-public class Break extends Stmt {
-
-    @Override
-    public String toString() {
-        return "break";
-    }
+object Break : Stmt {
+    override fun toString(): String = "break"
 }

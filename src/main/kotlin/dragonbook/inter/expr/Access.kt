@@ -1,20 +1,16 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Word;
-import dragonbook.symbols.Type;
+import dragonbook.lexer.Token
+import dragonbook.lexer.Word
+import dragonbook.symbols.Type
 
-public class Access extends Op {
-    public final Id array;
-    public final Expr index;
+data class Access(
+    val array: Id,
+    val index: Expr,
+    override val type: Type // type is element type after
+) : Op {
 
-    public Access(Id array, Expr index, Type type) { // type is element type after
-        super(Word.INDEX, type); // flattening the array
-        this.array = array;
-        this.index = index;
-    }
+    override val op: Token get() = Word.INDEX // flattening the array
 
-    @Override
-    public String toString() {
-        return array + "[" + index + "]";
-    }
+    override fun toString(): String = "$array[$index]"
 }

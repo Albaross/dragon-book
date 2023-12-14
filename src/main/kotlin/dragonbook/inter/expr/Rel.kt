@@ -1,17 +1,21 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Token;
-import dragonbook.symbols.Array;
-import dragonbook.symbols.Type;
+import dragonbook.lexer.Token
+import dragonbook.symbols.Array
 
-public class Rel extends Logical {
-    public Rel(Token op, Expr expr1, Expr expr2) {
-        super(op, expr1, expr2, check(expr1.type, expr2.type));
+data class Rel(
+    override val op: Token,
+    override val expr1: Expr,
+    override val expr2: Expr
+) : Logical {
+
+    init {
+        check()
     }
 
-    private static Type check(Type type1, Type type2) {
-        if (type1 instanceof Array || type2 instanceof Array) return null;
-        else if (type1 == type2) return Type.BOOL;
-        else return null;
+    override fun check() {
+        if (expr1.type is Array || expr2.type is Array || expr1.type != expr2.type) error("type error")
     }
+
+    override fun toString(): String = "$expr1 $op $expr2"
 }

@@ -1,13 +1,14 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Word;
-import dragonbook.symbols.Type;
+import dragonbook.lexer.Token
+import dragonbook.lexer.Word
+import dragonbook.symbols.Type
 
-public class Id extends Expr {
-    public final int offset; // relative address
+data class Id(
+    val id: Word,
+    override val type: Type,
+    val offset: Int // relative address
+) : Expr {
 
-    public Id(Word id, Type type, int offset) {
-        super(id, type);
-        this.offset = offset;
-    }
+    override val op: Token get() = id
 }

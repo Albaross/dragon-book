@@ -1,25 +1,17 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Token;
-import dragonbook.symbols.Type;
+import dragonbook.lexer.Token
+import dragonbook.symbols.Type
 
-public class Unary extends Op {
-    public final Expr expr;
+data class Unary(override val op: Token, val expr: Expr) : Op { // handles minus, for ! see Not
 
-    public Unary(Token op, Expr expr) { // handles minus, for ! see Not
-        super(op, max(Type.INT, expr.type));
-        this.expr = expr;
+    init {
+        if (!expr.type.isNumeric()) error("type error")
     }
 
-    private static Type max(Type type1, Type type2) {
-        if (!type1.isNumeric() || !type2.isNumeric()) return null;
-        else if (type1 == Type.FLOAT || type2 == Type.FLOAT) return Type.FLOAT;
-        else if (type1 == Type.INT || type2 == Type.INT) return Type.INT;
-        else return Type.CHAR;
-    }
+    override val type: Type
+        get() =
+            if (expr.type == Type.FLOAT) Type.FLOAT else Type.INT
 
-    @Override
-    public String toString() {
-        return op + " " + expr;
-    }
+    override fun toString(): String = "$op $expr"
 }

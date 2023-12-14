@@ -1,17 +1,13 @@
-package dragonbook.inter.stmt;
+package dragonbook.inter.stmt
 
-import dragonbook.inter.expr.Expr;
-import dragonbook.symbols.Type;
+import dragonbook.inter.expr.Expr
+import dragonbook.symbols.Type
 
-public class Else extends Stmt {
-    public final Expr condition;
-    public final Stmt then;
-    public final Stmt elseStmt;
+data class Else(val condition: Expr, val then: Stmt, val elseStmt: Stmt) : Stmt {
 
-    public Else(Expr condition, Stmt then, Stmt elseStmt) {
-        if (condition.type != Type.BOOL) condition.error("boolean required in if");
-        this.condition = condition;
-        this.then = then;
-        this.elseStmt = elseStmt;
+    init {
+        if (condition.type != Type.BOOL) condition.error("boolean required in if")
     }
+
+    override fun toString(): String = "if ($condition) $then else $elseStmt"
 }

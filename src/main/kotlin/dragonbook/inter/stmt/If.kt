@@ -1,20 +1,13 @@
-package dragonbook.inter.stmt;
+package dragonbook.inter.stmt
 
-import dragonbook.inter.expr.Expr;
-import dragonbook.symbols.Type;
+import dragonbook.inter.expr.Expr
+import dragonbook.symbols.Type
 
-public class If extends Stmt {
-    public final Expr condition;
-    public final Stmt then;
+data class If(val condition: Expr, val then: Stmt) : Stmt {
 
-    public If(Expr condition, Stmt then) {
-        if (condition.type != Type.BOOL) condition.error("boolean required in if");
-        this.condition = condition;
-        this.then = then;
+    init {
+        if (condition.type != Type.BOOL) condition.error("boolean required in if")
     }
 
-    @Override
-    public String toString() {
-        return "if (" + condition + ") " + then;
-    }
+    override fun toString(): String = "if ($condition) $then"
 }

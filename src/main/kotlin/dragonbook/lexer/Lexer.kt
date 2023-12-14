@@ -70,7 +70,7 @@ class Lexer(private val source: InputStream) {
         val lexeme = builder.toString()
         var word = words[lexeme]
         if (word != null) return word
-        word = reserve(Word(lexeme, Tag.ID))
+        word = reserve(Name(lexeme))
         return word
     }
 
@@ -101,7 +101,7 @@ class Lexer(private val source: InputStream) {
                 else Token.GT
 
             else ->
-                return Token(peek.code)
+                return Symbol(peek.code)
         }
     }
 

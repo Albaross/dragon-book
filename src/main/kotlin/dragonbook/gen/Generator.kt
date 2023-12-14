@@ -48,8 +48,8 @@ class Generator(private val program: () -> Stmt) {
 
 
     private fun genSeq(seq: Seq, begin: Int, after: Int) {
-        if (seq.head == Stmt.Null) genStmt(seq.tail, begin, after)
-        else if (seq.tail == Stmt.Null) genStmt(seq.head, begin, after)
+        if (seq.head == Stmt.NULL) genStmt(seq.tail, begin, after)
+        else if (seq.tail == Stmt.NULL) genStmt(seq.head, begin, after)
         else {
             val label = newlabel()
             genStmt(seq.head, begin, label)

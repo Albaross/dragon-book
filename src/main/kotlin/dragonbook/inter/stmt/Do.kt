@@ -1,20 +1,13 @@
-package dragonbook.inter.stmt;
+package dragonbook.inter.stmt
 
-import dragonbook.inter.expr.Expr;
-import dragonbook.symbols.Type;
+import dragonbook.inter.expr.Expr
+import dragonbook.symbols.Type
 
-public class Do extends Stmt {
-    public final Expr condition;
-    public final Stmt stmt;
+data class Do(val stmt: Stmt, val condition: Expr) : Stmt {
 
-    public Do(Stmt stmt, Expr condition) {
-        if (condition.type != Type.BOOL) condition.error("boolean required in do");
-        this.condition = condition;
-        this.stmt = stmt;
+    init {
+        if (condition.type != Type.BOOL) condition.error("boolean required in do")
     }
 
-    @Override
-    public String toString() {
-        return "do " + stmt + " while (" + condition + ")";
-    }
+    override fun toString(): String = "do $stmt while ($condition)"
 }

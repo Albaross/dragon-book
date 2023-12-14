@@ -1,14 +1,11 @@
-package dragonbook.inter.expr;
+package dragonbook.inter.expr
 
-import dragonbook.lexer.Token;
+import dragonbook.lexer.Token
 
-public class Not extends Logical {
-    public Not(Token op, Expr expr) {
-        super(op, expr, expr);
-    }
+data class Not(override val op: Token, val expr: Expr) : Logical {
 
-    @Override
-    public String toString() {
-        return op + " " + expr2;
-    }
+    override val expr1: Expr get() = expr
+    override val expr2: Expr get() = expr
+
+    override fun toString(): String = "$op $expr1"
 }
