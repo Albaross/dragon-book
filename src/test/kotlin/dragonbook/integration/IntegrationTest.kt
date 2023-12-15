@@ -1,16 +1,17 @@
-package dragonbook.parser
+package dragonbook.integration
 
 import dragonbook.gen.Generator
 import dragonbook.lexer.Lexer
+import dragonbook.parser.Parser
 import dragonbook.test.EXPECTED_GENERATOR_OUTPUT
 import java.io.FileInputStream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ParserTest {
+class IntegrationTest {
 
     @Test
-    fun `code is generated correctly`() {
+    fun `code scanned, parsed and generated correctly`() {
         FileInputStream("src/test/resources/test").use {
             val lex = Lexer(it)
             val parse = Parser(lex)
