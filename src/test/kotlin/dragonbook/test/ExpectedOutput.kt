@@ -16,175 +16,90 @@ val NAMES = listOf(
 ).associateBy { it.lexeme }
 
 val EXPECTED_LEXER_OUTPUT = listOf(
-    Symbol(tag = '{'),
-    Type.INT,
-    NAMES["i"]!!,
-    Symbol(tag = ';'),
-    Type.INT,
-    NAMES["j"]!!,
-    Symbol(tag = ';'),
-    Type.FLOAT,
-    NAMES["v"]!!,
-    Symbol(tag = ';'),
-    Type.FLOAT,
-    NAMES["x"]!!,
-    Symbol(tag = ';'),
-    Type.FLOAT,
-    Symbol(tag = '['),
-    Num(value = 100),
-    Symbol(tag = ']'),
-    NAMES["a"]!!,
-    Symbol(tag = ';'),
-    Word.WHILE,
-    Symbol(tag = '('),
-    Word.TRUE,
-    Symbol(tag = ')'),
-    Symbol(tag = '{'),
-    Word.DO,
-    NAMES["i"]!!,
-    Symbol(tag = '='),
-    NAMES["i"]!!,
-    Token.PLUS,
-    Num(value = 1),
-    Symbol(tag = ';'),
-    Word.WHILE,
-    Symbol(tag = '('),
-    NAMES["a"]!!,
-    Symbol(tag = '['),
-    NAMES["i"]!!,
-    Symbol(tag = ']'),
-    Symbol(tag = '<'),
-    NAMES["v"]!!,
-    Symbol(tag = ')'),
-    Symbol(tag = ';'),
-    Word.DO,
-    NAMES["j"]!!,
-    Symbol(tag = '='),
-    NAMES["j"]!!,
-    Token.MINUS,
-    Num(value = 1),
-    Symbol(tag = ';'),
-    Word.WHILE,
-    Symbol(tag = '('),
-    NAMES["a"]!!,
-    Symbol(tag = '['),
-    NAMES["j"]!!,
-    Symbol(tag = ']'),
-    Symbol(tag = '>'),
-    NAMES["v"]!!,
-    Symbol(tag = ')'),
-    Symbol(tag = ';'),
-    Word.IF,
-    Symbol(tag = '('),
-    NAMES["i"]!!,
-    Word.GE,
-    NAMES["j"]!!,
-    Symbol(tag = ')'),
-    Word.BREAK,
-    Symbol(tag = ';'),
-    NAMES["x"]!!,
-    Symbol(tag = '='),
-    NAMES["a"]!!,
-    Symbol(tag = '['),
-    NAMES["i"]!!,
-    Symbol(tag = ']'),
-    Symbol(tag = ';'),
-    NAMES["a"]!!,
-    Symbol(tag = '['),
-    NAMES["i"]!!,
-    Symbol(tag = ']'),
-    Symbol(tag = '='),
-    NAMES["a"]!!,
-    Symbol(tag = '['),
-    NAMES["j"]!!,
-    Symbol(tag = ']'),
-    Symbol(tag = ';'),
-    NAMES["a"]!!,
-    Symbol(tag = '['),
-    NAMES["j"]!!,
-    Symbol(tag = ']'),
-    Symbol(tag = '='),
-    NAMES["x"]!!,
-    Symbol(tag = ';'),
-    Symbol(tag = '}'),
-    Symbol(tag = '}'),
+    Symbol('{'),
+    Type.INT, NAMES["i"]!!, Symbol(';'), Type.INT, NAMES["j"]!!, Symbol(';'),
+    Type.FLOAT, NAMES["v"]!!, Symbol(';'), Type.FLOAT, NAMES["x"]!!, Symbol(';'),
+    Type.FLOAT, Symbol('['), Num(value = 100), Symbol(']'), NAMES["a"]!!, Symbol(';'),
+    Word.WHILE, Symbol('('), Word.TRUE, Symbol(')'), Symbol('{'),
+    Word.DO, NAMES["i"]!!, Symbol('='), NAMES["i"]!!, Token.PLUS, Num(value = 1), Symbol(';'),
+    Word.WHILE, Symbol('('), NAMES["a"]!!, Symbol('['), NAMES["i"]!!, Symbol(']'),
+    Symbol('<'), NAMES["v"]!!, Symbol(')'), Symbol(';'),
+    Word.DO, NAMES["j"]!!, Symbol('='), NAMES["j"]!!, Token.MINUS, Num(value = 1), Symbol(';'),
+    Word.WHILE, Symbol('('), NAMES["a"]!!, Symbol('['), NAMES["j"]!!, Symbol(']'),
+    Symbol('>'), NAMES["v"]!!, Symbol(')'), Symbol(';'),
+    Word.IF, Symbol('('), NAMES["i"]!!, Word.GE, NAMES["j"]!!, Symbol(')'), Word.BREAK, Symbol(';'),
+    NAMES["x"]!!, Symbol('='), NAMES["a"]!!, Symbol('['), NAMES["i"]!!, Symbol(']'), Symbol(';'),
+    NAMES["a"]!!, Symbol('['), NAMES["i"]!!, Symbol(']'), Symbol('='),
+    NAMES["a"]!!, Symbol('['), NAMES["j"]!!, Symbol(']'), Symbol(';'),
+    NAMES["a"]!!, Symbol('['), NAMES["j"]!!, Symbol(']'), Symbol('='), NAMES["x"]!!, Symbol(';'),
+    Symbol('}'),
+    Symbol('}'),
     Token.EOF,
 )
 
 val VARIABLES = listOf(
-    Id(id = NAMES["i"]!!, type = Type.INT, offset = 0),
-    Id(id = NAMES["v"]!!, type = Type.FLOAT, offset = 8),
-    Id(id = NAMES["j"]!!, type = Type.INT, offset = 4),
-    Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16),
-    Id(id = NAMES["a"]!!, type = Array(of = Type.FLOAT, size = 100), offset = 24)
+    Id(NAMES["i"]!!, Type.INT, offset = 0),
+    Id(NAMES["v"]!!, Type.FLOAT, offset = 8),
+    Id(NAMES["j"]!!, Type.INT, offset = 4),
+    Id(NAMES["x"]!!, Type.FLOAT, offset = 16),
+    Id(NAMES["a"]!!, Array(of = Type.FLOAT, size = 100), offset = 24)
 ).associateBy { it.id.lexeme }
 
 
 val EXPECTED_PARSER_OUTPUT = seqOf(
     While(
-        condition = Constant.TRUE, stmt = seqOf(
+        condition = Constant.TRUE, seqOf(
             Do(
-                stmt = Set(
-                    id = VARIABLES["i"]!!,
-                    expr = Arith(op = Token.PLUS, expr1 = VARIABLES["i"]!!, expr2 = Constant(1))
-                ),
+                Set(VARIABLES["i"]!!, Arith(Token.PLUS, VARIABLES["i"]!!, Constant(1))),
                 condition = Rel(
-                    op = Token.LT,
-                    expr1 = Access(
+                    Token.LT,
+                    Access(
                         array = VARIABLES["a"]!!,
-                        index = Arith(op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)),
+                        index = Arith(Token.TIMES, VARIABLES["i"]!!, Constant(8)),
                         type = Type.FLOAT
                     ),
-                    expr2 = VARIABLES["v"]!!
+                    VARIABLES["v"]!!
                 )
             ),
             Do(
-                stmt = Set(
-                    id = VARIABLES["j"]!!,
-                    expr = Arith(op = Token.MINUS, expr1 = VARIABLES["j"]!!, expr2 = Constant(1))
-                ),
+                Set(VARIABLES["j"]!!, Arith(op = Token.MINUS, expr1 = VARIABLES["j"]!!, expr2 = Constant(1))),
                 condition = Rel(
-                    op = Token.GT,
-                    expr1 = Access(
+                    Token.GT,
+                    Access(
                         array = VARIABLES["a"]!!,
-                        index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
+                        index = Arith(Token.TIMES, VARIABLES["j"]!!, Constant(8)),
                         type = Type.FLOAT
                     ),
-                    expr2 = VARIABLES["v"]!!
+                    VARIABLES["v"]!!
                 )
             ),
-            If(
-                condition = Rel(op = Word.GE, expr1 = VARIABLES["i"]!!, expr2 = VARIABLES["j"]!!),
-                then = Break
-            ),
+            If(condition = Rel(Word.GE, VARIABLES["i"]!!, VARIABLES["j"]!!), then = Break),
             Set(
-                id = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16),
-                expr = Access(
+                VARIABLES["x"]!!,
+                Access(
                     array = VARIABLES["a"]!!,
-                    index = Arith(op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)),
+                    index = Arith(Token.TIMES, VARIABLES["i"]!!, Constant(8)),
                     type = Type.FLOAT
                 )
             ),
             SetElem(
-                access = Access(
+                Access(
                     array = VARIABLES["a"]!!,
-                    index = Arith(
-                        op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)
-                    ),
+                    index = Arith(Token.TIMES, VARIABLES["i"]!!, Constant(8)),
                     type = Type.FLOAT
                 ),
-                expr = Access(
+                Access(
                     array = VARIABLES["a"]!!,
-                    index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
+                    index = Arith(Token.TIMES, VARIABLES["j"]!!, Constant(8)),
                     type = Type.FLOAT
                 )
             ),
             SetElem(
-                access = Access(
+                Access(
                     array = VARIABLES["a"]!!,
-                    index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
+                    index = Arith(Token.TIMES, VARIABLES["j"]!!, Constant(8)),
                     type = Type.FLOAT
-                ), expr = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16)
+                ), VARIABLES["x"]!!
             )
         )
     )
