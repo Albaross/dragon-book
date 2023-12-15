@@ -3,18 +3,120 @@ package dragonbook.test
 import dragonbook.inter.expr.*
 import dragonbook.inter.stmt.*
 import dragonbook.inter.stmt.Set
-import dragonbook.lexer.Name
-import dragonbook.lexer.Token
-import dragonbook.lexer.Word
+import dragonbook.lexer.*
 import dragonbook.symbols.Array
 import dragonbook.symbols.Type
 
+val NAMES = listOf(
+    Name(lexeme = "i"),
+    Name(lexeme = "v"),
+    Name(lexeme = "j"),
+    Name(lexeme = "x"),
+    Name(lexeme = "a")
+).associateBy { it.lexeme }
+
+val EXPECTED_LEXER_OUTPUT = listOf(
+    Symbol(tag = '{'),
+    Type.INT,
+    NAMES["i"]!!,
+    Symbol(tag = ';'),
+    Type.INT,
+    NAMES["j"]!!,
+    Symbol(tag = ';'),
+    Type.FLOAT,
+    NAMES["v"]!!,
+    Symbol(tag = ';'),
+    Type.FLOAT,
+    NAMES["x"]!!,
+    Symbol(tag = ';'),
+    Type.FLOAT,
+    Symbol(tag = '['),
+    Num(value = 100),
+    Symbol(tag = ']'),
+    NAMES["a"]!!,
+    Symbol(tag = ';'),
+    Word.WHILE,
+    Symbol(tag = '('),
+    Word.TRUE,
+    Symbol(tag = ')'),
+    Symbol(tag = '{'),
+    Word.DO,
+    NAMES["i"]!!,
+    Symbol(tag = '='),
+    NAMES["i"]!!,
+    Token.PLUS,
+    Num(value = 1),
+    Symbol(tag = ';'),
+    Word.WHILE,
+    Symbol(tag = '('),
+    NAMES["a"]!!,
+    Symbol(tag = '['),
+    NAMES["i"]!!,
+    Symbol(tag = ']'),
+    Symbol(tag = '<'),
+    NAMES["v"]!!,
+    Symbol(tag = ')'),
+    Symbol(tag = ';'),
+    Word.DO,
+    NAMES["j"]!!,
+    Symbol(tag = '='),
+    NAMES["j"]!!,
+    Token.MINUS,
+    Num(value = 1),
+    Symbol(tag = ';'),
+    Word.WHILE,
+    Symbol(tag = '('),
+    NAMES["a"]!!,
+    Symbol(tag = '['),
+    NAMES["j"]!!,
+    Symbol(tag = ']'),
+    Symbol(tag = '>'),
+    NAMES["v"]!!,
+    Symbol(tag = ')'),
+    Symbol(tag = ';'),
+    Word.IF,
+    Symbol(tag = '('),
+    NAMES["i"]!!,
+    Word.GE,
+    NAMES["j"]!!,
+    Symbol(tag = ')'),
+    Word.BREAK,
+    Symbol(tag = ';'),
+    NAMES["x"]!!,
+    Symbol(tag = '='),
+    NAMES["a"]!!,
+    Symbol(tag = '['),
+    NAMES["i"]!!,
+    Symbol(tag = ']'),
+    Symbol(tag = ';'),
+    NAMES["a"]!!,
+    Symbol(tag = '['),
+    NAMES["i"]!!,
+    Symbol(tag = ']'),
+    Symbol(tag = '='),
+    NAMES["a"]!!,
+    Symbol(tag = '['),
+    NAMES["j"]!!,
+    Symbol(tag = ']'),
+    Symbol(tag = ';'),
+    NAMES["a"]!!,
+    Symbol(tag = '['),
+    NAMES["j"]!!,
+    Symbol(tag = ']'),
+    Symbol(tag = '='),
+    NAMES["x"]!!,
+    Symbol(tag = ';'),
+    Symbol(tag = '}'),
+    Symbol(tag = '}'),
+    Token.EOF,
+)
+
 val VARIABLES = listOf(
-    Id(id = Name(lexeme = "i"), type = Type.INT, offset = 0),
-    Id(id = Name(lexeme = "v"), type = Type.FLOAT, offset = 8),
-    Id(id = Name(lexeme = "j"), type = Type.INT, offset = 4),
-    Id(id = Name(lexeme = "x"), type = Type.FLOAT, offset = 16),
-    Id(id = Name(lexeme = "a"), type = Array(of = Type.FLOAT, size = 100), offset = 24)
+    Id(id = NAMES["i"]!!, type = Type.INT, offset = 0),
+    Id(id = NAMES["v"]!!, type = Type.FLOAT, offset = 8),
+    Id(id = NAMES["j"]!!, type = Type.INT, offset = 4),
+    Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16),
+    Id(id = NAMES["a"]!!, type = Array(of = Type.FLOAT, size = 100), offset = 24)
 ).associateBy { it.id.lexeme }
 
 
@@ -57,7 +159,7 @@ val EXPECTED_PARSER_OUTPUT = Seq(
                     ),
                     tail = Seq(
                         head = Set(
-                            id = Id(id = Name(lexeme = "x"), type = Type.FLOAT, offset = 16),
+                            id = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16),
                             expr = Access(
                                 array = VARIABLES["a"]!!,
                                 index = Arith(op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)),
@@ -85,7 +187,7 @@ val EXPECTED_PARSER_OUTPUT = Seq(
                                         array = VARIABLES["a"]!!,
                                         index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
                                         type = Type.FLOAT
-                                    ), expr = Id(id = Name(lexeme = "x"), type = Type.FLOAT, offset = 16)
+                                    ), expr = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16)
                                 ), tail = Stmt.NULL
                             )
                         )

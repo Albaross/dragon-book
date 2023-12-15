@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 class IntegrationTest {
 
     @Test
-    fun `code scanned, parsed and generated correctly`() {
+    fun `code is scanned, parsed and generated correctly`() {
         FileInputStream("src/test/resources/test").use {
             val lex = Lexer(it)
             val parse = Parser(lex)

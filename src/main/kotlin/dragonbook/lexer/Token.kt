@@ -12,6 +12,8 @@ interface Token {
         val GT: Token = Symbol('>')
         val PLUS: Token = Symbol('+')
         val TIMES: Token = Symbol('*')
+        val MINUS: Token = Symbol('-')
+        val EOF: Token = Symbol(tag = 65535)
     }
 }
 
