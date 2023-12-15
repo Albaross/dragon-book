@@ -3,8 +3,8 @@ package dragonbook.parser
 import dragonbook.gen.Generator
 import dragonbook.lexer.Lexer
 import dragonbook.test.EXPECTED_GENERATOR_OUTPUT
-import org.junit.jupiter.api.Test
 import java.io.FileInputStream
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ParserTest {
