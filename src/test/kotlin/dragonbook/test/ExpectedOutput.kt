@@ -120,10 +120,10 @@ val VARIABLES = listOf(
 ).associateBy { it.id.lexeme }
 
 
-val EXPECTED_PARSER_OUTPUT = Seq(
-    head = While(
-        condition = Constant.TRUE, stmt = Seq(
-            head = Do(
+val EXPECTED_PARSER_OUTPUT = seqOf(
+    While(
+        condition = Constant.TRUE, stmt = seqOf(
+            Do(
                 stmt = Set(
                     id = VARIABLES["i"]!!,
                     expr = Arith(op = Token.PLUS, expr1 = VARIABLES["i"]!!, expr2 = Constant(1))
@@ -137,65 +137,57 @@ val EXPECTED_PARSER_OUTPUT = Seq(
                     ),
                     expr2 = VARIABLES["v"]!!
                 )
-            ), tail = Seq(
-                head = Do(
-                    stmt = Set(
-                        id = VARIABLES["j"]!!,
-                        expr = Arith(op = Token.MINUS, expr1 = VARIABLES["j"]!!, expr2 = Constant(1))
+            ),
+            Do(
+                stmt = Set(
+                    id = VARIABLES["j"]!!,
+                    expr = Arith(op = Token.MINUS, expr1 = VARIABLES["j"]!!, expr2 = Constant(1))
+                ),
+                condition = Rel(
+                    op = Token.GT,
+                    expr1 = Access(
+                        array = VARIABLES["a"]!!,
+                        index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
+                        type = Type.FLOAT
                     ),
-                    condition = Rel(
-                        op = Token.GT,
-                        expr1 = Access(
-                            array = VARIABLES["a"]!!,
-                            index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
-                            type = Type.FLOAT
-                        ),
-                        expr2 = VARIABLES["v"]!!
-                    )
-                ), tail = Seq(
-                    head = If(
-                        condition = Rel(op = Word.GE, expr1 = VARIABLES["i"]!!, expr2 = VARIABLES["j"]!!),
-                        then = Break
-                    ),
-                    tail = Seq(
-                        head = Set(
-                            id = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16),
-                            expr = Access(
-                                array = VARIABLES["a"]!!,
-                                index = Arith(op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)),
-                                type = Type.FLOAT
-                            )
-                        ),
-                        tail = Seq(
-                            head = SetElem(
-                                access = Access(
-                                    array = VARIABLES["a"]!!,
-                                    index = Arith(
-                                        op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)
-                                    ),
-                                    type = Type.FLOAT
-                                ),
-                                expr = Access(
-                                    array = VARIABLES["a"]!!,
-                                    index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
-                                    type = Type.FLOAT
-                                )
-                            ),
-                            tail = Seq(
-                                head = SetElem(
-                                    access = Access(
-                                        array = VARIABLES["a"]!!,
-                                        index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
-                                        type = Type.FLOAT
-                                    ), expr = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16)
-                                ), tail = Stmt.NULL
-                            )
-                        )
-                    )
+                    expr2 = VARIABLES["v"]!!
                 )
+            ),
+            If(
+                condition = Rel(op = Word.GE, expr1 = VARIABLES["i"]!!, expr2 = VARIABLES["j"]!!),
+                then = Break
+            ),
+            Set(
+                id = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16),
+                expr = Access(
+                    array = VARIABLES["a"]!!,
+                    index = Arith(op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)),
+                    type = Type.FLOAT
+                )
+            ),
+            SetElem(
+                access = Access(
+                    array = VARIABLES["a"]!!,
+                    index = Arith(
+                        op = Token.TIMES, expr1 = VARIABLES["i"]!!, expr2 = Constant(8)
+                    ),
+                    type = Type.FLOAT
+                ),
+                expr = Access(
+                    array = VARIABLES["a"]!!,
+                    index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
+                    type = Type.FLOAT
+                )
+            ),
+            SetElem(
+                access = Access(
+                    array = VARIABLES["a"]!!,
+                    index = Arith(op = Token.TIMES, expr1 = VARIABLES["j"]!!, expr2 = Constant(8)),
+                    type = Type.FLOAT
+                ), expr = Id(id = NAMES["x"]!!, type = Type.FLOAT, offset = 16)
             )
         )
-    ), tail = Stmt.NULL
+    )
 )
 
 val EXPECTED_GENERATOR_OUTPUT = listOf(

@@ -13,5 +13,5 @@ data class Else(val condition: Expr, val then: Stmt, val elseStmt: Stmt) : Stmt 
         if (condition.type != Type.BOOL) condition.error("boolean required in if")
     }
 
-    override fun toString(): String = "if ($condition) $then else $elseStmt"
+    override fun toString(): String = "if ($condition) { $then } else { $elseStmt }"
 }

@@ -11,4 +11,5 @@ data class Id(
 ) : Expr {
 
     override val op: Token get() = id
+    override fun toString(): String = op.toString()
 }

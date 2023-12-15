@@ -13,5 +13,5 @@ data class While(val condition: Expr, val stmt: Stmt) : Stmt {
         if (condition.type != Type.BOOL) condition.error("boolean required in while")
     }
 
-    override fun toString(): String = "while ($condition) $stmt"
+    override fun toString(): String = "while ($condition) { $stmt }"
 }
