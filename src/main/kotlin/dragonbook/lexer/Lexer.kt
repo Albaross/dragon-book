@@ -3,7 +3,7 @@ package dragonbook.lexer
 import dragonbook.symbols.Type
 import java.io.InputStream
 
-class Lexer(private val source: InputStream): Iterable<Token> {
+class Lexer(private val source: InputStream) : Iterable<Token> {
     private val words = HashMap<String, Word>()
     private var peek = ' '
     private var lineNumber = 1
@@ -34,6 +34,8 @@ class Lexer(private val source: InputStream): Iterable<Token> {
         peek = ' '
         return tok
     }
+
+    fun lexLine(): Int = lineNumber
 
     private fun consumeWhitespaces() {
         while (true) {

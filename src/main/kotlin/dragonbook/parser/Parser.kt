@@ -1,5 +1,6 @@
 package dragonbook.parser
 
+import dragonbook.error.ParseError
 import dragonbook.inter.expr.*
 import dragonbook.inter.stmt.*
 import dragonbook.inter.stmt.Set
@@ -8,9 +9,9 @@ import dragonbook.symbols.Array
 import dragonbook.symbols.Env
 import dragonbook.symbols.Type
 
-class Parser(private val scan: () -> Token) {
+class Parser(private val scan: () -> Token, private val lexLine: () -> Int? = { null }) {
 
-    constructor(lexer: Lexer) : this(lexer::scan) // lexical analyzer for this parser
+    constructor(lexer: Lexer) : this(lexer::scan, lexer::lexLine) // lexical analyzer for this parser
 
     private lateinit var look: Token // lookahead token
     private var top: Env? = null // current or top symbol table
@@ -22,7 +23,12 @@ class Parser(private val scan: () -> Token) {
     }
 
     fun program(): Stmt { // program -> block
-        return block()
+        try {
+            return block()
+        } catch (e: ParseError) {
+            e.lexLine = lexLine()
+            throw e
+        }
     }
 
     private fun block(): Stmt { // block -> { decls stmts }
@@ -270,7 +276,7 @@ class Parser(private val scan: () -> Token) {
                 if (look.tag != '['.code) id else offset(id)
             }
 
-            else -> error("syntax error")
+            else -> error(token = look)
         }
     }
 
@@ -305,16 +311,16 @@ class Parser(private val scan: () -> Token) {
         look = scan()
     }
 
-    private fun error(s: String): Nothing {
-        throw Error("near line 0: $s")
+    private fun error(message: String): Nothing = throw ParseError(message = message)
+
+    private fun error(token: Token): Nothing = throw ParseError(token = token)
+
+    private fun match(tag: Char) {
+        match(tag.code)
     }
 
-    private fun match(tok: Char) {
-        match(tok.code)
-    }
-
-    private fun match(tok: Int) {
-        if (look.tag == tok) move()
-        else error("syntax error")
+    private fun match(tag: Int) {
+        if (look.tag == tag) move()
+        else error(token = look)
     }
 }

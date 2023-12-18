@@ -1,5 +1,6 @@
 package dragonbook.inter.expr
 
+import dragonbook.error.ParseError
 import dragonbook.lexer.Token
 import dragonbook.symbols.Type
 
@@ -10,7 +11,7 @@ data class Unary(override val op: Token, val expr: Expr) : Op { // handles minus
     }
 
     private fun validate() {
-        if (!expr.type.isNumeric()) error("type error")
+        if (!expr.type.isNumeric()) throw ParseError(node = this)
     }
 
     override val type: Type

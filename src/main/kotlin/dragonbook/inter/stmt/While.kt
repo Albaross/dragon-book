@@ -1,5 +1,6 @@
 package dragonbook.inter.stmt
 
+import dragonbook.error.ParseError
 import dragonbook.inter.expr.Expr
 import dragonbook.symbols.Type
 
@@ -10,7 +11,7 @@ data class While(val condition: Expr, val stmt: Stmt) : Stmt {
     }
 
     private fun validate() {
-        if (condition.type != Type.BOOL) condition.error("boolean required in while")
+        if (condition.type != Type.BOOL) throw ParseError("boolean required in while", condition)
     }
 
     override fun toString(): String = "while ($condition) { $stmt }"

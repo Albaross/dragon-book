@@ -1,5 +1,6 @@
 package dragonbook.inter.expr
 
+import dragonbook.error.ParseError
 import dragonbook.lexer.Token
 import dragonbook.symbols.Array
 
@@ -14,7 +15,7 @@ data class Rel(
     }
 
     override fun validate() {
-        if (expr1.type is Array || expr2.type is Array || expr1.type != expr2.type) error("type error")
+        if (expr1.type is Array || expr2.type is Array || expr1.type != expr2.type) throw ParseError(node = this)
     }
 
     override fun toString(): String = "$expr1 $op $expr2"

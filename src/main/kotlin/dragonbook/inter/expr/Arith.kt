@@ -1,5 +1,6 @@
 package dragonbook.inter.expr
 
+import dragonbook.error.ParseError
 import dragonbook.lexer.Token
 import dragonbook.symbols.Type
 
@@ -14,7 +15,7 @@ data class Arith(
     }
 
     private fun validate() {
-        if (!expr1.type.isNumeric() || !expr2.type.isNumeric()) error("type error")
+        if (!expr1.type.isNumeric() || !expr2.type.isNumeric()) throw ParseError(node = this)
     }
 
     override val type: Type
